@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { PRODUCTS } from '@/lib/products'
-import { NoblePayment } from '@/components/NoblePayment'
+import { BalanceWidget } from '@/components/BalanceWidget'
 import { notFound } from 'next/navigation'
 import '@/app/globals.css'
 import './produkt.css'
@@ -18,17 +18,16 @@ function ProduktContent({ slug }: { slug: string }) {
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [noblePaid, setNoblePaid] = useState<any>(null)
   const [inquiryStatus, setInquiryStatus] = useState<'idle'|'sending'|'ok'|'err'>('idle')
   const [formstart] = useState(Date.now())
   const [inquiryData, setInquiryData] = useState({ name:'', email:'', phone:'', message:'' })
 
-  // Read affiliate ref from cookie if not in URL
   useEffect(() => {
     if (!refFromUrl) {
       const match = document.cookie.match(/pan21_ref=([^;]+)/)
       if (match) setAffiliateRef(decodeURIComponent(match[1]))
     } else {
-      // Set cookie from URL param
       document.cookie = `pan21_ref=${refFromUrl}; max-age=${60*60*24*30}; path=/; samesite=lax`
     }
   }, [refFromUrl])
@@ -91,7 +90,9 @@ function ProduktContent({ slug }: { slug: string }) {
       <div style={{ paddingTop: '68px', background: 'var(--snow)', minHeight: '100vh' }}>
         <div className="container" style={{ padding: '3rem 2rem' }}>
           <div className="breadcrumb">
-            <Link href="/">Shop</Link> <span>/</span> <Link href="/#produkte">Produkte</Link> <span>/</span> <span>{product.name}</span>
+            <Link href="/">Shop</Link> <span>/</span>
+            <Link href="/#produkte">Produkte</Link> <span>/</span>
+            <span>{product.name}</span>
           </div>
 
           {affiliateRef && (
@@ -100,21 +101,33 @@ function ProduktContent({ slug }: { slug: string }) {
             </div>
           )}
 
+          {noblePaid && (
+            <div style={{ background: '#F0FDF4', border: '1px solid #86EFAC', borderLeft: '4px solid #16A34A', padding: '1rem 1.25rem', marginBottom: '1.5rem', borderRadius: '3px' }}>
+              <div style={{ fontWeight: 700, color: '#15803D', marginBottom: '0.3rem' }}>Zahlung mit Noble-Währung erfolgreich</div>
+              <div style={{ fontSize: '0.82rem', color: '#166534' }}>
+                Referenz: <strong>{noblePaid.order_reference}</strong> · Doppel-Wums Bonus gutgeschrieben.
+              </div>
+            </div>
+          )}
+
+          {/* 3-column layout */}
           <div className="produkt-layout">
+
+            {/* Column 1: Product details */}
             <div className="produkt-main">
               <div className="produkt-cat">{product.flag} {product.category}</div>
               <h1 className="produkt-title">{product.name}</h1>
               <p className="produkt-desc">{product.shortDesc}</p>
 
               <div className="detail-block">
-                <h3 className="detail-title">✓ Im Paket enthalten</h3>
+                <h3 className="detail-title">Im Paket enthalten</h3>
                 <ul className="detail-list included">
                   {product.included.map((item, i) => <li key={i}>{item}</li>)}
                 </ul>
               </div>
 
               <div className="detail-block">
-                <h3 className="detail-title">✗ Nicht im Basispaket enthalten</h3>
+                <h3 className="detail-title">Nicht im Basispaket enthalten</h3>
                 <ul className="detail-list not-included">
                   {product.notIncluded.map((item, i) => <li key={i}>{item}</li>)}
                 </ul>
@@ -122,7 +135,7 @@ function ProduktContent({ slug }: { slug: string }) {
 
               {product.addons.length > 0 && (
                 <div className="detail-block">
-                  <h3 className="detail-title">+ Mögliche Zusatzleistungen</h3>
+                  <h3 className="detail-title">Mögliche Zusatzleistungen</h3>
                   <ul className="detail-list addons">
                     {product.addons.map((item, i) => <li key={i}>{item}</li>)}
                   </ul>
@@ -133,7 +146,10 @@ function ProduktContent({ slug }: { slug: string }) {
                 <h3 className="detail-title">Ablauf</h3>
                 <ol className="process-list">
                   {product.process.map((step, i) => (
-                    <li key={i}><span className="process-num">{String(i+1).padStart(2,'0')}</span><span>{step}</span></li>
+                    <li key={i}>
+                      <span className="process-num">{String(i+1).padStart(2,'0')}</span>
+                      <span>{step}</span>
+                    </li>
                   ))}
                 </ol>
               </div>
@@ -142,43 +158,53 @@ function ProduktContent({ slug }: { slug: string }) {
 
               <div className="europan-box">
                 <div className="europan-badge">EUROPAN</div>
-                <p>Mit einem EUROPAN-Konto können Sie Gründungs- und Servicedienstleistungen günstiger nutzen. Bei Zahlung mit Noble-Währung erhalten Sie den <strong style={{color:'#C9963A'}}>Doppel-Wums-Bonus: +5% EUROPAN</strong> gutgeschrieben.</p>
+                <p>
+                  Mit einem Noble-Konto können Sie mit EUROPAN, N-Coin, SwissyCash oder CryptoCoin bezahlen
+                  und erhalten den <strong style={{ color: '#C9963A' }}>Doppel-Wums-Bonus: 5% EUROPAN</strong> zurück.
+                  Guthaben rechts einsehen.
+                </p>
               </div>
             </div>
 
+            {/* Column 2: Order / Stripe */}
             <div className="order-box-wrap">
               <div className="order-box">
                 <div className="order-product-name">{product.flag} {product.name}</div>
                 <div className="order-price">
                   {product.price
-                    ? <>{'€'}{product.price.toLocaleString('de-DE')}<span className="order-price-note"> EUR</span></>
+                    ? <>€{product.price.toLocaleString('de-DE')}<span className="order-price-note"> EUR</span></>
                     : <span style={{ fontSize: '1rem', color: 'var(--gold2)' }}>{product.priceLabel}</span>
                   }
                 </div>
                 {product.price && <p className="order-hint">Zzgl. etwaiger Behörden- und Notargebühren.</p>}
 
                 {!product.inquiry ? (
-                  <>
+                  !noblePaid ? (
                     <form onSubmit={handleBuy} style={{ marginTop: '1.5rem' }}>
                       <div className="fg">
                         <label>Ihre E-Mail-Adresse *</label>
-                        <input type="email" required placeholder="ihre@email.com" value={email} onChange={e => setEmail(e.target.value)} />
+                        <input
+                          type="email" required placeholder="ihre@email.com"
+                          value={email} onChange={e => setEmail(e.target.value)}
+                        />
                       </div>
                       {error && <p className="form-err">{error}</p>}
                       <button type="submit" className="form-submit" disabled={loading}>
                         {loading ? 'Weiterleitung…' : `Jetzt bestellen — €${product.price?.toLocaleString('de-DE')} →`}
                       </button>
-                      <p style={{ fontSize: '0.7rem', color: 'var(--muted)', textAlign: 'center', marginTop: '0.5rem' }}>Gesicherter Checkout via Stripe</p>
+                      <p style={{ fontSize: '0.7rem', color: 'var(--muted)', textAlign: 'center', marginTop: '0.5rem' }}>
+                        Gesicherter Checkout via Stripe
+                      </p>
+                      <div style={{ marginTop: '1rem', padding: '0.75rem', background: 'var(--snow)', border: '1px solid var(--lgray)', borderRadius: '3px', fontSize: '0.75rem', color: 'var(--gray)' }}>
+                        Noble-Konto? Guthaben in der rechten Spalte einsetzen und mit virtueller Währung zahlen.
+                      </div>
                     </form>
-
-                    {/* Noble payment option */}
-                    <NoblePayment
-                      slug={product.slug}
-                      price={product.price!}
-                      productName={product.name}
-                      affiliateRef={affiliateRef}
-                    />
-                  </>
+                  ) : (
+                    <div style={{ marginTop: '1.5rem', textAlign: 'center', padding: '1.5rem 0' }}>
+                      <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>✓</div>
+                      <div style={{ fontFamily: 'var(--ff-d)', fontSize: '1.1rem', color: 'var(--navy)' }}>Bezahlt mit Noble-Währung</div>
+                    </div>
+                  )
                 ) : (
                   inquiryStatus === 'ok' ? (
                     <div style={{ textAlign: 'center', padding: '1.5rem 0' }}>
@@ -202,15 +228,17 @@ function ProduktContent({ slug }: { slug: string }) {
                 )}
 
                 <div className="order-trust">
-                  <div className="trust-item">🔒 Sichere Verbindung</div>
-                  <div className="trust-item">💎 Noble-Währung akzeptiert</div>
+                  <div className="trust-item">🔒 Sichere Verbindung via Stripe</div>
+                  <div className="trust-item">💎 Noble-Währung in Spalte rechts</div>
                   <div className="trust-item">✉️ Antwort innerhalb 1 Werktag</div>
                 </div>
               </div>
 
               {related.length > 0 && (
                 <div style={{ marginTop: '1.5rem' }}>
-                  <div style={{ fontSize: '0.68rem', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--muted)', marginBottom: '0.75rem' }}>Ähnliche Produkte</div>
+                  <div style={{ fontSize: '0.68rem', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--muted)', marginBottom: '0.75rem' }}>
+                    Ähnliche Produkte
+                  </div>
                   {related.map(r => (
                     <Link key={r.slug} href={`/produkt/${r.slug}`} style={{ display:'flex', gap:'0.75rem', padding:'0.75rem', background:'var(--white)', border:'1px solid var(--lgray)', marginBottom:'0.5rem', borderRadius:'3px' }}>
                       <span style={{ fontSize: '1.3rem' }}>{r.flag}</span>
@@ -223,6 +251,18 @@ function ProduktContent({ slug }: { slug: string }) {
                 </div>
               )}
             </div>
+
+            {/* Column 3: Noble balance widget */}
+            {!product.inquiry && product.price && (
+              <BalanceWidget
+                slug={product.slug}
+                price={product.price}
+                productName={product.name}
+                affiliateRef={affiliateRef}
+                onNoblePayment={(result) => setNoblePaid(result)}
+              />
+            )}
+
           </div>
         </div>
       </div>
