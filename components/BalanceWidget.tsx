@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 const COINS = [
   { id: 'europan',    label: 'EUROPAN',    icon: '🇪🇺' },
@@ -13,6 +13,7 @@ type BalanceWidgetProps = {
   price: number
   productName: string
   affiliateRef?: string
+  prefillEmail?: string
   onNoblePayment?: (result: any) => void
 }
 
@@ -41,7 +42,7 @@ const S = {
   success: { background: 'rgba(22,163,74,0.15)', border: '1px solid rgba(22,163,74,0.3)', padding: '0.75rem', borderRadius: '3px', fontSize: '0.78rem', color: '#86EFAC', lineHeight: 1.65 },
 }
 
-export function BalanceWidget({ slug, price, productName, affiliateRef, onNoblePayment }: BalanceWidgetProps) {
+export function BalanceWidget({ slug, price, productName, affiliateRef, prefillEmail, onNoblePayment }: BalanceWidgetProps) {
   const [email, setEmail] = useState('')
   const [balances, setBalances] = useState<Record<string, number> | null>(null)
   const [loading, setLoading] = useState(false)
@@ -51,13 +52,26 @@ export function BalanceWidget({ slug, price, productName, affiliateRef, onNobleP
   const [success, setSuccess] = useState<any>(null)
   const [emailLoaded, setEmailLoaded] = useState('')
 
+  // Auto-load balances when parent passes a verified Noble email
+  useEffect(() => {
+    if (prefillEmail && prefillEmail !== email) {
+      setEmail(prefillEmail)
+      setBalances(null)
+      setEmailLoaded('')
+      // Small delay so state settles
+      setTimeout(() => {
+        loadBalancesForEmail(prefillEmail)
+      }, 100)
+    }
+  }, [prefillEmail])
+
   const BONUS_PCT = 0.05 // 2% base + 3% Doppel-Wums
 
-  async function loadBalances() {
-    if (!email || !email.includes('@')) return setError('Bitte gültige Noble E-Mail eingeben.')
+  async function loadBalancesForEmail(emailToLoad: string) {
+    if (!emailToLoad || !emailToLoad.includes('@')) return
     setLoading(true); setError(''); setBalances(null)
     try {
-      const res = await fetch(`/api/noble-balance?email=${encodeURIComponent(email)}`)
+      const res = await fetch(`/api/noble-balance?email=${encodeURIComponent(emailToLoad)}`)
       if (!res.ok) {
         const d = await res.json()
         setError(d.error || 'Noble-Konto nicht gefunden.')
@@ -65,9 +79,14 @@ export function BalanceWidget({ slug, price, productName, affiliateRef, onNobleP
       }
       const d = await res.json()
       setBalances(d.balances)
-      setEmailLoaded(email)
+      setEmailLoaded(emailToLoad)
     } catch { setError('Noble API nicht erreichbar.') }
     setLoading(false)
+  }
+
+  async function loadBalances() {
+    if (!email || !email.includes('@')) return setError('Bitte gültige Noble E-Mail eingeben.')
+    await loadBalancesForEmail(email)
   }
 
   async function handlePay() {
@@ -113,6 +132,11 @@ export function BalanceWidget({ slug, price, productName, affiliateRef, onNobleP
     <div style={S.wrap}>
       <div style={S.box}>
         <div style={S.title}>Mein Noble-Guthaben</div>
+        {prefillEmail && email === prefillEmail && !balances && !loading && (
+          <div style={{ fontSize: '0.72rem', color: '#4CAF7D', marginBottom: '0.75rem', background: 'rgba(76,175,125,0.12)', border: '1px solid rgba(76,175,125,0.25)', padding: '0.4rem 0.65rem', borderRadius: '3px' }}>
+            ✓ Noble-Konto erkannt — Guthaben wird geladen…
+          </div>
+        )}
         <div style={S.sub}>Mit virtueller Währung zahlen</div>
 
         {/* Email */}
