@@ -115,6 +115,16 @@ function ProduktContent({ slug }: { slug: string }) {
 
             {/* Column 1: Product details */}
             <div className="produkt-main">
+              {product.image && (
+                <div style={{ marginBottom: '1.5rem', borderRadius: '4px', overflow: 'hidden', border: '1px solid var(--lgray)', background: 'var(--snow)', maxHeight: '280px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    style={{ width: '100%', maxHeight: '280px', objectFit: 'cover', display: 'block' }}
+                    onError={(e) => { (e.target as HTMLImageElement).parentElement!.style.display = 'none' }}
+                  />
+                </div>
+              )}
               <div className="produkt-cat">{product.flag} {product.category}</div>
               <h1 className="produkt-title">{product.name}</h1>
               <p className="produkt-desc">{product.shortDesc}</p>
