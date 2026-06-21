@@ -3,7 +3,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { PRODUCTS } from '@/lib/products'
 import { notFound } from 'next/navigation'
-import '../../globals.css'
+import '@/app/globals.css'
 import './produkt.css'
 
 export default function ProduktPage({ params }: { params: { slug: string } }) {
