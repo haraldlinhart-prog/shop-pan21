@@ -2,7 +2,7 @@
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { Suspense } from 'react'
-import '../globals.css'
+import '@/app/globals.css'
 
 function SuccessContent() {
   const params = useSearchParams()
