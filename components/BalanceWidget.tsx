@@ -112,6 +112,11 @@ export function BalanceWidget({ slug, price, productName, affiliateRef, prefillE
   const bonus = Math.round(price * BONUS_PCT * 100) / 100
   const coinLabel = COINS.find(c => c.id === selectedCoin)?.label || selectedCoin
 
+  // Static savings values always visible
+  const doppelBonus = Math.round(price * 0.05 * 100) / 100
+  const buyerBonus = Math.round(price * 0.02 * 100) / 100
+  const totalBonus = Math.round((doppelBonus + buyerBonus) * 100) / 100
+
   if (success) return (
     <div style={S.wrap}>
       <div style={S.box}>
@@ -138,6 +143,41 @@ export function BalanceWidget({ slug, price, productName, affiliateRef, prefillE
           </div>
         )}
         <div style={S.sub}>Mit virtueller Währung zahlen</div>
+
+        {/* Savings Preview — always visible */}
+        <div style={{ background: 'rgba(201,150,58,0.08)', border: '1px solid rgba(201,150,58,0.22)', borderRadius: '4px', padding: '0.9rem 1rem', marginBottom: '1.1rem' }}>
+          <div style={{ fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase' as const, color: '#DDB055', marginBottom: '0.6rem' }}>
+            💰 Ihr Vorteil mit Noble
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', padding: '3px 0', color: 'rgba(255,255,255,0.55)' }}>
+            <span>Produktpreis</span>
+            <strong style={{ color: '#fff' }}>€{price.toLocaleString('de-DE', { minimumFractionDigits: 2 })}</strong>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', padding: '3px 0', color: 'rgba(255,255,255,0.55)' }}>
+            <span>🎉 Doppel-Wums (5% EUROPAN)</span>
+            <strong style={{ color: '#DDB055' }}>+{doppelBonus.toFixed(2)} EP</strong>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', padding: '3px 0', color: 'rgba(255,255,255,0.55)' }}>
+            <span>🤝 Käufer-Bonus (2% EUROPAN)</span>
+            <strong style={{ color: '#DDB055' }}>+{buyerBonus.toFixed(2)} EP</strong>
+          </div>
+          <div style={{ height: '1px', background: 'rgba(201,150,58,0.25)', margin: '7px 0' }} />
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', fontWeight: 700 }}>
+            <span style={{ color: '#DDB055' }}>Gesamt-Bonus</span>
+            <strong style={{ color: '#DDB055' }}>+{totalBonus.toFixed(2)} EUROPAN</strong>
+          </div>
+          <div style={{ marginTop: '0.6rem', fontSize: '0.68rem', color: 'rgba(255,255,255,0.35)', lineHeight: 1.5 }}>
+            EUROPAN ist die Noble-Netzwerkwährung — einsetzbar im gesamten PAN21-Ökosystem.
+          </div>
+          <a
+            href="https://noble-limited.com/join"
+            target="_blank"
+            rel="noopener"
+            style={{ display: 'block', marginTop: '0.65rem', textAlign: 'center' as const, background: 'rgba(201,150,58,0.15)', border: '1px solid rgba(201,150,58,0.35)', color: '#DDB055', padding: '0.45rem', borderRadius: '3px', fontSize: '0.72rem', fontWeight: 600, textDecoration: 'none', letterSpacing: '0.03em' }}
+          >
+            Noble-Konto eröffnen → noble-limited.com
+          </a>
+        </div>
 
         {/* Email */}
         <div style={S.emailRow}>
