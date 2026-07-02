@@ -107,6 +107,7 @@ export function BalanceWidget({ slug, price, affiliateRef, onNoblePayment }: Bal
           <div><strong>Referenz:</strong> {success.order_reference}</div>
           <div><strong>Bezahlt:</strong> {success.amount?.toFixed(2)} EUROPAN</div>
           <div><strong>Neues Guthaben:</strong> {success.new_balance?.toFixed(2)} EUROPAN</div>
+          {totalSaved > 0.004 && <div style={{ marginTop: '6px', fontWeight: 700 }}>Sie haben heute mit EUROPAN gespart: €{totalSaved.toFixed(2)}</div>}
         </div>
       </div>
     </div>
@@ -199,14 +200,14 @@ export function BalanceWidget({ slug, price, affiliateRef, onNoblePayment }: Bal
 
             {fullyCovered && (
               <div style={{ ...row, color: gold, fontWeight: 600 }}>
-                <span>Mit EUROPAN-Guthaben bezahlt</span><strong>-€{europanPaid.toFixed(2)}</strong>
+                <span>Wird mit EUROPAN-Guthaben bezahlt</span><strong>-€{europanPaid.toFixed(2)}</strong>
               </div>
             )}
 
             {totalSaved > 0.004 && (
               <div style={{ borderTop: '1px solid #E2DDD8', marginTop: '0.5rem', paddingTop: '0.5rem' }}>
                 <div style={{ ...row, color: gold, fontWeight: 700 }}>
-                  <span>Sie haben heute mit EUROPAN gespart:</span><strong>€{totalSaved.toFixed(2)}</strong>
+                  <span>Sie sparen heute mit EUROPAN:</span><strong>€{totalSaved.toFixed(2)}</strong>
                 </div>
               </div>
             )}
