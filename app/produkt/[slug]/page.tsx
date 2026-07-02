@@ -19,8 +19,6 @@ function ProduktContent({ slug }: { slug: string }) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [noblePaid, setNoblePaid] = useState<any>(null)
-  const [nobleEmail, setNobleEmail] = useState('')
-  const [nobleCheckTimer, setNobleCheckTimer] = useState<any>(null)
   const [inquiryStatus, setInquiryStatus] = useState<'idle'|'sending'|'ok'|'err'>('idle')
   const [formstart] = useState(Date.now())
   const [inquiryData, setInquiryData] = useState({ name:'', email:'', phone:'', message:'' })
@@ -49,24 +47,6 @@ function ProduktContent({ slug }: { slug: string }) {
       else setError(data.error || 'Fehler beim Checkout.')
     } catch { setError('Netzwerkfehler.') }
     finally { setLoading(false) }
-  }
-
-  // Silently check Noble account when user finishes typing email
-  function onEmailChange(val: string) {
-    setEmail(val)
-    if (nobleCheckTimer) clearTimeout(nobleCheckTimer)
-    if (val.includes('@') && val.includes('.')) {
-      const timer = setTimeout(async () => {
-        try {
-          const res = await fetch(`/api/check-noble?email=${encodeURIComponent(val)}`)
-          const data = await res.json()
-          if (data.exists) {
-            setNobleEmail(val)
-          }
-        } catch {}
-      }, 600) // 600ms debounce after typing stops
-      setNobleCheckTimer(timer)
-    }
   }
 
   async function handleInquiry(e: React.FormEvent) {
@@ -215,7 +195,7 @@ function ProduktContent({ slug }: { slug: string }) {
                         <label>Ihre E-Mail-Adresse *</label>
                         <input
                           type="email" required placeholder="ihre@email.com"
-                          value={email} onChange={e => onEmailChange(e.target.value)}
+                          value={email} onChange={e => setEmail(e.target.value)}
                         />
                       </div>
                       {error && <p className="form-err">{error}</p>}
@@ -289,7 +269,6 @@ function ProduktContent({ slug }: { slug: string }) {
                 price={product.price}
                 productName={product.name}
                 affiliateRef={affiliateRef}
-                prefillEmail={nobleEmail}
                 onNoblePayment={(result) => setNoblePaid(result)}
               />
             )}
