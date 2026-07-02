@@ -27,7 +27,7 @@ export const PRODUCTS: Product[] = [
     price: 698,
     category: 'Deutschland',
     flag: '🇩🇪',
-    image: 'https://shop.europan.group/wp-content/uploads/2026/05/ug.png',
+    image: '/products/deutschland-300x300.png',
     included: [
       'Vorbereitung der Gründungsdaten',
       'Abstimmung des gewünschten Firmennamens',
@@ -68,7 +68,7 @@ export const PRODUCTS: Product[] = [
     price: 1298,
     category: 'Deutschland',
     flag: '🇩🇪',
-    image: 'https://shop.europan.group/wp-content/uploads/2026/05/europan-gmbhgruendung1.png',
+    image: '/products/deutschland-300x300.png',
     included: [
       'Vorbereitung der Gründungsdaten',
       'Abstimmung des gewünschten Firmennamens',
@@ -110,7 +110,7 @@ export const PRODUCTS: Product[] = [
     price: 299,
     category: 'UK / Großbritannien',
     flag: '🇬🇧',
-    image: 'https://shop.europan.group/wp-content/uploads/2026/05/uklimited_europan2.png',
+    image: '/products/uk-300x300.png',
     included: [
       'Vorprüfung der gewünschten Firmierung',
       'Vorbereitung der Gründungsdaten',
@@ -155,7 +155,7 @@ export const PRODUCTS: Product[] = [
     price: 399,
     category: 'USA',
     flag: '🇺🇸',
-    image: 'https://shop.europan.group/wp-content/uploads/2026/05/usllc_europan2.png',
+    image: '/products/usa-300x300.png',
     included: [
       'Vorprüfung der gewünschten Firmierung',
       'Grundlegende Einordnung geeigneter US-Bundesstaaten',
@@ -201,7 +201,7 @@ export const PRODUCTS: Product[] = [
     price: 899,
     category: 'Hong Kong',
     flag: '🇭🇰',
-    image: 'https://shop.europan.group/wp-content/uploads/2026/05/hk_europan.png',
+    image: '/products/hngkong-300x300.png',
     included: [
       'Vorprüfung der gewünschten Firmierung',
       'Vorbereitung der Gründungsdaten',
@@ -248,7 +248,7 @@ export const PRODUCTS: Product[] = [
     price: 1199,
     category: 'Irland',
     flag: '🇮🇪',
-    image: 'https://shop.europan.group/wp-content/uploads/2026/05/irishlimited_europan2.png',
+    image: '/products/irland-300x300.png',
     included: [
       'Vorprüfung der gewünschten Firmierung',
       'Grundlegende Prüfung, ob eine irische LTD sinnvoll erscheint',
@@ -295,7 +295,7 @@ export const PRODUCTS: Product[] = [
     price: 2999,
     category: 'Neuseeland',
     flag: '🇳🇿',
-    image: 'https://shop.europan.group/wp-content/uploads/2026/05/nz_europan.png',
+    image: '/products/nz-300x300.png',
     included: [
       'Vorprüfung der gewünschten Firmierung',
       'Grundlegende Prüfung, ob eine neuseeländische Ltd sinnvoll erscheint',
@@ -344,7 +344,7 @@ export const PRODUCTS: Product[] = [
     price: 3490,
     category: 'Nevis',
     flag: '🏝️',
-    image: 'https://shop.europan.group/wp-content/uploads/2026/05/nevis_llc_product_image.png',
+    image: '/products/nevis-300x300.png',
     included: [
       'Vorprüfung der Nevis-LLC-Struktur',
       'Koordination mit lizenziertem Registered Agent in Nevis',
@@ -389,7 +389,7 @@ export const PRODUCTS: Product[] = [
     inquiry: true,
     category: 'UK / Großbritannien',
     flag: '🇬🇧',
-    image: 'https://shop.europan.group/wp-content/uploads/2026/05/uklimited_europan2.png',
+    image: '/products/UKnominee-300x300.png',
     included: [
       'KYC-/AML-Prüfung und Dokumentation wirtschaftlich Berechtigter',
       'Nominee Shareholder / Treuhandverwaltung nach Mandatsprüfung',
@@ -429,7 +429,7 @@ export const PRODUCTS: Product[] = [
     inquiry: true,
     category: 'International',
     flag: '🌐',
-    image: 'https://shop.europan.group/wp-content/uploads/2026/05/int_nominee.png',
+    image: '/products/int_nominee-300x300.png',
     included: [
       'Internationale Struktur- und Jurisdiktionsprüfung',
       'KYC-/AML-/Sanktions- und Risikoprüfung der Beteiligten',
