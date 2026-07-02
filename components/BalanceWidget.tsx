@@ -1,14 +1,19 @@
 'use client'
 import { useState } from 'react'
 
+// Nur EUROPAN ist aktuell als Zahlungswährung im Shop aktiv. Die API kann technisch
+// auch N-Coin, SwissyCash und CryptoCoin — das ist aber bewusst (noch) nicht erwünscht.
+// Um das später wieder zu öffnen: COINS-Array unten einfach wieder erweitern.
 const COINS = [
-  { id: 'europan',    label: 'EUROPAN',    icon: '🇪🇺' },
-  { id: 'n_coin',     label: 'N-Coin',     icon: '🔵' },
-  { id: 'swissycash', label: 'SwissyCash', icon: '🇨🇭' },
-  { id: 'cryptocoin', label: 'CryptoCoin', icon: '💎' },
+  { id: 'europan', label: 'EUROPAN', icon: '🇪🇺' },
 ]
 
-const BUYER_BONUS_PCT = 0.02
+// Standard-Logik für EUROPAN-Bestellungen im gesamten PAN21-Netzwerk (siehe pan-office.de):
+// 1) EUROPAN-Bonus (2%) — steht jedem verifizierten Konto zu, Kunde wählt "jetzt einsetzen"
+//    oder "auf dem Noble-Konto sparen".
+// 2) Doppel-Wums (zusätzlich 3%) — nur wenn der komplette (bereits um den Bonus reduzierte)
+//    Betrag durch vorhandenes Guthaben gedeckt ist. Alles-oder-nichts, kein Teileinsatz.
+const EUROPAN_BONUS_PCT = 0.02
 const DOPPELWUMS_PCT = 0.03
 
 type BalanceWidgetProps = {
@@ -20,7 +25,6 @@ type BalanceWidgetProps = {
   onNoblePayment?: (result: any) => void
 }
 
-// Farben angelehnt an pan-office.de: helle Karte statt dunkler Box, cream/gold/navy.
 const navy = '#1A2F5A'
 const gold = '#C9963A'
 const cream = '#F7F3ED'
@@ -32,14 +36,12 @@ export function BalanceWidget({ slug, price, affiliateRef, onNoblePayment }: Bal
   const [balances, setBalances] = useState<Record<string, number> | null>(null)
   const [verified, setVerified] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [selectedCoin, setSelectedCoin] = useState('europan')
+  const [bonusChoice, setBonusChoice] = useState<'now' | 'save'>('now')
   const [paying, setPaying] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState<any>(null)
 
-  const doppelBonus = Math.round(price * DOPPELWUMS_PCT * 100) / 100
-  const buyerBonus = Math.round(price * BUYER_BONUS_PCT * 100) / 100
-  const totalBonus = Math.round((doppelBonus + buyerBonus) * 100) / 100
+  const selectedCoin = 'europan'
 
   async function checkBalance() {
     setError('')
@@ -60,8 +62,25 @@ export function BalanceWidget({ slug, price, affiliateRef, onNoblePayment }: Bal
     setLoading(false)
   }
 
+  const balance = balances ? (balances[selectedCoin] || 0) : 0
+
+  // Schritt 1: EUROPAN-Bonus
+  const europanBonusTotal = Math.round(price * EUROPAN_BONUS_PCT * 100) / 100
+  const europanBonusApplied = bonusChoice === 'now' ? europanBonusTotal : 0
+  const afterEuropanBonus = Math.max(0, price - europanBonusApplied)
+
+  // Schritt 2: Doppel-Wums — nur wenn Guthaben den (reduzierten) Betrag komplett deckt
+  const fullyCovered = verified && balance >= afterEuropanBonus
+  const doppelWumsTotal = fullyCovered ? Math.round(price * DOPPELWUMS_PCT * 100) / 100 : 0
+  const afterDoppelWums = Math.max(0, afterEuropanBonus - doppelWumsTotal)
+
+  // Schritt 3: mit Guthaben bezahlter Betrag (alles oder nichts)
+  const europanPaid = fullyCovered ? afterDoppelWums : 0
+  const finalTotal = Math.max(0, afterDoppelWums - europanPaid)
+  const totalSaved = Math.max(0, price - afterDoppelWums)
+
   async function handlePay() {
-    if (!verified) return
+    if (!verified || !fullyCovered) return
     setPaying(true); setError('')
     try {
       const res = await fetch('/api/noble-pay', {
@@ -77,11 +96,8 @@ export function BalanceWidget({ slug, price, affiliateRef, onNoblePayment }: Bal
     setPaying(false)
   }
 
-  const selectedBalance = balances ? (balances[selectedCoin] || 0) : 0
-  const sufficient = selectedBalance >= price
-  const coinLabel = COINS.find(c => c.id === selectedCoin)?.label || selectedCoin
-
   const card: React.CSSProperties = { background: '#fff', border: '1px solid #E2DDD8', borderRadius: '8px', padding: '1.5rem', fontFamily: 'Jost, system-ui, sans-serif' }
+  const row: React.CSSProperties = { display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', fontSize: '0.8rem', padding: '4px 0' }
 
   if (success) return (
     <div style={{ position: 'sticky', top: '88px' }}>
@@ -89,9 +105,8 @@ export function BalanceWidget({ slug, price, affiliateRef, onNoblePayment }: Bal
         <h4 style={{ fontFamily: 'Georgia, serif', color: navy, fontSize: '1.05rem', marginBottom: '0.75rem' }}>Zahlung erfolgreich</h4>
         <div style={{ background: '#E8F5EE', border: '1px solid #B7E4CC', borderRadius: '6px', padding: '0.9rem', fontSize: '0.82rem', color: '#1B7A3D', lineHeight: 1.7 }}>
           <div><strong>Referenz:</strong> {success.order_reference}</div>
-          <div><strong>Bezahlt:</strong> {price.toFixed(2)} {coinLabel}</div>
-          <div><strong>Neues Guthaben:</strong> {success.new_balance?.toFixed(2)} {coinLabel}</div>
-          <div style={{ marginTop: '6px', fontWeight: 700 }}>🎉 Doppel-Wums: +{doppelBonus.toFixed(2)} EUROPAN gutgeschrieben</div>
+          <div><strong>Bezahlt:</strong> {success.amount?.toFixed(2)} EUROPAN</div>
+          <div><strong>Neues Guthaben:</strong> {success.new_balance?.toFixed(2)} EUROPAN</div>
         </div>
       </div>
     </div>
@@ -101,21 +116,30 @@ export function BalanceWidget({ slug, price, affiliateRef, onNoblePayment }: Bal
     <div style={{ position: 'sticky', top: '88px' }}>
       <div style={card}>
         {/* Status-Badge wie auf pan-office.de */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem', background: cream, border: '1px solid #E2DDD8', borderRadius: '6px', padding: '0.5rem 0.7rem', marginBottom: '1rem', fontSize: '0.7rem', fontWeight: 600, color: navy }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem', background: cream, border: '1px solid #E2DDD8', borderRadius: '6px', padding: '0.5rem 0.7rem', marginBottom: '0.4rem', fontSize: '0.7rem', fontWeight: 600, color: navy }}>
           <span>EUROPAN-optimiert</span>
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', padding: '0.2rem 0.5rem', borderRadius: '100px', background: verified ? '#E5F6EC' : '#E5F6EC', color: '#1B7A3D', fontSize: '0.68rem' }}>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', padding: '0.2rem 0.5rem', borderRadius: '100px', background: '#E5F6EC', color: '#1B7A3D', fontSize: '0.68rem' }}>
             <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#1B7A3D', display: 'inline-block' }} />
             {verified ? 'Aktiv' : 'Bereit – anmelden'}
           </span>
         </div>
+        {verified && (
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem', background: cream, border: '1px solid #E2DDD8', borderRadius: '6px', padding: '0.5rem 0.7rem', marginBottom: '1rem', fontSize: '0.7rem', fontWeight: 600, color: navy }}>
+            <span>Doppel-Wums</span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', padding: '0.2rem 0.5rem', borderRadius: '100px', background: fullyCovered ? '#E5F6EC' : '#FDE8E8', color: fullyCovered ? '#1B7A3D' : '#C0392B', fontSize: '0.68rem' }}>
+              <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: fullyCovered ? '#1B7A3D' : '#C0392B', display: 'inline-block' }} />
+              {fullyCovered ? 'Aktiviert' : 'Inaktiv'}
+            </span>
+          </div>
+        )}
 
-        <h4 style={{ fontFamily: 'Georgia, serif', color: navy, fontSize: '1rem', marginBottom: '0.5rem' }}>Mit Noble-Guthaben bezahlen</h4>
-        <p style={{ fontSize: '0.76rem', color: gray, lineHeight: 1.6, marginBottom: '1rem' }}>
-          Zahlen Sie komplett mit EUROPAN oder einer anderen Noble-Währung und aktivieren Sie den Doppel-Wums-Bonus (+3% zusätzlich).
-        </p>
+        <h4 style={{ fontFamily: 'Georgia, serif', color: navy, fontSize: '1rem', marginBottom: '0.5rem' }}>Mit EUROPAN bezahlen</h4>
 
         {!verified && (
           <>
+            <p style={{ fontSize: '0.76rem', color: gray, lineHeight: 1.6, marginBottom: '0.75rem' }}>
+              Haben Sie bereits ein EUROPAN-Konto? E-Mail und PIN eingeben.
+            </p>
             <div style={{ display: 'flex', gap: '0.4rem', marginBottom: '0.5rem' }}>
               <input type="email" placeholder="Noble E-Mail" value={email} onChange={e => setEmail(e.target.value)}
                 style={{ flex: 1, minWidth: 0, padding: '0.55rem 0.7rem', border: '1px solid #E2DDD8', borderRadius: '6px', fontSize: '0.8rem', fontFamily: 'inherit' }} />
@@ -127,61 +151,87 @@ export function BalanceWidget({ slug, price, affiliateRef, onNoblePayment }: Bal
               style={{ width: '100%', background: gold, color: '#fff', border: 'none', padding: '0.6rem', borderRadius: '6px', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer', marginBottom: '0.75rem' }}>
               {loading ? 'Wird geprüft…' : 'Guthaben prüfen'}
             </button>
+            <p style={{ textAlign: 'center', fontSize: '0.7rem', color: gray }}>
+              Kein Konto? <a href="https://noble-limited.com/join" target="_blank" rel="noopener" style={{ color: gold }}>Jetzt beitreten →</a>
+            </p>
           </>
         )}
 
         {error && <p style={{ fontSize: '0.75rem', color: '#C0392B', marginBottom: '0.75rem' }}>{error}</p>}
 
-        {balances && (
+        {verified && (
           <>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', marginBottom: '1rem' }}>
-              {COINS.map(coin => {
-                const bal = balances[coin.id] || 0
-                const ok = bal >= price
-                return (
-                  <div key={coin.id} onClick={() => setSelectedCoin(coin.id)}
-                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.55rem 0.75rem', borderRadius: '6px', cursor: 'pointer', border: selectedCoin === coin.id ? `1.5px solid ${gold}` : '1px solid #E2DDD8', background: selectedCoin === coin.id ? 'rgba(201,150,58,0.08)' : '#fff' }}>
-                    <span style={{ fontSize: '0.8rem', fontWeight: 600, color: navy }}>{coin.icon} {coin.label}</span>
-                    <span style={{ fontFamily: 'Georgia, serif', fontSize: '0.95rem', fontWeight: 700, color: ok ? '#1B7A3D' : gray }}>{bal.toFixed(2)}{ok && ' ✓'}</span>
-                  </div>
-                )
-              })}
+            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.55rem 0.75rem', borderRadius: '6px', border: '1px solid #E2DDD8', marginBottom: '1rem' }}>
+              <span style={{ fontSize: '0.8rem', fontWeight: 600, color: navy }}>🇪🇺 EUROPAN</span>
+              <span style={{ fontFamily: 'Georgia, serif', fontSize: '0.95rem', fontWeight: 700, color: fullyCovered ? '#1B7A3D' : gray }}>{balance.toFixed(2)}{fullyCovered && ' ✓'}</span>
             </div>
 
-            <div style={{ background: cream, border: '1px solid #E2DDD8', borderRadius: '6px', padding: '0.85rem 1rem', marginBottom: '1rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', color: gray, padding: '2px 0' }}>
-                <span>Produktpreis</span><strong style={{ color: navy }}>€{price.toFixed(2)}</strong>
-              </div>
-              <div style={{ height: '1px', background: '#E2DDD8', margin: '6px 0' }} />
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', fontWeight: 700 }}>
-                <span style={{ color: gold }}>Sie sparen mit EUROPAN</span>
-                <strong style={{ color: gold }}>+{totalBonus.toFixed(2)} EP</strong>
-              </div>
-              <p style={{ fontSize: '0.68rem', color: gray, marginTop: '0.4rem', lineHeight: 1.5 }}>
-                2% Käufer-Bonus + 3% Doppel-Wums bei vollständiger Zahlung mit Noble-Guthaben.
-              </p>
-            </div>
+            <div style={row}><span style={{ color: gray }}>Produktpreis</span><strong style={{ color: navy }}>€{price.toFixed(2)}</strong></div>
 
-            {sufficient ? (
-              <button onClick={handlePay} disabled={paying}
-                style={{ width: '100%', background: '#0D5C33', color: '#fff', border: 'none', padding: '0.75rem', borderRadius: '6px', fontSize: '0.85rem', fontWeight: 700, cursor: 'pointer' }}>
-                {paying ? 'Verarbeitung…' : `Mit ${coinLabel} bezahlen — ${price.toFixed(2)}`}
-              </button>
+            {europanBonusTotal > 0 && (
+              <>
+                <div style={{ ...row, color: gold }}>
+                  <span>abzüglich EUROPAN-Bonus</span>
+                  <strong>{bonusChoice === 'now' ? `-€${europanBonusTotal.toFixed(2)}` : 'wird gespart'}</strong>
+                </div>
+                <div style={{ marginBottom: '0.4rem' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.72rem', color: gray, cursor: 'pointer', marginBottom: '2px' }}>
+                    <input type="radio" name={`bonus-choice-${slug}`} checked={bonusChoice === 'now'} onChange={() => setBonusChoice('now')} style={{ accentColor: gold }} />
+                    Jetzt für diese Bestellung einsetzen
+                  </label>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.72rem', color: gray, cursor: 'pointer' }}>
+                    <input type="radio" name={`bonus-choice-${slug}`} checked={bonusChoice === 'save'} onChange={() => setBonusChoice('save')} style={{ accentColor: gold }} />
+                    Auf meinem Noble-Konto sparen
+                  </label>
+                </div>
+              </>
+            )}
+
+            {fullyCovered ? (
+              <div style={{ ...row, color: gold }}>
+                <span>abzüglich Doppel-Wums-Bonus</span><strong>-€{doppelWumsTotal.toFixed(2)}</strong>
+              </div>
             ) : (
-              <div style={{ background: cream, border: '1px solid #E2DDD8', borderRadius: '6px', padding: '0.7rem', textAlign: 'center', fontSize: '0.78rem', color: gray }}>
-                {coinLabel}-Guthaben nicht ausreichend<br />
-                <span style={{ fontSize: '0.72rem' }}>Verfügbar: {selectedBalance.toFixed(2)} · Benötigt: {price.toFixed(2)}</span>
+              <div style={{ background: cream, border: '1px solid #E2DDD8', borderRadius: '6px', padding: '0.6rem 0.75rem', margin: '0.4rem 0', fontSize: '0.72rem', color: navy, lineHeight: 1.5 }}>
+                💡 Ihnen fehlen noch <strong>€{(afterEuropanBonus - balance).toFixed(2)}</strong> EUROPAN, um diese Bestellung komplett zu decken und den Doppel-Wums-Bonus freizuschalten (zusätzlich <strong>€{(price * DOPPELWUMS_PCT).toFixed(2)}</strong> Ersparnis). <a href="https://europan.group" target="_blank" style={{ color: navy, fontWeight: 700 }}>Auf europan.group aufladen →</a>
               </div>
             )}
+
+            {fullyCovered && (
+              <div style={{ ...row, color: gold, fontWeight: 600 }}>
+                <span>Mit EUROPAN-Guthaben bezahlt</span><strong>-€{europanPaid.toFixed(2)}</strong>
+              </div>
+            )}
+
+            {totalSaved > 0.004 && (
+              <div style={{ borderTop: '1px solid #E2DDD8', marginTop: '0.5rem', paddingTop: '0.5rem' }}>
+                <div style={{ ...row, color: gold, fontWeight: 700 }}>
+                  <span>Sie haben heute mit EUROPAN gespart:</span><strong>€{totalSaved.toFixed(2)}</strong>
+                </div>
+              </div>
+            )}
+
+            <div style={{ ...row, fontSize: '1rem', marginTop: '0.4rem' }}>
+              <span><strong style={{ color: navy }}>Gesamt</strong></span>
+              <strong style={{ color: gold, fontFamily: 'Georgia, serif', fontSize: '1.2rem' }}>€{finalTotal.toFixed(2)}</strong>
+            </div>
+
+            {fullyCovered ? (
+              <button onClick={handlePay} disabled={paying}
+                style={{ width: '100%', background: '#0D5C33', color: '#fff', border: 'none', padding: '0.75rem', borderRadius: '6px', fontSize: '0.85rem', fontWeight: 700, cursor: 'pointer', marginTop: '0.75rem' }}>
+                {paying ? 'Verarbeitung…' : 'Jetzt mit EUROPAN bezahlen →'}
+              </button>
+            ) : (
+              <div style={{ background: cream, border: '1px solid #E2DDD8', borderRadius: '6px', padding: '0.7rem', textAlign: 'center', fontSize: '0.78rem', color: gray, marginTop: '0.75rem' }}>
+                Guthaben deckt die Bestellung noch nicht komplett — bitte per Kreditkarte links bezahlen oder EUROPAN aufladen.
+              </div>
+            )}
+
+            <p style={{ textAlign: 'center', marginTop: '0.75rem', fontSize: '0.7rem' }}>
+              <a href="https://noble-limited.com/dashboard" target="_blank" rel="noopener" style={{ color: gold }}>Dashboard öffnen →</a>
+            </p>
           </>
         )}
-
-        <div style={{ textAlign: 'center', marginTop: '0.85rem', fontSize: '0.7rem', color: gray }}>
-          {verified
-            ? <a href="https://noble-limited.com/dashboard" target="_blank" rel="noopener" style={{ color: gold }}>Dashboard öffnen →</a>
-            : <>Kein Konto? <a href="https://noble-limited.com/join" target="_blank" rel="noopener" style={{ color: gold }}>Jetzt beitreten →</a></>
-          }
-        </div>
       </div>
     </div>
   )

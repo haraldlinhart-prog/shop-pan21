@@ -24,6 +24,11 @@ export async function POST(req: NextRequest) {
   if (!email || !pin || !slug || !coin_id) {
     return NextResponse.json({ error: 'Missing fields' }, { status: 400 })
   }
+  // Aktuell ist nur EUROPAN als Zahlungswährung im Shop erwünscht — die anderen drei
+  // Noble-Währungen funktionieren technisch über die API, sind hier aber bewusst gesperrt.
+  if (coin_id !== 'europan') {
+    return NextResponse.json({ error: 'Diese Währung ist aktuell nicht als Zahlungsmittel aktiviert.' }, { status: 400 })
+  }
   if (!/^\d{4}$/.test(pin)) {
     return NextResponse.json({ error: 'PIN (4-stellig) erforderlich' }, { status: 400 })
   }
