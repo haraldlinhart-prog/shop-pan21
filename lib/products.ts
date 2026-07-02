@@ -3,7 +3,7 @@ export type Product = {
   sku: string
   name: string
   shortDesc: string
-  price: number | null  // null = Anfrage-Produkt
+  price: number | null  // null = Anfrage-Produkt ODER externalUrl-Angebot
   priceLabel?: string
   category: string
   flag: string
@@ -14,6 +14,7 @@ export type Product = {
   process: string[]
   hint: string
   inquiry?: boolean  // true = Kontaktformular statt Warenkorb
+  externalUrl?: string  // gesetzt = Karte verlinkt direkt auf Partnerseite, kein interner Checkout
   tags: string[]
 }
 
@@ -461,10 +462,81 @@ export const PRODUCTS: Product[] = [
     hint: 'Dieses Angebot ist kein automatisch bestellbares Standardprodukt. Die endgültige Annahme, Strukturfreigabe und Preisbestätigung erfolgen ausschließlich nach individueller Due-Diligence-Prüfung. Nominee Director ab €7.900/Jahr, komplexe Strukturen ab €14.900/Jahr.',
     tags: ['Internationale Nominee', 'Treuhand', 'Asset Protection', 'Holding', 'Multi-Jurisdiction'],
   },
+  {
+    slug: 'geschaeftsadresse-pan-office',
+    sku: 'EUROPAN-PANOFFICE-ADDR-001',
+    name: 'Geschäftsadresse buchen',
+    shortDesc: 'Digitale Geschäftsadresse an über 100 Standorten weltweit — sofort buchbar, mit digitaler Postverwaltung. Ab 3 Standorten in einer Buchung gilt automatisch der Mengenrabatt.',
+    price: null,
+    priceLabel: 'Ab €29,00/Monat — direkt bei pan-office.de',
+    category: 'PAN21-Netzwerk',
+    flag: '📍',
+    image: 'https://pan-office.de/logo.png',
+    included: [
+      'Über 100 Standorte weltweit zur Wahl',
+      'Digitale Postverwaltung',
+      'Sofort buchbar, kein Mietvertrag',
+      'Mengenrabatt ab 3 Standorten',
+      '2% EUROPAN-Bonus bei jeder Buchung',
+    ],
+    notIncluded: [],
+    addons: [],
+    process: [],
+    hint: 'Dieses Angebot wird direkt bei pan-office.de gebucht — dort sind die aktuellen Standorte, Preise und Verfügbarkeiten immer live einsehbar.',
+    externalUrl: 'https://pan-office.de/clients',
+    tags: ['Geschäftsadresse', 'Postbox', 'pan-office'],
+  },
+  {
+    slug: 'europan-guthaben-aufladen',
+    sku: 'EUROPAN-VOUCHER-001',
+    name: 'EUROPAN-Guthaben aufladen',
+    shortDesc: 'Laden Sie Ihr EUROPAN-Guthaben direkt auf — per Kreditkarte oder Überweisung, wählbarer Betrag. Einlösbar netzwerkweit, u.a. hier im Shop für den Doppel-Wums-Bonus.',
+    price: null,
+    priceLabel: 'Wählbarer Betrag — direkt bei europan.group',
+    category: 'PAN21-Netzwerk',
+    flag: '🎁',
+    image: 'https://europan.group/europan-logo.png',
+    included: [
+      'Sofortige Gutschrift bei Kartenzahlung',
+      'Wählbarer Betrag',
+      'Netzwerkweit einlösbar (Shop, pan-office.de u.a.)',
+      'Voraussetzung für den Doppel-Wums-Bonus',
+    ],
+    notIncluded: [],
+    addons: [],
+    process: [],
+    hint: 'Dieses Angebot wird direkt bei europan.group abgewickelt.',
+    externalUrl: 'https://europan.group/buy',
+    tags: ['EUROPAN', 'Guthaben', 'Gutschein'],
+  },
+  {
+    slug: 'webhosting-1euro-hosting',
+    sku: 'EUROPAN-HOSTING-001',
+    name: 'WordPress-Webhosting',
+    shortDesc: 'WordPress-Hosting ab 1 €/Monat — monatlich kündbar, mit kostenloser Subdomain oder eigener Domain. Ideal als Ergänzung zur neuen Geschäftsadresse oder Firmengründung.',
+    price: null,
+    priceLabel: 'Ab €1,00/Monat — direkt bei 1euro-hosting.de',
+    category: 'PAN21-Netzwerk',
+    flag: '🌐',
+    image: 'https://1euro-hosting.de/logo.png',
+    included: [
+      'WordPress-Hosting ab 1 €/Monat',
+      'Monatlich kündbar',
+      'Kostenlose Subdomain oder eigene Domain ab 9,90 €/Jahr',
+      'Basic (3 €) und Pro (9,90 €) ohne Werbeeinblendungen',
+    ],
+    notIncluded: [],
+    addons: [],
+    process: [],
+    hint: 'Dieses Angebot wird direkt bei 1euro-hosting.de gebucht.',
+    externalUrl: 'https://1euro-hosting.de',
+    tags: ['Hosting', 'WordPress', 'Webhosting'],
+  },
 ]
 
 export const CATEGORIES = [
   { id: 'alle', label: 'Alle' },
+  { id: 'PAN21-Netzwerk', label: '⭐ PAN21-Netzwerk' },
   { id: 'Deutschland', label: '🇩🇪 Deutschland' },
   { id: 'UK / Großbritannien', label: '🇬🇧 UK' },
   { id: 'USA', label: '🇺🇸 USA' },

@@ -113,36 +113,43 @@ export default function ShopPage() {
 
           {/* Product grid */}
           <div className="products-grid">
-            {filtered.map(product => (
-              <Link key={product.slug} href={`/produkt/${product.slug}`} className="product-card">
-                <div className="product-img-wrap">
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="product-img"
-                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
-                  />
-                  <div className="product-flag">{product.flag}</div>
-                  {product.inquiry && <div className="product-badge">Auf Anfrage</div>}
-                </div>
-                <div className="product-body">
-                  <div className="product-cat">{product.category}</div>
-                  <h3 className="product-name">{product.name}</h3>
-                  <p className="product-desc">{product.shortDesc}</p>
-                  <div className="product-footer">
-                    <div className="product-price">
-                      {product.price
-                        ? <>€{product.price.toLocaleString('de-DE')}<span className="price-note"> EUR</span></>
-                        : <span className="price-inquiry">{product.priceLabel}</span>
-                      }
-                    </div>
-                    <span className="product-cta">
-                      {product.inquiry ? 'Anfragen →' : 'Bestellen →'}
-                    </span>
+            {filtered.map(product => {
+              const CardTag = product.externalUrl ? 'a' : Link
+              const cardProps = product.externalUrl
+                ? { href: product.externalUrl, target: '_blank', rel: 'noopener' }
+                : { href: `/produkt/${product.slug}` }
+              return (
+                <CardTag key={product.slug} {...(cardProps as any)} className="product-card">
+                  <div className="product-img-wrap">
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="product-img"
+                      onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+                    />
+                    <div className="product-flag">{product.flag}</div>
+                    {product.inquiry && <div className="product-badge">Auf Anfrage</div>}
+                    {product.externalUrl && <div className="product-badge" style={{ background: 'var(--gold3, #c9963a)' }}>PAN21-Netzwerk</div>}
                   </div>
-                </div>
-              </Link>
-            ))}
+                  <div className="product-body">
+                    <div className="product-cat">{product.category}</div>
+                    <h3 className="product-name">{product.name}</h3>
+                    <p className="product-desc">{product.shortDesc}</p>
+                    <div className="product-footer">
+                      <div className="product-price">
+                        {product.price
+                          ? <>€{product.price.toLocaleString('de-DE')}<span className="price-note"> EUR</span></>
+                          : <span className="price-inquiry">{product.priceLabel}</span>
+                        }
+                      </div>
+                      <span className="product-cta">
+                        {product.externalUrl ? 'Zur Partnerseite ↗' : product.inquiry ? 'Anfragen →' : 'Bestellen →'}
+                      </span>
+                    </div>
+                  </div>
+                </CardTag>
+              )
+            })}
           </div>
         </div>
       </section>
