@@ -105,8 +105,8 @@ export function BalanceWidget({ slug, price, affiliateRef, onNoblePayment }: Bal
         <h4 style={{ fontFamily: 'Georgia, serif', color: navy, fontSize: '1.05rem', marginBottom: '0.75rem' }}>Zahlung erfolgreich</h4>
         <div style={{ background: '#E8F5EE', border: '1px solid #B7E4CC', borderRadius: '6px', padding: '0.9rem', fontSize: '0.82rem', color: '#1B7A3D', lineHeight: 1.7 }}>
           <div><strong>Referenz:</strong> {success.order_reference}</div>
-          <div><strong>Bezahlt:</strong> {success.amount?.toFixed(2)} EUROPAN</div>
-          <div><strong>Neues Guthaben:</strong> {success.new_balance?.toFixed(2)} EUROPAN</div>
+          <div><strong>Bezahlt:</strong> {')( '}{success.amount?.toFixed(2)}</div>
+          <div><strong>Neues Guthaben:</strong> {')( '}{success.new_balance?.toFixed(2)}</div>
           {totalSaved > 0.004 && <div style={{ marginTop: '6px', fontWeight: 700 }}>Sie haben heute mit EUROPAN gespart: €{totalSaved.toFixed(2)}</div>}
         </div>
       </div>
@@ -163,8 +163,8 @@ export function BalanceWidget({ slug, price, affiliateRef, onNoblePayment }: Bal
         {verified && (
           <>
             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.55rem 0.75rem', borderRadius: '6px', border: '1px solid #E2DDD8', marginBottom: '1rem' }}>
-              <span style={{ fontSize: '0.8rem', fontWeight: 600, color: navy }}>🇪🇺 EUROPAN</span>
-              <span style={{ fontFamily: 'Georgia, serif', fontSize: '0.95rem', fontWeight: 700, color: fullyCovered ? '#1B7A3D' : gray }}>{balance.toFixed(2)}{fullyCovered && ' ✓'}</span>
+              <span style={{ fontSize: '0.78rem', fontWeight: 600, color: navy }}>Ihr aktuelles EUROPAN-Guthaben beträgt</span>
+              <span style={{ fontFamily: 'Georgia, serif', fontSize: '0.95rem', fontWeight: 700, color: fullyCovered ? '#1B7A3D' : gray, whiteSpace: 'nowrap' }}>{')( '}{balance.toFixed(2)}{fullyCovered && ' ✓'}</span>
             </div>
 
             <div style={row}><span style={{ color: gray }}>Produktpreis</span><strong style={{ color: navy }}>€{price.toFixed(2)}</strong></div>
@@ -173,7 +173,7 @@ export function BalanceWidget({ slug, price, affiliateRef, onNoblePayment }: Bal
               <>
                 <div style={{ ...row, color: gold }}>
                   <span>abzüglich EUROPAN-Bonus</span>
-                  <strong>{bonusChoice === 'now' ? `-€${europanBonusTotal.toFixed(2)}` : 'wird gespart'}</strong>
+                  <strong>{bonusChoice === 'now' ? `-)( ${europanBonusTotal.toFixed(2)}` : 'wird gespart'}</strong>
                 </div>
                 <div style={{ marginBottom: '0.4rem' }}>
                   <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.72rem', color: gray, cursor: 'pointer', marginBottom: '2px' }}>
@@ -190,11 +190,11 @@ export function BalanceWidget({ slug, price, affiliateRef, onNoblePayment }: Bal
 
             {fullyCovered ? (
               <div style={{ ...row, color: gold }}>
-                <span>abzüglich Doppel-Wums-Bonus</span><strong>-€{doppelWumsTotal.toFixed(2)}</strong>
+                <span>abzüglich Doppel-Wums-Bonus</span><strong>{'-)( '}{doppelWumsTotal.toFixed(2)}</strong>
               </div>
             ) : (
               <div style={{ background: cream, border: '1px solid #E2DDD8', borderRadius: '6px', padding: '0.6rem 0.75rem', margin: '0.4rem 0', fontSize: '0.72rem', color: navy, lineHeight: 1.5 }}>
-                💡 Ihnen fehlen noch <strong>€{(afterEuropanBonus - balance).toFixed(2)}</strong> EUROPAN, um diese Bestellung komplett zu decken und den Doppel-Wums-Bonus freizuschalten (zusätzlich <strong>€{(price * DOPPELWUMS_PCT).toFixed(2)}</strong> Ersparnis). <a href="https://europan.group" target="_blank" style={{ color: navy, fontWeight: 700 }}>Auf europan.group aufladen →</a>
+                💡 Ihnen fehlen noch <strong>{')( '}{(afterEuropanBonus - balance).toFixed(2)}</strong> EUROPAN, um diese Bestellung komplett zu decken und den Doppel-Wums-Bonus freizuschalten (zusätzlich <strong>€{(price * DOPPELWUMS_PCT).toFixed(2)}</strong> Ersparnis). <a href="https://europan.group" target="_blank" style={{ color: navy, fontWeight: 700 }}>Auf europan.group aufladen →</a>
               </div>
             )}
 
