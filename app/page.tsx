@@ -12,7 +12,10 @@ export default function ShopPage() {
     ? PRODUCTS
     : PRODUCTS.filter(p => p.category === activeCategory)
 
-  return (
+  {/* <!-- REVIVE:START --> */}
+<div dangerouslySetInnerHTML={{__html: "<div style=\"display:flex;justify-content:center;margin:16px 0;\">\n<ins data-revive-zoneid=\"6\" data-revive-id=\"0b01ba1194fdc0e89c6321458dbc5814\"></ins>\n<script async src=\"//ads.pan21.com/www/delivery/asyncjs.php\"></script>\n</div>"}} />
+{/* <!-- REVIVE:END --> */}
+return (
     <div>
       {/* ── Nav ── */}
       <nav className="nav">
