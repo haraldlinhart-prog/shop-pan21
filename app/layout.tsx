@@ -60,6 +60,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script async src="https://www.statcounter.com/counter/counter.js" />
       </head>
       <body>
+        {children}
 {/* <!-- REVIVE:START --> */}
 <div dangerouslySetInnerHTML={{__html: "<div style=\"display:flex;justify-content:center;margin:16px 0;\">\n<ins data-revive-zoneid=\"6\" data-revive-id=\"0b01ba1194fdc0e89c6321458dbc5814\"></ins>\n<script async src=\"//ads.pan21.com/www/delivery/asyncjs.php\"></script>\n</div>"}} />
 {/* <!-- REVIVE:END --> */}
@@ -73,7 +74,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 <a href="https://german-quality.net" target="_blank" rel="noopener"><img src="https://german-quality.net/banner.svg" alt="German Quality" height={60} style={{borderRadius:'4px'}} /></a>
 </div>
 {/* <!-- DIRECTORIES:END --> */}
-        {children}
+        
       </body>
     </html>
   )
