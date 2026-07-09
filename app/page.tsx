@@ -130,7 +130,7 @@ return (
                     />
                     <div className="product-flag">{product.flag}</div>
                     {product.inquiry && <div className="product-badge">Auf Anfrage</div>}
-                    {product.externalUrl && <div className="product-badge" style={{ background: 'var(--gold3, #c9963a)' }}>PAN21-Netzwerk</div>}
+                    {product.externalUrl && <div className="product-badge" style={{ background: 'var(--gold3, #c9963a)', color: 'var(--navy, #0a1628)' }}>PAN21-Netzwerk</div>}
                   </div>
                   <div className="product-body">
                     <div className="product-cat">{product.category}</div>
