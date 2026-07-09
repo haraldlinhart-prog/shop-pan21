@@ -31,7 +31,7 @@
 .products-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
 .product-card { background: var(--white); border: 1px solid var(--lgray); display: flex; flex-direction: column; transition: box-shadow 0.2s, transform 0.2s; text-decoration: none; color: inherit; }
 .product-card:hover { box-shadow: 0 8px 32px rgba(11,31,58,0.12); transform: translateY(-2px); }
-.product-img-wrap { position: relative; height: 180px; background: var(--snow); overflow: hidden; }
+.product-img-wrap { position: relative; aspect-ratio: 1 / 1; background: var(--snow); overflow: hidden; }
 .product-img { width: 100%; height: 100%; object-fit: cover; }
 .product-flag { position: absolute; top: 12px; left: 12px; font-size: 1.5rem; background: rgba(255,255,255,0.9); border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; }
 .product-badge { position: absolute; top: 12px; right: 12px; background: var(--navy); color: var(--gold3); font-size: 0.62rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 3px 10px; border-radius: 100px; }
