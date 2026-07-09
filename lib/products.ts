@@ -717,7 +717,7 @@ export const PRODUCTS: Product[] = [
     category: 'PAN21-Netzwerk',
     flag: '🌐',
     image: 'https://1euro-hosting.de/logo.png',
-    heroImage: '/hero/1euro-hosting.png',
+    heroImage: '/hero/1euro-hosting.jpg',
     included: [
       'WordPress-Hosting ab 1 €/Monat',
       'Monatlich kündbar',
