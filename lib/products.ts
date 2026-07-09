@@ -8,6 +8,7 @@ export type Product = {
   category: string
   flag: string
   image: string
+  heroImage?: string  // optionales, hochwertigeres Bild für die Produkt-Detailseite (falls vorhanden)
   included: string[]
   notIncluded: string[]
   addons: string[]
@@ -657,6 +658,7 @@ export const PRODUCTS: Product[] = [
     category: 'PAN21-Netzwerk',
     flag: '📍',
     image: 'https://pan-office.de/logo.png',
+    heroImage: '/hero/pan-office.png',
     included: [
       'Über 100 Standorte weltweit zur Wahl',
       'Digitale Postverwaltung',
@@ -681,6 +683,7 @@ export const PRODUCTS: Product[] = [
     category: 'PAN21-Netzwerk',
     flag: '🎁',
     image: 'https://europan.group/europan-logo.png',
+    heroImage: '/hero/europan-guthaben.jpg',
     included: [
       'Sofortige Gutschrift bei Kartenzahlung',
       'Wählbarer Betrag',
@@ -704,6 +707,7 @@ export const PRODUCTS: Product[] = [
     category: 'PAN21-Netzwerk',
     flag: '🌐',
     image: 'https://1euro-hosting.de/logo.png',
+    heroImage: '/hero/1euro-hosting.png',
     included: [
       'WordPress-Hosting ab 1 €/Monat',
       'Monatlich kündbar',
