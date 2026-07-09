@@ -731,6 +731,32 @@ export const PRODUCTS: Product[] = [
     externalUrl: 'https://1euro-hosting.de',
     tags: ['Hosting', 'WordPress', 'Webhosting'],
   },
+  {
+    slug: 'series-llc-gruendung',
+    sku: 'EUROPAN-USLLC-001',
+    name: 'Gründung der amerikanischen Series LLC',
+    shortDesc: 'Eine Master-LLC, beliebig viele Series darunter — jede mit eigenem Haftungsschutz. Einmalige Gründung ab €49, Jahresverwaltung ab €19. Büro-, Telefon- und Internet-Optionen können direkt mit beantragt werden.',
+    price: null,
+    priceLabel: 'Gründung ab €49 · Jahresverwaltung ab €19 — direkt bei einfach-llc.de',
+    category: 'PAN21-Netzwerk',
+    flag: '🇺🇸',
+    image: '/products/series-llc-300x300.png',
+    heroImage: '/hero/series-llc.jpg',
+    included: [
+      'Master-LLC mit beliebig vielen Series darunter',
+      'Jede Series mit eigenem Haftungsschutz (Asset Protection)',
+      'Mehrere Mitglieder (Members) und Geschäftsführer (Manager) möglich',
+      'Digitales Operating Agreement inklusive',
+      'Einmalige Gründung ab €49, Jahresverwaltung ab €19',
+      'Optional direkt mitbeantragbar: US-Büroadresse, US-Telefonnummer, Webhosting/E-Mail',
+    ],
+    notIncluded: [],
+    addons: [],
+    process: [],
+    hint: 'Dieses Angebot wird direkt bei einfach-llc.de gegründet. Beim Bestellvorgang können Büro-, Telefon- und Internet-Optionen (US-Geschäftsadresse, US-Telefonnummer mit automatischer Weiterleitung, Website/E-Mail unter 10com.net) bequem mit dazugebucht werden.',
+    externalUrl: 'https://einfach-llc.de',
+    tags: ['Series LLC', 'USA', 'Firmengründung', 'Wyoming'],
+  },
 ]
 
 export const CATEGORIES = [
