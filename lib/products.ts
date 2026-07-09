@@ -28,7 +28,7 @@ export const PRODUCTS: Product[] = [
     price: 698,
     category: 'Deutschland',
     flag: '🇩🇪',
-    image: '/products/deutschland-300x300.png',
+    image: '/products/deutschland-ug-300x300.png',
     heroImage: '/hero/deutschland-ug.jpg',
     included: [
       'Vorbereitung der Gründungsdaten',
