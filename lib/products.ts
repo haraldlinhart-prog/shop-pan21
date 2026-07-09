@@ -29,6 +29,7 @@ export const PRODUCTS: Product[] = [
     category: 'Deutschland',
     flag: '🇩🇪',
     image: '/products/deutschland-300x300.png',
+    heroImage: '/hero/deutschland-ug.jpg',
     included: [
       'Vorbereitung der Gründungsdaten',
       'Abstimmung des gewünschten Firmennamens',
@@ -70,6 +71,7 @@ export const PRODUCTS: Product[] = [
     category: 'Deutschland',
     flag: '🇩🇪',
     image: '/products/deutschland-300x300.png',
+    heroImage: '/hero/deutschland-gmbh.jpg',
     included: [
       'Vorbereitung der Gründungsdaten',
       'Abstimmung des gewünschten Firmennamens',
@@ -112,6 +114,7 @@ export const PRODUCTS: Product[] = [
     category: 'UK / Großbritannien',
     flag: '🇬🇧',
     image: '/products/uk-300x300.png',
+    heroImage: '/hero/uk.jpg',
     included: [
       'Vorprüfung der gewünschten Firmierung',
       'Vorbereitung der Gründungsdaten',
@@ -157,6 +160,7 @@ export const PRODUCTS: Product[] = [
     category: 'USA',
     flag: '🇺🇸',
     image: '/products/usa-300x300.png',
+    heroImage: '/hero/usa.jpg',
     included: [
       'Vorprüfung der gewünschten Firmierung',
       'Grundlegende Einordnung geeigneter US-Bundesstaaten',
@@ -203,6 +207,7 @@ export const PRODUCTS: Product[] = [
     category: 'Hong Kong',
     flag: '🇭🇰',
     image: '/products/hngkong-300x300.png',
+    heroImage: '/hero/hongkong.jpg',
     included: [
       'Vorprüfung der gewünschten Firmierung',
       'Vorbereitung der Gründungsdaten',
@@ -250,6 +255,7 @@ export const PRODUCTS: Product[] = [
     category: 'Irland',
     flag: '🇮🇪',
     image: '/products/irland-300x300.png',
+    heroImage: '/hero/irland.jpg',
     included: [
       'Vorprüfung der gewünschten Firmierung',
       'Grundlegende Prüfung, ob eine irische LTD sinnvoll erscheint',
@@ -297,6 +303,7 @@ export const PRODUCTS: Product[] = [
     category: 'Neuseeland',
     flag: '🇳🇿',
     image: '/products/nz-300x300.png',
+    heroImage: '/hero/neuseeland.jpg',
     included: [
       'Vorprüfung der gewünschten Firmierung',
       'Grundlegende Prüfung, ob eine neuseeländische Ltd sinnvoll erscheint',
@@ -346,6 +353,7 @@ export const PRODUCTS: Product[] = [
     category: 'Belize',
     flag: '🏝️',
     image: '/products/belize-300x300.png',
+    heroImage: '/hero/belize.jpg',
     included: [
       'Vorprüfung der geplanten Belize-LLC-Struktur',
       'Namens- und Strukturprüfung',
@@ -390,6 +398,7 @@ export const PRODUCTS: Product[] = [
     category: 'Nevis',
     flag: '🏝️',
     image: '/products/nevis-300x300.png',
+    heroImage: '/hero/nevis.jpg',
     included: [
       'Vorprüfung der Nevis-LLC-Struktur',
       'Koordination mit lizenziertem Registered Agent in Nevis',
@@ -433,6 +442,7 @@ export const PRODUCTS: Product[] = [
     category: 'Australien',
     flag: '🇦🇺',
     image: '/products/australien-300x300.png',
+    heroImage: '/hero/australien.jpg',
     included: [
       'Vorprüfung der geplanten australischen Gesellschaftsstruktur',
       'Namens- und Grunddatenprüfung für die Pty Ltd',
@@ -658,7 +668,7 @@ export const PRODUCTS: Product[] = [
     category: 'PAN21-Netzwerk',
     flag: '📍',
     image: 'https://pan-office.de/logo.png',
-    heroImage: '/hero/pan-office.png',
+    heroImage: '/hero/pan-office.jpg',
     included: [
       'Über 100 Standorte weltweit zur Wahl',
       'Digitale Postverwaltung',
