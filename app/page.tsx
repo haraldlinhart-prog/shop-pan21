@@ -123,7 +123,7 @@ return (
                 <CardTag key={product.slug} {...(cardProps as any)} className="product-card">
                   <div className="product-img-wrap">
                     <img
-                      src={product.heroImage || product.image}
+                      src={product.image}
                       alt={product.name}
                       className="product-img"
                       onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
