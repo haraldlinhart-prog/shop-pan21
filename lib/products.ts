@@ -667,7 +667,7 @@ export const PRODUCTS: Product[] = [
     priceLabel: 'Ab €29,00/Monat — direkt bei pan-office.de',
     category: 'PAN21-Netzwerk',
     flag: '📍',
-    image: 'https://pan-office.de/logo.png',
+    image: '/products/pan-office-300x300.png',
     heroImage: '/hero/pan-office.jpg',
     included: [
       'Über 100 Standorte weltweit zur Wahl',
@@ -692,7 +692,7 @@ export const PRODUCTS: Product[] = [
     priceLabel: 'Wählbarer Betrag — direkt bei europan.group',
     category: 'PAN21-Netzwerk',
     flag: '🎁',
-    image: 'https://europan.group/europan-logo.png',
+    image: '/products/europan-guthaben-300x300.png',
     heroImage: '/hero/europan-guthaben.jpg',
     included: [
       'Sofortige Gutschrift bei Kartenzahlung',
@@ -716,7 +716,7 @@ export const PRODUCTS: Product[] = [
     priceLabel: 'Ab €1,00/Monat — direkt bei 1euro-hosting.de',
     category: 'PAN21-Netzwerk',
     flag: '🌐',
-    image: 'https://1euro-hosting.de/logo.png',
+    image: '/products/webhosting-300x300.png',
     heroImage: '/hero/1euro-hosting.jpg',
     included: [
       'WordPress-Hosting ab 1 €/Monat',
