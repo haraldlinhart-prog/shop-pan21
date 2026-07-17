@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
       'line_items[0][price_data][unit_amount]': String(Math.round(product.price * 100)),
       'line_items[0][price_data][product_data][name]': product.name,
       'line_items[0][price_data][product_data][description]': product.shortDesc,
-      'line_items[0][price_data][product_data][images][0]': product.image,
+      'line_items[0][price_data][product_data][images][0]': product.image.startsWith('http') ? product.image : `${siteUrl}${product.image}`,
       'line_items[0][quantity]': '1',
       'mode': 'payment',
       'customer_email': email,
