@@ -2,15 +2,34 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useState } from 'react'
-import { PRODUCTS, CATEGORIES } from '@/lib/products'
+import { PRODUCTS, CATEGORIES, CATEGORY_IMAGES } from '@/lib/products'
 import './shop.css'
+
+// Kategorien, die auf der "Alle"-Übersicht als EINE Kachel gebündelt werden
+// statt jedes Produkt einzeln zu zeigen. Klick auf die Kachel öffnet die
+// normale Kategorieansicht mit allen Produkten dieser Kategorie.
+const TILE_CATEGORIES = ['Madagaskar']
 
 export default function ShopPage() {
   const [activeCategory, setActiveCategory] = useState('alle')
 
   const filtered = activeCategory === 'alle'
-    ? PRODUCTS
+    ? PRODUCTS.filter(p => !TILE_CATEGORIES.includes(p.category))
     : PRODUCTS.filter(p => p.category === activeCategory)
+
+  const categoryTiles = activeCategory === 'alle'
+    ? TILE_CATEGORIES.map(catId => {
+        const catProducts = PRODUCTS.filter(p => p.category === catId)
+        const catMeta = CATEGORIES.find(c => c.id === catId)
+        return {
+          catId,
+          count: catProducts.length,
+          flag: catProducts[0]?.flag || '',
+          label: (catMeta?.label || catId).replace(/^\S+\s/, ''),
+          image: CATEGORY_IMAGES[catId] || catProducts[0]?.image,
+        }
+      })
+    : []
 
   
 return (
@@ -114,6 +133,44 @@ return (
 
           {/* Product grid */}
           <div className="products-grid">
+            {categoryTiles.map(tile => (
+              <div
+                key={tile.catId}
+                className="product-card"
+                role="button"
+                tabIndex={0}
+                onClick={() => setActiveCategory(tile.catId)}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setActiveCategory(tile.catId) }}
+                style={{ cursor: 'pointer' }}
+              >
+                <div className="product-img-wrap">
+                  <img
+                    src={tile.image}
+                    alt={tile.label}
+                    className="product-img"
+                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+                  />
+                  <div className="product-flag">{tile.flag}</div>
+                  <div className="product-badge" style={{ background: 'var(--gold3, #c9963a)', color: 'var(--navy, #0a1628)' }}>
+                    {tile.count} Pakete
+                  </div>
+                </div>
+                <div className="product-body">
+                  <div className="product-cat">Firmengründung</div>
+                  <h3 className="product-name">{tile.label}</h3>
+                  <p className="product-desc">Alle {tile.count} Pakete für {tile.label} auf einen Blick — von der einfachen Gründung bis zur kompletten Investoren-Relocation.</p>
+                  <div className="product-footer">
+                    <div className="product-price">
+                      <span className="price-inquiry">Pakete ab {(() => {
+                        const cheapest = PRODUCTS.filter(p => p.category === tile.catId).reduce((min, p) => (p.price && p.price < min ? p.price : min), Infinity)
+                        return isFinite(cheapest) ? `${cheapest.toLocaleString('de-DE')} €` : 'auf Anfrage'
+                      })()}</span>
+                    </div>
+                    <span className="product-cta">Pakete ansehen →</span>
+                  </div>
+                </div>
+              </div>
+            ))}
             {filtered.map(product => {
               const CardTag = product.externalUrl ? 'a' : Link
               const cardProps = product.externalUrl
