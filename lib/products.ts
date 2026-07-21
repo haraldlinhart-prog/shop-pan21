@@ -1028,6 +1028,14 @@ export const PRODUCTS: Product[] = [
   },
 ]
 
+// Bilder für Kategorie-Kacheln (z.B. auf der "Alle"-Übersicht gebündelte
+// Kategorien wie Madagaskar). Hier kann pro Kategorie ein eigenes,
+// repräsentatives Bild hinterlegt werden — sonst wird das Bild des ersten
+// Produkts der Kategorie verwendet.
+export const CATEGORY_IMAGES: Record<string, string> = {
+  Madagaskar: 'https://www.pan21.africa/PAN21logo2025.png',
+}
+
 export const CATEGORIES = [
   { id: 'alle', label: 'Alle' },
   { id: 'PAN21-Netzwerk', label: '⭐ PAN21-Netzwerk' },
