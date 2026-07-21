@@ -792,7 +792,8 @@ export const PRODUCTS: Product[] = [
     inquiry: true,
     category: 'Madagaskar',
     flag: '🇲🇬',
-    image: 'https://www.pan21.africa/PAN21logo2025.png',
+    image: '/products/madagaskar-start-300x300.png',
+    heroImage: '/hero/madagaskar-start-hero.jpg',
     included: [
       'Gründung einer SARLU (Einzelgesellschafter) oder SARL (mehrere Gesellschafter, +300 €)',
       'Deutschsprachige Basisberatung & Unterlagenprüfung',
@@ -814,7 +815,8 @@ export const PRODUCTS: Product[] = [
     price: 3690,
     category: 'Madagaskar',
     flag: '🇲🇬',
-    image: 'https://www.pan21.africa/PAN21logo2025.png',
+    image: '/products/madagaskar-business-sarlu-300x300.png',
+    heroImage: '/hero/madagaskar-business-sarlu-hero.jpg',
     inquiry: true,
     included: [
       'Gründung einer SARLU',
@@ -838,7 +840,8 @@ export const PRODUCTS: Product[] = [
     price: 3990,
     category: 'Madagaskar',
     flag: '🇲🇬',
-    image: 'https://www.pan21.africa/PAN21logo2025.png',
+    image: '/products/madagaskar-business-sarl-300x300.png',
+    heroImage: '/hero/madagaskar-business-sarl-hero.jpg',
     inquiry: true,
     included: [
       'Gründung einer SARL (mehrere Gesellschafter)',
@@ -862,7 +865,8 @@ export const PRODUCTS: Product[] = [
     price: 4990,
     category: 'Madagaskar',
     flag: '🇲🇬',
-    image: 'https://www.pan21.africa/PAN21logo2025.png',
+    image: '/products/madagaskar-business-complete-sarlu-300x300.png',
+    heroImage: '/hero/madagaskar-business-complete-sarlu-hero.jpg',
     inquiry: true,
     included: [
       'Gründung einer SARLU',
@@ -887,7 +891,8 @@ export const PRODUCTS: Product[] = [
     price: 6290,
     category: 'Madagaskar',
     flag: '🇲🇬',
-    image: 'https://www.pan21.africa/PAN21logo2025.png',
+    image: '/products/madagaskar-investor-complete-sarlu-300x300.png',
+    heroImage: '/hero/madagaskar-investor-complete-sarlu-hero.jpg',
     inquiry: true,
     included: [
       'Alle Leistungen des Pakets Business Complete SARLU',
@@ -910,7 +915,8 @@ export const PRODUCTS: Product[] = [
     price: 6590,
     category: 'Madagaskar',
     flag: '🇲🇬',
-    image: 'https://www.pan21.africa/PAN21logo2025.png',
+    image: '/products/madagaskar-investor-complete-sarl-300x300.png',
+    heroImage: '/hero/madagaskar-investor-complete-sarl-hero.jpg',
     inquiry: true,
     included: [
       'Alle Leistungen des Pakets Business Complete SARL',
@@ -932,7 +938,8 @@ export const PRODUCTS: Product[] = [
     inquiry: true,
     category: 'Madagaskar',
     flag: '🇲🇬',
-    image: 'https://www.pan21.africa/PAN21logo2025.png',
+    image: '/products/madagaskar-holding-start-300x300.png',
+    heroImage: '/hero/madagaskar-holding-start-hero.jpg',
     included: [
       'Gründung SARLU/SARL mit erweitertem Holding- & Beteiligungszweck',
       'Deutschsprachige Holding-Erstberatung & Strukturaufnahme',
@@ -963,7 +970,8 @@ export const PRODUCTS: Product[] = [
     inquiry: true,
     category: 'Madagaskar',
     flag: '🇲🇬',
-    image: 'https://www.pan21.africa/PAN21logo2025.png',
+    image: '/products/madagaskar-care-basic-300x300.png',
+    heroImage: '/hero/madagaskar-care-basic-hero.jpg',
     included: [
       'Geschäftsadresse',
       'Postannahme & Digitalisierung',
@@ -987,7 +995,8 @@ export const PRODUCTS: Product[] = [
     inquiry: true,
     category: 'Madagaskar',
     flag: '🇲🇬',
-    image: 'https://www.pan21.africa/PAN21logo2025.png',
+    image: '/products/madagaskar-care-plus-300x300.png',
+    heroImage: '/hero/madagaskar-care-plus-hero.jpg',
     included: [
       'Virtuelles Büro',
       'Administrativer Unternehmenssekretär',
@@ -1010,7 +1019,8 @@ export const PRODUCTS: Product[] = [
     price: 2490,
     category: 'Madagaskar',
     flag: '🇲🇬',
-    image: 'https://www.pan21.africa/PAN21logo2025.png',
+    image: '/products/madagaskar-exit-basic-300x300.png',
+    heroImage: '/hero/madagaskar-exit-basic-hero.jpg',
     inquiry: true,
     included: [
       'Für zahlungsfähige SARLU oder einfache SARL, geordnete freiwillige Beendigung',
