@@ -1033,7 +1033,7 @@ export const PRODUCTS: Product[] = [
 // repräsentatives Bild hinterlegt werden — sonst wird das Bild des ersten
 // Produkts der Kategorie verwendet.
 export const CATEGORY_IMAGES: Record<string, string> = {
-  Madagaskar: 'https://www.pan21.africa/PAN21logo2025.png',
+  Madagaskar: '/products/madagaskar-cat-300x300.png',
 }
 
 export const CATEGORIES = [
