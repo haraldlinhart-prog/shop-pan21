@@ -64,6 +64,23 @@ export async function POST(req: NextRequest) {
         }),
       }).catch(() => {})
     }
+
+    // Report to pan-finanzvertrieb.de's affiliate program (separate system from
+    // the Noble/EUROPAN one above — non-blocking, never allowed to affect order
+    // handling). Only fires when a ref code was actually present; /api/conversion
+    // itself simply returns "not found" if the code doesn't belong to a
+    // pan-finanzvertrieb.de affiliate, so this is always safe to attempt.
+    const panAffiliateSecret = process.env.PAN_AFFILIATE_POSTBACK_SECRET
+    const PAN_AFFILIATE_PROGRAM_ID = '9fddd5f3-3e0e-47f4-a116-3c4eb9a848d2' // shop.pan21.com in PAN-Affiliate/programs
+    if (panAffiliateSecret && affiliate_ref) {
+      const postbackUrl = new URL('https://pan-finanzvertrieb.de/api/conversion')
+      postbackUrl.searchParams.set('ref', affiliate_ref)
+      postbackUrl.searchParams.set('order_id', orderRef)
+      postbackUrl.searchParams.set('amount', String(amount))
+      postbackUrl.searchParams.set('program_id', PAN_AFFILIATE_PROGRAM_ID)
+      postbackUrl.searchParams.set('secret', panAffiliateSecret)
+      fetch(postbackUrl.toString()).catch(() => {})
+    }
   }
 
   return NextResponse.json({ received: true })
