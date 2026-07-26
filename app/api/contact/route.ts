@@ -9,6 +9,7 @@ import { NextRequest, NextResponse } from 'next/server'
 const BLOCKED_EMAILS = new Set([
   'ugibanicepi459@gmail.com',
   'edipajulodev85@gmail.com',
+  'xoxakujoduk31@gmail.com',
 ]);
 function normalizeEmail(email: string): string {
   const e = (email || '').trim().toLowerCase();
@@ -56,7 +57,7 @@ export async function POST(req: NextRequest) {
     const { name, email, phone, interest, message, elapsed, inquiry } = body
 
   // Gibberish-Bot-Erkennung (kurze Zufallsstrings) — silent success wie Honeypot
-  if (isGibberish(message) || isGibberish(name) || BLOCKED_EMAILS.has(normalizeEmail(email))) { return NextResponse.json({ ok: true }); }
+  if (isGibberish(message) || isGibberish(name) || isGibberish(phone) || BLOCKED_EMAILS.has(normalizeEmail(email))) { return NextResponse.json({ ok: true }); }
 
     if (body.website) return NextResponse.json({ ok: true })
     if (typeof elapsed === 'number' && elapsed < 2000) return NextResponse.json({ ok: true })
