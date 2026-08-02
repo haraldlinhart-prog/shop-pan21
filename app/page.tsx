@@ -214,7 +214,7 @@ return (
                         }
                       </div>
                       <span className="product-cta">
-                        {product.externalUrl ? 'Zur Partnerseite ↗' : product.inquiry ? 'Anfragen →' : 'Bestellen →'}
+                        {product.externalUrl ? 'Zur Produktseite ↗' : product.inquiry ? 'Anfragen →' : 'Bestellen →'}
                       </span>
                     </div>
                   </div>

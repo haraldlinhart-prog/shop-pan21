@@ -15,7 +15,7 @@ export type Product = {
   process: string[]
   hint: string
   inquiry?: boolean  // true = Kontaktformular statt Warenkorb
-  externalUrl?: string  // gesetzt = Karte verlinkt direkt auf Partnerseite, kein interner Checkout
+  externalUrl?: string  // gesetzt = Karte verlinkt direkt auf die eigene Produktseite (andere PAN21-Domain), kein interner Checkout
   tags: string[]
 }
 
