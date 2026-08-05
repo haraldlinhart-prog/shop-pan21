@@ -47,6 +47,13 @@ const TOOLS = [
     url: 'https://kaputte-links.de',
     description: 'Findet defekte Links auf Ihrer Website',
   },
+  {
+    slug: 'anti-spam-info',
+    emoji: '✋',
+    name: 'anti-spam.info',
+    url: 'https://anti-spam.info',
+    description: 'Öffentliches Versprechen: Spam wird nicht gelesen, nicht geklickt, nicht gekauft',
+  },
 ]
 
 export async function GET() {
