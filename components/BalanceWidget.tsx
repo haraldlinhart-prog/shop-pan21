@@ -121,7 +121,7 @@ export function BalanceWidget({ slug, price, affiliateRef, onNoblePayment, onPri
     setPaying(false)
   }
 
-  const card: React.CSSProperties = { background: '#fff', border: '1px solid #E2DDD8', borderRadius: '8px', padding: '1.5rem', fontFamily: 'Jost, system-ui, sans-serif' }
+  const card: React.CSSProperties = { background: '#fff', border: `1px solid ${fullyCovered ? greenBorder : '#E2DDD8'}`, borderTop: `2px solid ${fullyCovered ? green : '#E2DDD8'}`, borderRadius: '8px', padding: '1.5rem', fontFamily: 'Jost, system-ui, sans-serif', transition: 'border-color 0.3s ease' }
   const row: React.CSSProperties = { display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', fontSize: '0.8rem', padding: '4px 0' }
   const statBox: React.CSSProperties = { border: '1px solid #E2DDD8', borderRadius: '6px', padding: '0.75rem 0.85rem', marginBottom: '0.6rem' }
   const statLabel: React.CSSProperties = { fontSize: '0.7rem', color: gray, marginBottom: '0.25rem' }
@@ -144,7 +144,14 @@ export function BalanceWidget({ slug, price, affiliateRef, onNoblePayment, onPri
   return (
     <div style={{ position: 'sticky', top: '88px' }}>
       <div style={card}>
-        <h4 style={{ fontFamily: 'Georgia, serif', color: navy, fontSize: '1.05rem', marginBottom: '0.9rem' }}>Ihr Vorteil</h4>
+        <h4 style={{ fontFamily: 'Georgia, serif', color: navy, fontSize: '1.05rem', marginBottom: '0.9rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          Ihr Vorteil
+          {fullyCovered && (
+            <span style={{ fontFamily: 'Jost, system-ui, sans-serif', fontSize: '0.65rem', fontWeight: 700, color: green, background: greenBg, border: `1px solid ${greenBorder}`, padding: '0.2rem 0.55rem', borderRadius: '100px' }}>
+              ✓ Vollständig gedeckt
+            </span>
+          )}
+        </h4>
 
         {/* Bestellwert ohne EUROPAN-Vorteil */}
         <div style={statBox}>
@@ -153,10 +160,10 @@ export function BalanceWidget({ slug, price, affiliateRef, onNoblePayment, onPri
         </div>
 
         {/* Als angemeldeter EUROPAN-Nutzer */}
-        <div style={{ ...statBox, background: cream, border: '1px solid #E2DDD8' }}>
-          <div style={statLabel}>Als angemeldeter EUROPAN-Nutzer</div>
-          <div style={{ ...statValue, color: gold }}>€{priceAsMember.toFixed(2)}</div>
-          <div style={{ fontSize: '0.68rem', color: gold, marginTop: '2px' }}>Vorteil: {fmt(europanBonusTotal)}</div>
+        <div style={{ ...statBox, background: verified ? greenBg : cream, border: `1px solid ${verified ? greenBorder : '#E2DDD8'}`, transition: 'background 0.3s ease, border-color 0.3s ease' }}>
+          <div style={{ ...statLabel, color: verified ? green : gray }}>Als angemeldeter EUROPAN-Nutzer{verified ? ' ✓' : ''}</div>
+          <div style={{ ...statValue, color: verified ? green : gold }}>€{priceAsMember.toFixed(2)}</div>
+          <div style={{ fontSize: '0.68rem', color: verified ? green : gold, marginTop: '2px' }}>Vorteil: {fmt(europanBonusTotal)}</div>
         </div>
 
         {/* Konto */}
@@ -195,12 +202,12 @@ export function BalanceWidget({ slug, price, affiliateRef, onNoblePayment, onPri
         {error && <p style={{ fontSize: '0.75rem', color: '#C0392B', marginBottom: '0.75rem' }}>{error}</p>}
 
         {/* Doppel-Wums */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', padding: '0.6rem 0', borderBottom: '1px solid #E2DDD8', marginBottom: '0.6rem', fontSize: '0.75rem' }}>
-          <div style={{ color: navy, fontWeight: 600 }}>Doppel-Wums</div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', padding: '0.6rem 0.7rem', borderRadius: '6px', border: `1px solid ${fullyCovered ? greenBorder : '#E2DDD8'}`, background: fullyCovered ? greenBg : 'transparent', marginBottom: '0.6rem', fontSize: '0.75rem', transition: 'background 0.3s ease, border-color 0.3s ease' }}>
+          <div style={{ color: fullyCovered ? green : navy, fontWeight: 600 }}>Doppel-Wums{fullyCovered ? ' ✓' : ''}</div>
           <div style={{ textAlign: 'right', maxWidth: '62%' }}>
-            <div style={{ color: gold, fontWeight: 700 }}>{fmt(doppelWumsTotal)}</div>
-            <div style={{ color: gray, fontSize: '0.68rem', marginTop: '2px' }}>
-              zusätzlich bei Komplett-Zahlung des Bestellwerts in EUROPAN
+            <div style={{ color: fullyCovered ? green : gold, fontWeight: 700 }}>{fmt(doppelWumsTotal)}</div>
+            <div style={{ color: fullyCovered ? green : gray, fontSize: '0.68rem', marginTop: '2px' }}>
+              {fullyCovered ? 'aktiviert bei dieser Bestellung' : 'zusätzlich bei Komplett-Zahlung des Bestellwerts in EUROPAN'}
             </div>
           </div>
         </div>
@@ -221,8 +228,8 @@ export function BalanceWidget({ slug, price, affiliateRef, onNoblePayment, onPri
         {/* Bonuswahl + Zahlungsdetails, sobald verifiziert */}
         {verified && (
           <>
-            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.55rem 0.75rem', borderRadius: '6px', border: '1px solid #E2DDD8', marginBottom: '0.75rem' }}>
-              <span style={{ fontSize: '0.78rem', fontWeight: 600, color: navy }}>Ihr aktuelles EUROPAN-Guthaben beträgt</span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.55rem 0.75rem', borderRadius: '6px', border: `1px solid ${fullyCovered ? greenBorder : '#E2DDD8'}`, background: fullyCovered ? greenBg : 'transparent', marginBottom: '0.75rem', transition: 'background 0.3s ease, border-color 0.3s ease' }}>
+              <span style={{ fontSize: '0.78rem', fontWeight: 600, color: fullyCovered ? green : navy }}>Ihr aktuelles EUROPAN-Guthaben beträgt</span>
               <span style={{ fontFamily: 'Georgia, serif', fontSize: '0.95rem', fontWeight: 700, color: fullyCovered ? green : gray, whiteSpace: 'nowrap' }}>{fmt(balance)}{fullyCovered && ' ✓'}</span>
             </div>
 
