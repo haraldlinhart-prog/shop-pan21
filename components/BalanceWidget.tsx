@@ -24,7 +24,7 @@ type BalanceWidgetProps = {
   affiliateRef?: string
   prefillEmail?: string
   onNoblePayment?: (result: any) => void
-  onPriceUpdate?: (info: { finalTotal: number; fullyCovered: boolean; doppelWumsIncluded: boolean } | null) => void
+  onPriceUpdate?: (info: { finalTotal: number; fullyCovered: boolean; doppelWumsIncluded: boolean; pay: () => void } | null) => void
 }
 
 const navy = '#1A2F5A'
@@ -95,14 +95,16 @@ export function BalanceWidget({ slug, price, affiliateRef, onNoblePayment, onPri
 
   // Meldet der Elternseite den aktuellen EUROPAN-Vorteilspreis, damit dieser
   // prominent im mittleren Bestell-Kasten als "vorher/nachher" angezeigt werden kann.
+  // Wichtig: afterDoppelWums ist der tatsächliche Warenkorb-Preis (z.B. 284,05) —
+  // finalTotal wäre der verbleibende Restbetrag in bar (0 bei Volldeckung) und ist hier falsch.
   useEffect(() => {
     if (!onPriceUpdate) return
     if (verified) {
-      onPriceUpdate({ finalTotal, fullyCovered, doppelWumsIncluded: fullyCovered })
+      onPriceUpdate({ finalTotal: afterDoppelWums, fullyCovered, doppelWumsIncluded: fullyCovered, pay: handlePay })
     } else {
       onPriceUpdate(null)
     }
-  }, [verified, finalTotal, fullyCovered])
+  }, [verified, afterDoppelWums, fullyCovered])
 
   async function handlePay() {
     if (!verified || !fullyCovered) return
@@ -202,7 +204,7 @@ export function BalanceWidget({ slug, price, affiliateRef, onNoblePayment, onPri
         {error && <p style={{ fontSize: '0.75rem', color: '#C0392B', marginBottom: '0.75rem' }}>{error}</p>}
 
         {/* Doppel-Wums */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', padding: '0.6rem 0.7rem', borderRadius: '6px', border: `1px solid ${fullyCovered ? greenBorder : '#E2DDD8'}`, background: fullyCovered ? greenBg : 'transparent', marginBottom: '0.6rem', fontSize: '0.75rem', transition: 'background 0.3s ease, border-color 0.3s ease' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', padding: '0.6rem 0.7rem', borderRadius: '6px', border: `1px solid ${fullyCovered ? greenBorder : '#E2DDD8'}`, background: fullyCovered ? greenBg : 'transparent', marginBottom: '0.3rem', fontSize: '0.75rem', transition: 'background 0.3s ease, border-color 0.3s ease' }}>
           <div style={{ color: fullyCovered ? green : navy, fontWeight: 600 }}>Doppel-Wums{fullyCovered ? ' ✓' : ''}</div>
           <div style={{ textAlign: 'right', maxWidth: '62%' }}>
             <div style={{ color: fullyCovered ? green : gold, fontWeight: 700 }}>{fmt(doppelWumsTotal)}</div>
@@ -211,6 +213,9 @@ export function BalanceWidget({ slug, price, affiliateRef, onNoblePayment, onPri
             </div>
           </div>
         </div>
+        <p style={{ fontSize: '0.66rem', color: gray, lineHeight: 1.5, margin: '0 0 0.6rem' }}>
+          Der Doppel-Wums ist ein Extra-Bonus von 3%, den Sie nur erhalten, wenn Sie den <strong>gesamten Bestellwert</strong> mit EUROPAN-Guthaben bezahlen — bei Teilzahlung entfällt er.
+        </p>
 
         {/* Restzahlung nötig */}
         {verified && fullyCovered ? (
