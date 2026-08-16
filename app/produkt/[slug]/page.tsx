@@ -19,6 +19,7 @@ function ProduktContent({ slug }: { slug: string }) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [noblePaid, setNoblePaid] = useState<any>(null)
+  const [europanPreview, setEuropanPreview] = useState<{ finalTotal: number; fullyCovered: boolean; doppelWumsIncluded: boolean } | null>(null)
   const [inquiryStatus, setInquiryStatus] = useState<'idle'|'sending'|'ok'|'err'>('idle')
   const [formstart] = useState(Date.now())
   const [inquiryData, setInquiryData] = useState({ name:'', email:'', phone:'', message:'' })
@@ -182,10 +183,24 @@ function ProduktContent({ slug }: { slug: string }) {
                 <div className="order-product-name">{product.flag} {product.name}</div>
                 <div className="order-price">
                   {product.price
-                    ? <>€{product.price.toLocaleString('de-DE')}<span className="order-price-note"> EUR</span></>
+                    ? (europanPreview && europanPreview.fullyCovered
+                        ? <>
+                            <span style={{ fontSize: '1.1rem', color: 'var(--gray)', textDecoration: 'line-through', fontWeight: 400, marginRight: '0.6rem' }}>
+                              €{product.price.toLocaleString('de-DE')}
+                            </span>
+                            <span style={{ color: 'var(--gold2)' }}>€{europanPreview.finalTotal.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                            <span className="order-price-note"> EUR</span>
+                          </>
+                        : <>€{product.price.toLocaleString('de-DE')}<span className="order-price-note"> EUR</span></>
+                      )
                     : <span style={{ fontSize: '1rem', color: 'var(--gold2)' }}>{product.priceLabel}</span>
                   }
                 </div>
+                {europanPreview && europanPreview.fullyCovered && (
+                  <p style={{ fontSize: '0.72rem', color: 'var(--gold2)', fontWeight: 600, marginTop: '-0.5rem', marginBottom: '0.5rem' }}>
+                    Vor EUROPAN-Bonus €{product.price?.toLocaleString('de-DE')} — aktueller Warenkorb-Preis mit EUROPAN{europanPreview.doppelWumsIncluded ? ' und Doppel-Wums' : ''}: €{europanPreview.finalTotal.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  </p>
+                )}
                 {product.price && <p className="order-hint">Zzgl. etwaiger Behörden- und Notargebühren.</p>}
 
                 {!product.inquiry ? (
@@ -270,6 +285,7 @@ function ProduktContent({ slug }: { slug: string }) {
                 productName={product.name}
                 affiliateRef={affiliateRef}
                 onNoblePayment={(result) => setNoblePaid(result)}
+                onPriceUpdate={setEuropanPreview}
               />
             )}
 
