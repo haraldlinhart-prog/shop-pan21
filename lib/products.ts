@@ -109,7 +109,7 @@ export const PRODUCTS: Product[] = [
     slug: 'englische-limited-gruenden',
     sku: 'EUROPAN-UK-LTD-001',
     name: 'Englische Limited gründen',
-    shortDesc: 'Professionelle Gründung einer englischen Limited Company mit Vorbereitung der Gründungsdaten, Companies-House-Eintragung und verständlicher Begleitung.',
+    shortDesc: 'Professionelle Gründung einer englischen Limited Company inklusive persönlicher Begleitung bei der seit der ECCTA-Reform verpflichtenden Companies-House-Identitätsverifikation, Vorbereitung der Gründungsdaten und Eintragung.',
     price: 299,
     category: 'UK / Großbritannien',
     flag: '🇬🇧',
@@ -118,6 +118,7 @@ export const PRODUCTS: Product[] = [
     included: [
       'Vorprüfung der gewünschten Firmierung',
       'Vorbereitung der Gründungsdaten',
+      'Persönliche Begleitung bei der Companies-House-Identitätsverifikation (verpflichtender ID-Check-Account für Director/PSC)',
       'Gründung der UK Limited Company',
       'Eintragung bei Companies House',
       'Bereitstellung der Gründungsunterlagen',
@@ -144,11 +145,12 @@ export const PRODUCTS: Product[] = [
     process: [
       'Bestellung und Datenübermittlung',
       'Vorprüfung der gewünschten Firmierung',
+      'Begleitung bei der Companies-House-Identitätsverifikation (ID-Check-Account)',
       'Vorbereitung der Gründungsunterlagen',
       'Eintragung bei Companies House',
       'Übergabe der Gesellschaftsdaten',
     ],
-    hint: 'Seit dem 18. November 2025 ist die Identitätsverifikation für Directors und PSCs rechtlich relevant. Steuerliche Pflichten bei Wohnsitz in Deutschland oder Österreich müssen gesondert geprüft werden.',
+    hint: 'Seit dem 18. November 2025 ist die Identitätsverifikation für Directors und PSCs beim Companies House gesetzlich verpflichtend. Der Gründungspreis liegt bewusst über den reinen Amtsgebühren, da wir Sie persönlich durch diesen Verifikationsprozess begleiten und beraten — ohne korrekt abgeschlossene Verifikation ist eine Eintragung nicht mehr möglich. Steuerliche Pflichten bei Wohnsitz in Deutschland oder Österreich müssen gesondert geprüft werden.',
     tags: ['UK Ltd', 'Limited', 'Englische Limited', 'Großbritannien', 'Internationale Firmengründung'],
   },
   {
