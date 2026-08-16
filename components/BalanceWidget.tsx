@@ -248,6 +248,11 @@ export function BalanceWidget({ slug, price, affiliateRef, onNoblePayment, onPri
                   <input type="radio" name={`bonus-choice-${slug}`} checked={bonusChoice === 'save'} onChange={() => setBonusChoice('save')} style={{ accentColor: gold }} />
                   Auf meinem Noble-Konto sparen
                 </label>
+                {bonusChoice === 'save' && !fullyCovered && (
+                  <p style={{ fontSize: '0.68rem', color: gray, marginTop: '0.4rem', lineHeight: 1.5 }}>
+                    Hinweis: Ohne den 2%-Bonus für diese Bestellung reicht Ihr aktuelles Guthaben nicht mehr für die vollständige Deckung — der Doppel-Wums-Vorteil entfällt dann für diesen Kauf.
+                  </p>
+                )}
               </div>
             )}
 
