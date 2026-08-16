@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 // Nur EUROPAN ist aktuell als Zahlungswährung im Shop aktiv. Die API kann technisch
 // auch N-Coin, SwissyCash und CryptoCoin — das ist aber bewusst (noch) nicht erwünscht.
@@ -24,6 +24,7 @@ type BalanceWidgetProps = {
   affiliateRef?: string
   prefillEmail?: string
   onNoblePayment?: (result: any) => void
+  onPriceUpdate?: (info: { finalTotal: number; fullyCovered: boolean; doppelWumsIncluded: boolean } | null) => void
 }
 
 const navy = '#1A2F5A'
@@ -38,7 +39,7 @@ function fmt(n: number) {
   return ')( ' + n.toFixed(2)
 }
 
-export function BalanceWidget({ slug, price, affiliateRef, onNoblePayment }: BalanceWidgetProps) {
+export function BalanceWidget({ slug, price, affiliateRef, onNoblePayment, onPriceUpdate }: BalanceWidgetProps) {
   const [showLogin, setShowLogin] = useState(false)
   const [email, setEmail] = useState('')
   const [pin, setPin] = useState('')
@@ -91,6 +92,17 @@ export function BalanceWidget({ slug, price, affiliateRef, onNoblePayment }: Bal
 
   // Restzahlungs-Vorschau (auch vor Login relevant, analog europan.group-Referenz):
   const missingForFullCoverage = verified ? Math.max(0, afterEuropanBonus - balance) : afterEuropanBonus
+
+  // Meldet der Elternseite den aktuellen EUROPAN-Vorteilspreis, damit dieser
+  // prominent im mittleren Bestell-Kasten als "vorher/nachher" angezeigt werden kann.
+  useEffect(() => {
+    if (!onPriceUpdate) return
+    if (verified) {
+      onPriceUpdate({ finalTotal, fullyCovered, doppelWumsIncluded: fullyCovered })
+    } else {
+      onPriceUpdate(null)
+    }
+  }, [verified, finalTotal, fullyCovered])
 
   async function handlePay() {
     if (!verified || !fullyCovered) return
