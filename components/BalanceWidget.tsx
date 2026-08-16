@@ -170,19 +170,22 @@ export function BalanceWidget({ slug, price, affiliateRef, onNoblePayment, onPri
 
         {/* Konto */}
         {!verified && (
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.75rem', padding: '0.6rem 0', borderTop: '1px solid #E2DDD8', borderBottom: '1px solid #E2DDD8', marginBottom: '0.75rem', fontSize: '0.75rem' }}>
-            <div style={{ color: navy, fontWeight: 600 }}>Konto</div>
-            <div style={{ textAlign: 'right' }}>
-              <div style={{ marginBottom: '0.3rem' }}>
-                <span style={{ color: gray }}>Bereits EUROPAN-Kunde? </span>
-                <a onClick={() => setShowLogin(true)} style={{ color: gold, fontWeight: 700, cursor: 'pointer' }}>Mit EUROPAN anmelden</a>
-              </div>
-              <div>
-                <span style={{ color: gray }}>Noch kein Konto? </span>
-                <a href="https://noble-limited.com/join" target="_blank" rel="noopener" style={{ color: gold, fontWeight: 700 }}>Kostenloses Konto eröffnen</a>
-              </div>
+          <div
+            onClick={() => setShowLogin(true)}
+            style={{ cursor: 'pointer', background: greenBg, border: `1.5px solid ${greenBorder}`, borderRadius: '6px', padding: '0.75rem 0.85rem', marginBottom: '0.75rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.6rem' }}
+          >
+            <div>
+              <div style={{ fontSize: '0.68rem', fontWeight: 700, color: green, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.15rem' }}>Konto</div>
+              <div style={{ fontSize: '0.8rem', color: green, fontWeight: 700 }}>Bereits EUROPAN-Kunde?</div>
+              <div style={{ fontSize: '0.72rem', color: green }}>Mit EUROPAN anmelden →</div>
             </div>
+            <span style={{ fontSize: '1.3rem', color: green }}>→</span>
           </div>
+        )}
+        {!verified && (
+          <p style={{ fontSize: '0.68rem', color: gray, textAlign: 'center', marginTop: '-0.4rem', marginBottom: '0.75rem' }}>
+            Noch kein Konto? <a href="https://noble-limited.com/join" target="_blank" rel="noopener" style={{ color: gold, fontWeight: 700 }}>Kostenloses Konto eröffnen</a>
+          </p>
         )}
 
         {showLogin && !verified && (
