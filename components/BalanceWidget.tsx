@@ -227,10 +227,15 @@ export function BalanceWidget({ slug, price, affiliateRef, onNoblePayment, onPri
             <span style={{ fontWeight: 700 }}>vollständig gedeckt</span>
           </div>
         ) : (
-          <div style={{ background: cream, border: '1px solid #E2DDD8', borderRadius: '6px', padding: '0.6rem 0.75rem', marginBottom: '0.9rem', fontSize: '0.78rem', color: navy, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span>Für €{afterEuropanBonus.toFixed(2)} {fmt(missingForFullCoverage)}</span>
-            <span style={{ fontWeight: 700 }}>Restzahlung nötig</span>
-          </div>
+          <>
+            <div style={{ background: cream, border: '1px solid #E2DDD8', borderRadius: '6px', padding: '0.6rem 0.75rem', marginBottom: '0.5rem', fontSize: '0.78rem', color: navy, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span>Für €{afterEuropanBonus.toFixed(2)} {fmt(missingForFullCoverage)}</span>
+              <span style={{ fontWeight: 700 }}>Restzahlung nötig</span>
+            </div>
+            <p style={{ fontSize: '0.68rem', color: gray, lineHeight: 1.55, marginBottom: '0.9rem' }}>
+              Bei kompletter Zahlung in EUROPAN erhalten Sie zusätzlich den Doppel-Wums-Bonus, und der Gesamt-Warenwert reduziert sich um weitere <strong style={{ color: gold }}>€{doppelWumsTotal.toFixed(2)}</strong> auf insgesamt <strong style={{ color: gold }}>€{Math.max(0, afterEuropanBonus - doppelWumsTotal).toFixed(2)}</strong>.
+            </p>
+          </>
         )}
 
         {/* Bonuswahl + Zahlungsdetails, sobald verifiziert */}
