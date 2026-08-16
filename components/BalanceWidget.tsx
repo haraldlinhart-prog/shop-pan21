@@ -136,6 +136,17 @@ export function BalanceWidget({ slug, price, affiliateRef, onNoblePayment }: Bal
 
         <h4 style={{ fontFamily: 'Georgia, serif', color: navy, fontSize: '1rem', marginBottom: '0.5rem' }}>Mit EUROPAN bezahlen</h4>
 
+        <div style={{ background: cream, border: '1px solid #E2DDD8', borderRadius: '6px', padding: '0.7rem 0.8rem', marginBottom: '1rem' }}>
+          <div style={{ fontSize: '0.68rem', fontWeight: 700, color: navy, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: '0.4rem' }}>
+            Ihre Vorteile beim EUROPAN-Kauf
+          </div>
+          <ul style={{ margin: 0, padding: 0, listStyle: 'none', fontSize: '0.74rem', color: gray, lineHeight: 1.9 }}>
+            <li><span style={{ color: gold, fontWeight: 700 }}>+2%</span> EUROPAN-Bonus automatisch bei jeder Kreditkartenzahlung</li>
+            <li><span style={{ color: gold, fontWeight: 700 }}>+5%</span> Doppel-Wums-Bonus bei vollständiger Zahlung mit EUROPAN-Guthaben</li>
+            <li><span style={{ color: gold, fontWeight: 700 }}>+5%</span> Affiliate-Bonus, wenn Sie den PAN21 Shop weiterempfehlen</li>
+          </ul>
+        </div>
+
         {!verified && (
           <>
             <p style={{ fontSize: '0.76rem', color: gray, lineHeight: 1.6, marginBottom: '0.75rem' }}>
