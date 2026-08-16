@@ -19,7 +19,8 @@ function ProduktContent({ slug }: { slug: string }) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [noblePaid, setNoblePaid] = useState<any>(null)
-  const [europanPreview, setEuropanPreview] = useState<{ finalTotal: number; fullyCovered: boolean; doppelWumsIncluded: boolean } | null>(null)
+  const [europanPreview, setEuropanPreview] = useState<{ finalTotal: number; fullyCovered: boolean; doppelWumsIncluded: boolean; pay: () => void } | null>(null)
+  const [payingEuropan, setPayingEuropan] = useState(false)
   const [inquiryStatus, setInquiryStatus] = useState<'idle'|'sending'|'ok'|'err'>('idle')
   const [formstart] = useState(Date.now())
   const [inquiryData, setInquiryData] = useState({ name:'', email:'', phone:'', message:'' })
@@ -188,7 +189,7 @@ function ProduktContent({ slug }: { slug: string }) {
                             <span style={{ fontSize: '1.1rem', color: 'var(--gray)', textDecoration: 'line-through', fontWeight: 400, marginRight: '0.6rem' }}>
                               €{product.price.toLocaleString('de-DE')}
                             </span>
-                            <span style={{ color: 'var(--gold2)' }}>€{europanPreview.finalTotal.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                            <span style={{ color: '#1B7A3D' }}>€{europanPreview.finalTotal.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                             <span className="order-price-note"> EUR</span>
                           </>
                         : <>€{product.price.toLocaleString('de-DE')}<span className="order-price-note"> EUR</span></>
@@ -196,15 +197,34 @@ function ProduktContent({ slug }: { slug: string }) {
                     : <span style={{ fontSize: '1rem', color: 'var(--gold2)' }}>{product.priceLabel}</span>
                   }
                 </div>
+                {product.price && <p className="order-hint" style={{ marginBottom: europanPreview && europanPreview.fullyCovered ? '0.9rem' : '0' }}>Zzgl. etwaiger Behörden- und Notargebühren.</p>}
                 {europanPreview && europanPreview.fullyCovered && (
-                  <p style={{ fontSize: '0.72rem', color: 'var(--gold2)', fontWeight: 600, marginTop: '-0.5rem', marginBottom: '0.5rem' }}>
-                    Vor EUROPAN-Bonus €{product.price?.toLocaleString('de-DE')} — aktueller Warenkorb-Preis mit EUROPAN{europanPreview.doppelWumsIncluded ? ' und Doppel-Wums' : ''}: €{europanPreview.finalTotal.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                  </p>
+                  <div style={{ background: '#E8F5EE', border: '1px solid #B7E4CC', borderRadius: '6px', padding: '0.75rem 0.9rem', marginBottom: '1.25rem', fontSize: '0.78rem', color: '#1B7A3D', lineHeight: 1.6 }}>
+                    Vor EUROPAN-Bonus: <strong>€{product.price?.toLocaleString('de-DE')}</strong><br />
+                    Warenkorb-Preis mit EUROPAN{europanPreview.doppelWumsIncluded ? ' + Doppel-Wums' : ''}: <strong>€{europanPreview.finalTotal.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
+                  </div>
                 )}
-                {product.price && <p className="order-hint">Zzgl. etwaiger Behörden- und Notargebühren.</p>}
 
                 {!product.inquiry ? (
                   !noblePaid ? (
+                    europanPreview && europanPreview.fullyCovered ? (
+                      <div style={{ marginTop: '1.5rem' }}>
+                        <button
+                          type="button"
+                          disabled={payingEuropan}
+                          onClick={async () => {
+                            setPayingEuropan(true)
+                            try { await europanPreview.pay() } finally { setPayingEuropan(false) }
+                          }}
+                          style={{ width: '100%', background: '#0D5C33', color: '#fff', border: 'none', padding: '0.95rem', borderRadius: '4px', fontSize: '0.92rem', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}
+                        >
+                          {payingEuropan ? 'Wird bezahlt…' : `Jetzt bestellen mit EUROPAN-Zahlung — )( ${europanPreview.finalTotal.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} →`}
+                        </button>
+                        <p style={{ fontSize: '0.7rem', color: 'var(--muted)', textAlign: 'center', marginTop: '0.5rem' }}>
+                          Wird direkt aus Ihrem EUROPAN-Guthaben beglichen — kein Stripe-Checkout nötig.
+                        </p>
+                      </div>
+                    ) : (
                     <form onSubmit={handleBuy} style={{ marginTop: '1.5rem' }}>
                       <div className="fg">
                         <label>Ihre E-Mail-Adresse *</label>
@@ -224,6 +244,7 @@ function ProduktContent({ slug }: { slug: string }) {
                         Noble-Konto? Guthaben in der rechten Spalte einsetzen und mit virtueller Währung zahlen.
                       </div>
                     </form>
+                    )
                   ) : (
                     <div style={{ marginTop: '1.5rem', textAlign: 'center', padding: '1.5rem 0' }}>
                       <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>✓</div>
