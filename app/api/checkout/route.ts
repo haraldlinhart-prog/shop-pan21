@@ -10,22 +10,35 @@ import { PRODUCTS } from '@/lib/products'
 // Punkte, klassisches Bot-Merkmal). Bisher ging nichts durch (alle Sessions
 // blieben unpaid/open), aber der Endpoint war komplett offen.
 
-// In-memory Rate-Limit pro IP -- gleiches Muster wie im restlichen PAN21-
-// Netzwerk (z.B. keksstrasse4-de-recovered/lib/shared.js). Kein Ersatz für
-// eine persistente Lösung (Vercel-Instanzen sind nicht garantiert warm),
-// aber deutlich wirksamer als der bisherige Nullschutz und ohne zusätzliche
-// Infrastruktur sofort deploybar.
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>()
-function isRateLimited(ip: string): boolean {
-  const now = Date.now()
-  const entry = rateLimitMap.get(ip) || { count: 0, resetAt: now + 3600000 }
-  if (now > entry.resetAt) {
-    entry.count = 0
-    entry.resetAt = now + 3600000
+// Persistentes Rate-Limit über Nobles bestehende interne API (bereits via
+// NOBLE_API_KEY authentifiziert, siehe EUROPAN-Abrechnung weiter unten im
+// Webhook). Ersetzt eine reine In-Memory-Lösung, die bei Vercel-Serverless-
+// Functions nicht zuverlässig greift, weil Instanzen nicht garantiert warm
+// gehalten oder geteilt werden.
+async function isRateLimited(ip: string): Promise<boolean> {
+  try {
+    const res = await fetch(`${process.env.NOBLE_API_URL}/rate-limit-check`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${process.env.NOBLE_API_KEY}`,
+      },
+      body: JSON.stringify({
+        bucket_key: `shop-checkout:${ip}`,
+        max_count: 5,
+        window_seconds: 3600,
+      }),
+      // Kurzes Timeout -- ein langsamer/ausgefallener Rate-Limit-Check darf
+      // den Checkout nicht spürbar verzögern oder blockieren.
+      signal: AbortSignal.timeout(2500),
+    })
+    if (!res.ok) return false // fail-open bei Infrastrukturfehler
+    const data = await res.json()
+    return data.allowed === false
+  } catch (e) {
+    console.error('Rate-limit check failed (fail-open):', e)
+    return false // fail-open: Checkout darf nicht an einer Rate-Limit-Störung scheitern
   }
-  entry.count++
-  rateLimitMap.set(ip, entry)
-  return entry.count > 5
 }
 
 // Hochpreisige SKUs (>= 1000 EUR) bekommen erzwungenes 3D-Secure statt
@@ -37,7 +50,7 @@ const HIGH_VALUE_THRESHOLD_EUR = 1000
 export async function POST(req: NextRequest) {
   try {
     const ip = req.headers.get('x-forwarded-for')?.split(',')[0].trim() || 'unknown'
-    if (isRateLimited(ip)) {
+    if (await isRateLimited(ip)) {
       return NextResponse.json({ error: 'Zu viele Anfragen. Bitte später erneut versuchen.' }, { status: 429 })
     }
 
