@@ -57,10 +57,29 @@ export async function POST(req: NextRequest) {
     // Origin/Referer-Check -- blockiert direkte API-Aufrufe an diesem
     // Endpoint, die nicht von der eigenen Shop-Seite kommen (Bots rufen
     // die API meist direkt auf, ohne die Produktseite je zu laden).
+    //
+    // Fix 22.08.26: Zwei Luecken behoben, die den Card-Testing-Bot trotz
+    // dieses Checks durchliessen:
+    // 1) "if (origin && ...)" liess Requests OHNE Origin/Referer-Header
+    //    komplett unueberprueft durch -- genau das Muster eines simplen
+    //    Bot-Skripts (curl/fetch ohne Browser-Kontext), das gar keinen
+    //    dieser Header setzt. Ein echter Browser sendet bei einem
+    //    Same-Origin-POST praktisch immer mindestens einen der beiden.
+    //    Fehlen beide, wird jetzt abgelehnt statt durchgelassen.
+    // 2) ".includes(siteHost)" ist ein Substring-Check, kein Host-Vergleich
+    //    -- "https://shop.pan21.com.attacker.com" enthaelt "shop.pan21.com"
+    //    als Teilstring und waere bisher durchgekommen. Jetzt wird der
+    //    Origin/Referer als URL geparst und der Hostname exakt verglichen.
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://shop.pan21.com'
     const siteHost = new URL(siteUrl).host
-    const origin = req.headers.get('origin') || req.headers.get('referer') || ''
-    if (origin && !origin.includes(siteHost)) {
+    const rawOrigin = req.headers.get('origin') || req.headers.get('referer') || ''
+    let requestHost = ''
+    try {
+      requestHost = rawOrigin ? new URL(rawOrigin).host : ''
+    } catch {
+      requestHost = ''
+    }
+    if (requestHost !== siteHost) {
       return NextResponse.json({ error: 'Ungültige Anfrage-Herkunft.' }, { status: 403 })
     }
 
