@@ -24,6 +24,16 @@ function ProduktContent({ slug }: { slug: string }) {
   const [inquiryStatus, setInquiryStatus] = useState<'idle'|'sending'|'ok'|'err'>('idle')
   const [formstart] = useState(Date.now())
   const [inquiryData, setInquiryData] = useState({ name:'', email:'', phone:'', message:'' })
+  const [checkoutToken, setCheckoutToken] = useState('')
+
+  useEffect(() => {
+    // Challenge-Token fuer den Checkout -- wird nur ausgegeben, wenn diese
+    // Seite tatsaechlich geladen wird (siehe app/api/checkout-token).
+    fetch(`/api/checkout-token?slug=${encodeURIComponent(product.slug)}`)
+      .then(r => r.json())
+      .then(d => { if (d.token) setCheckoutToken(d.token) })
+      .catch(() => {})
+  }, [product.slug])
 
   useEffect(() => {
     if (!refFromUrl) {
@@ -37,12 +47,13 @@ function ProduktContent({ slug }: { slug: string }) {
   async function handleBuy(e: React.FormEvent) {
     e.preventDefault()
     if (!email) return setError('Bitte E-Mail-Adresse eingeben.')
+    if (!checkoutToken) return setError('Seite lädt noch, bitte einen Moment warten.')
     setLoading(true); setError('')
     try {
       const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ slug: product.slug, email, affiliate_ref: affiliateRef }),
+        body: JSON.stringify({ slug: product.slug, email, affiliate_ref: affiliateRef, token: checkoutToken }),
       })
       const data = await res.json()
       if (data.url) window.location.href = data.url
