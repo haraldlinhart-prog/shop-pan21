@@ -57,6 +57,7 @@ return (
             <li><a href="https://pan21.com" target="_blank" rel="noopener">PAN21.com</a></li>
           </ul>
           <div className="nav-actions">
+            <Link href="/en" className="btn-outline" style={{ color: 'rgba(255,255,255,0.7)', borderColor: 'rgba(255,255,255,0.2)', fontSize: '0.78rem' }}>🇬🇧 English</Link>
             <Link href="#kontakt" className="btn-outline" style={{ color: 'rgba(255,255,255,0.7)', borderColor: 'rgba(255,255,255,0.2)', fontSize: '0.78rem' }}>Beratung anfragen</Link>
           </div>
         </div>

@@ -2,14 +2,18 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
-import { PRODUCTS } from '@/lib/products'
+import { PRODUCTS_EN, CATEGORY_NAME_EN } from '@/lib/products.en'
 import { BalanceWidget } from '@/components/BalanceWidget'
 import { notFound } from 'next/navigation'
 import '@/app/globals.css'
-import './produkt.css'
+import '../../../produkt/[slug]/produkt.css'
 
-function ProduktContent({ slug }: { slug: string }) {
-  const product = PRODUCTS.find(p => p.slug === slug)
+// English mirror of app/produkt/[slug]/page.tsx — see that file for the
+// canonical German version. Kept as a parallel component (not a shared one)
+// so nothing here can ever affect the German product page.
+
+function ProduktContentEn({ slug }: { slug: string }) {
+  const product = PRODUCTS_EN.find(p => p.slug === slug)
   if (!product) return notFound()
 
   const searchParams = useSearchParams()
@@ -27,8 +31,6 @@ function ProduktContent({ slug }: { slug: string }) {
   const [checkoutToken, setCheckoutToken] = useState('')
 
   useEffect(() => {
-    // Challenge-Token fuer den Checkout -- wird nur ausgegeben, wenn diese
-    // Seite tatsaechlich geladen wird (siehe app/api/checkout-token).
     fetch(`/api/checkout-token?slug=${encodeURIComponent(product.slug)}`)
       .then(r => r.json())
       .then(d => { if (d.token) setCheckoutToken(d.token) })
@@ -46,19 +48,19 @@ function ProduktContent({ slug }: { slug: string }) {
 
   async function handleBuy(e: React.FormEvent) {
     e.preventDefault()
-    if (!email) return setError('Bitte E-Mail-Adresse eingeben.')
-    if (!checkoutToken) return setError('Seite lädt noch, bitte einen Moment warten.')
+    if (!email) return setError('Please enter an email address.')
+    if (!checkoutToken) return setError('Page is still loading, please wait a moment.')
     setLoading(true); setError('')
     try {
       const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ slug: product.slug, email, affiliate_ref: affiliateRef, token: checkoutToken }),
+        body: JSON.stringify({ slug: product.slug, email, affiliate_ref: affiliateRef, token: checkoutToken, lang: 'en' }),
       })
       const data = await res.json()
       if (data.url) window.location.href = data.url
-      else setError(data.error || 'Fehler beim Checkout.')
-    } catch { setError('Netzwerkfehler.') }
+      else setError(data.error || 'Checkout error.')
+    } catch { setError('Network error.') }
     finally { setLoading(false) }
   }
 
@@ -78,13 +80,13 @@ function ProduktContent({ slug }: { slug: string }) {
     } catch { setInquiryStatus('err') }
   }
 
-  const related = PRODUCTS.filter(p => p.slug !== product.slug && p.category === product.category).slice(0, 2)
+  const related = PRODUCTS_EN.filter(p => p.slug !== product.slug && p.category === product.category).slice(0, 2)
 
   return (
     <div>
       <nav className="nav">
         <div className="container nav-inner">
-          <Link href="/" className="nav-logo">
+          <Link href="/en" className="nav-logo">
             <div className="nav-logo-mark">P21</div>
             <div>
               <span className="nav-logo-text">PAN21 Shop</span>
@@ -92,11 +94,11 @@ function ProduktContent({ slug }: { slug: string }) {
             </div>
           </Link>
           <ul className="nav-links">
-            <li><Link href="/#produkte">← Alle Produkte</Link></li>
+            <li><Link href="/en/#products">← All products</Link></li>
           </ul>
           <div className="nav-actions">
-            <Link href={`/en/produkt/${product.slug}`} className="btn-outline" style={{ color: 'rgba(255,255,255,0.7)', borderColor: 'rgba(255,255,255,0.2)', fontSize: '0.78rem' }}>🇬🇧 English</Link>
-            <Link href="/#kontakt" className="btn-outline" style={{ color: 'rgba(255,255,255,0.7)', borderColor: 'rgba(255,255,255,0.2)', fontSize: '0.78rem' }}>Beratung anfragen</Link>
+            <Link href={`/produkt/${product.slug}`} className="btn-outline" style={{ color: 'rgba(255,255,255,0.7)', borderColor: 'rgba(255,255,255,0.2)', fontSize: '0.78rem' }}>🇩🇪 Deutsch</Link>
+            <Link href="/en/#contact" className="btn-outline" style={{ color: 'rgba(255,255,255,0.7)', borderColor: 'rgba(255,255,255,0.2)', fontSize: '0.78rem' }}>Request advice</Link>
           </div>
         </div>
       </nav>
@@ -104,22 +106,22 @@ function ProduktContent({ slug }: { slug: string }) {
       <div style={{ paddingTop: '68px', background: 'var(--snow)', minHeight: '100vh' }}>
         <div className="container" style={{ padding: '3rem 2rem' }}>
           <div className="breadcrumb">
-            <Link href="/">Shop</Link> <span>/</span>
-            <Link href="/#produkte">Produkte</Link> <span>/</span>
+            <Link href="/en">Shop</Link> <span>/</span>
+            <Link href="/en/#products">Products</Link> <span>/</span>
             <span>{product.name}</span>
           </div>
 
           {affiliateRef && (
             <div style={{ fontSize: '0.72rem', color: '#5C6B7A', background: '#F0FDF4', border: '1px solid #86EFAC', padding: '0.5rem 1rem', marginBottom: '1.5rem', borderRadius: '3px' }}>
-              ✓ Partner-Link aktiv — Sie unterstützen unseren Partner mit dieser Bestellung.
+              ✓ Partner link active — you're supporting our partner with this order.
             </div>
           )}
 
           {noblePaid && (
             <div style={{ background: '#F0FDF4', border: '1px solid #86EFAC', borderLeft: '4px solid #16A34A', padding: '1rem 1.25rem', marginBottom: '1.5rem', borderRadius: '3px' }}>
-              <div style={{ fontWeight: 700, color: '#15803D', marginBottom: '0.3rem' }}>Zahlung mit Noble-Währung erfolgreich</div>
+              <div style={{ fontWeight: 700, color: '#15803D', marginBottom: '0.3rem' }}>Payment with Noble currency successful</div>
               <div style={{ fontSize: '0.82rem', color: '#166534' }}>
-                Referenz: <strong>{noblePaid.order_reference}</strong> · Doppel-Wums Bonus gutgeschrieben.
+                Reference: <strong>{noblePaid.order_reference}</strong> · Doppel-Wums bonus credited.
               </div>
             </div>
           )}
@@ -139,19 +141,19 @@ function ProduktContent({ slug }: { slug: string }) {
                   />
                 </div>
               )}
-              <div className="produkt-cat">{product.flag} {product.category}</div>
+              <div className="produkt-cat">{product.flag} {CATEGORY_NAME_EN[product.category] || product.category}</div>
               <h1 className="produkt-title">{product.name}</h1>
               <p className="produkt-desc">{product.shortDesc}</p>
 
               <div className="detail-block">
-                <h3 className="detail-title">Im Paket enthalten</h3>
+                <h3 className="detail-title">Included in the package</h3>
                 <ul className="detail-list included">
                   {product.included.map((item, i) => <li key={i}>{item}</li>)}
                 </ul>
               </div>
 
               <div className="detail-block">
-                <h3 className="detail-title">Nicht im Basispaket enthalten</h3>
+                <h3 className="detail-title">Not included in the base package</h3>
                 <ul className="detail-list not-included">
                   {product.notIncluded.map((item, i) => <li key={i}>{item}</li>)}
                 </ul>
@@ -159,7 +161,7 @@ function ProduktContent({ slug }: { slug: string }) {
 
               {product.addons.length > 0 && (
                 <div className="detail-block">
-                  <h3 className="detail-title">Mögliche Zusatzleistungen</h3>
+                  <h3 className="detail-title">Possible add-ons</h3>
                   <ul className="detail-list addons">
                     {product.addons.map((item, i) => <li key={i}>{item}</li>)}
                   </ul>
@@ -167,7 +169,7 @@ function ProduktContent({ slug }: { slug: string }) {
               )}
 
               <div className="detail-block">
-                <h3 className="detail-title">Ablauf</h3>
+                <h3 className="detail-title">Process</h3>
                 <ol className="process-list">
                   {product.process.map((step, i) => (
                     <li key={i}>
@@ -178,14 +180,14 @@ function ProduktContent({ slug }: { slug: string }) {
                 </ol>
               </div>
 
-              <div className="hint-box"><strong>Hinweis:</strong> {product.hint}</div>
+              <div className="hint-box"><strong>Note:</strong> {product.hint}</div>
 
               <div className="europan-box">
                 <div className="europan-badge">EUROPAN</div>
                 <p>
-                  Mit einem Noble-Konto können Sie mit EUROPAN, N-Coin, SwissyCash oder CryptoCoin bezahlen
-                  und erhalten den <strong style={{ color: '#C9963A' }}>Doppel-Wums-Bonus: 5% EUROPAN</strong> zurück.
-                  Guthaben rechts einsehen.
+                  With a Noble account you can pay with EUROPAN, N-Coin, SwissyCash or CryptoCoin
+                  and get the <strong style={{ color: '#C9963A' }}>Doppel-Wums bonus: 5% EUROPAN</strong> back.
+                  See your balance on the right.
                 </p>
               </div>
             </div>
@@ -199,21 +201,21 @@ function ProduktContent({ slug }: { slug: string }) {
                     ? (europanPreview && europanPreview.fullyCovered
                         ? <>
                             <span style={{ fontSize: '1.1rem', color: 'var(--gray)', textDecoration: 'line-through', fontWeight: 400, marginRight: '0.6rem' }}>
-                              €{product.price.toLocaleString('de-DE')}
+                              €{product.price.toLocaleString('en-US')}
                             </span>
-                            <span style={{ color: '#1B7A3D' }}>€{europanPreview.finalTotal.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                            <span style={{ color: '#1B7A3D' }}>€{europanPreview.finalTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                             <span className="order-price-note"> EUR</span>
                           </>
-                        : <>€{product.price.toLocaleString('de-DE')}<span className="order-price-note"> EUR</span></>
+                        : <>€{product.price.toLocaleString('en-US')}<span className="order-price-note"> EUR</span></>
                       )
                     : <span style={{ fontSize: '1rem', color: 'var(--gold2)' }}>{product.priceLabel}</span>
                   }
                 </div>
-                {product.price && <p className="order-hint" style={{ marginBottom: europanPreview && europanPreview.fullyCovered ? '0.9rem' : '0' }}>Zzgl. etwaiger Behörden- und Notargebühren.</p>}
+                {product.price && <p className="order-hint" style={{ marginBottom: europanPreview && europanPreview.fullyCovered ? '0.9rem' : '0' }}>Plus any government and notary fees.</p>}
                 {europanPreview && europanPreview.fullyCovered && (
                   <div style={{ background: '#E8F5EE', border: '1px solid #B7E4CC', borderRadius: '6px', padding: '0.75rem 0.9rem', marginBottom: '1.25rem', fontSize: '0.78rem', color: '#1B7A3D', lineHeight: 1.6 }}>
-                    Vor EUROPAN-Bonus: <strong>€{product.price?.toLocaleString('de-DE')}</strong><br />
-                    Warenkorb-Preis mit EUROPAN{europanPreview.doppelWumsIncluded ? ' + Doppel-Wums' : ''}: <strong>€{europanPreview.finalTotal.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
+                    Before EUROPAN bonus: <strong>€{product.price?.toLocaleString('en-US')}</strong><br />
+                    Cart price with EUROPAN{europanPreview.doppelWumsIncluded ? ' + Doppel-Wums' : ''}: <strong>€{europanPreview.finalTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
                   </div>
                 )}
 
@@ -230,79 +232,79 @@ function ProduktContent({ slug }: { slug: string }) {
                           }}
                           style={{ width: '100%', background: '#0D5C33', color: '#fff', border: 'none', padding: '0.95rem', borderRadius: '4px', fontSize: '0.92rem', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}
                         >
-                          {payingEuropan ? 'Wird bezahlt…' : `Jetzt bestellen mit EUROPAN-Zahlung — )( ${europanPreview.finalTotal.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} →`}
+                          {payingEuropan ? 'Processing…' : `Order now with EUROPAN payment — )( ${europanPreview.finalTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} →`}
                         </button>
                         <p style={{ fontSize: '0.7rem', color: 'var(--muted)', textAlign: 'center', marginTop: '0.5rem' }}>
-                          Wird direkt aus Ihrem EUROPAN-Guthaben beglichen — kein Stripe-Checkout nötig.
+                          Charged directly from your EUROPAN balance — no Stripe checkout needed.
                         </p>
                       </div>
                     ) : (
                     <form onSubmit={handleBuy} style={{ marginTop: '1.5rem' }}>
                       <div className="fg">
-                        <label>Ihre E-Mail-Adresse *</label>
+                        <label>Your email address *</label>
                         <input
-                          type="email" required placeholder="ihre@email.com"
+                          type="email" required placeholder="your@email.com"
                           value={email} onChange={e => setEmail(e.target.value)}
                         />
                       </div>
                       {error && <p className="form-err">{error}</p>}
                       <button type="submit" className="form-submit" disabled={loading}>
-                        {loading ? 'Weiterleitung…' : `Jetzt bestellen — €${product.price?.toLocaleString('de-DE')} →`}
+                        {loading ? 'Redirecting…' : `Order now — €${product.price?.toLocaleString('en-US')} →`}
                       </button>
                       <p style={{ fontSize: '0.7rem', color: 'var(--muted)', textAlign: 'center', marginTop: '0.5rem' }}>
-                        Gesicherter Checkout via Stripe
+                        Secure checkout via Stripe
                       </p>
                       <div style={{ marginTop: '1rem', padding: '0.75rem', background: 'var(--snow)', border: '1px solid var(--lgray)', borderRadius: '3px', fontSize: '0.75rem', color: 'var(--gray)' }}>
-                        Noble-Konto? Guthaben in der rechten Spalte einsetzen und mit virtueller Währung zahlen.
+                        Have a Noble account? Use your balance in the column on the right and pay with virtual currency.
                       </div>
                     </form>
                     )
                   ) : (
                     <div style={{ marginTop: '1.5rem', textAlign: 'center', padding: '1.5rem 0' }}>
                       <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>✓</div>
-                      <div style={{ fontFamily: 'var(--ff-d)', fontSize: '1.1rem', color: 'var(--navy)' }}>Bezahlt mit Noble-Währung</div>
+                      <div style={{ fontFamily: 'var(--ff-d)', fontSize: '1.1rem', color: 'var(--navy)' }}>Paid with Noble currency</div>
                     </div>
                   )
                 ) : (
                   inquiryStatus === 'ok' ? (
                     <div style={{ textAlign: 'center', padding: '1.5rem 0' }}>
                       <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>✓</div>
-                      <div style={{ fontFamily: 'var(--ff-d)', fontSize: '1.1rem', color: 'var(--navy)' }}>Anfrage erhalten</div>
-                      <p style={{ fontSize: '0.82rem', color: 'var(--gray)', marginTop: '0.4rem' }}>Wir melden uns innerhalb eines Werktages.</p>
+                      <div style={{ fontFamily: 'var(--ff-d)', fontSize: '1.1rem', color: 'var(--navy)' }}>Enquiry received</div>
+                      <p style={{ fontSize: '0.82rem', color: 'var(--gray)', marginTop: '0.4rem' }}>We will get back to you within one business day.</p>
                     </div>
                   ) : (
                     <form onSubmit={handleInquiry} style={{ marginTop: '1.5rem' }}>
                       <div className="hp-field"><input type="text" name="website" tabIndex={-1} autoComplete="off" /></div>
-                      <div className="fg"><label>Name *</label><input type="text" required placeholder="Ihr Name" value={inquiryData.name} onChange={e => setInquiryData(p=>({...p,name:e.target.value}))} /></div>
-                      <div className="fg"><label>E-Mail *</label><input type="email" required placeholder="ihre@email.com" value={inquiryData.email} onChange={e => setInquiryData(p=>({...p,email:e.target.value}))} /></div>
-                      <div className="fg"><label>Telefon</label><input type="tel" placeholder="+49..." value={inquiryData.phone} onChange={e => setInquiryData(p=>({...p,phone:e.target.value}))} /></div>
-                      <div className="fg"><label>Ihre Situation</label><textarea placeholder="Beschreiben Sie kurz Ihr Vorhaben…" value={inquiryData.message} onChange={e => setInquiryData(p=>({...p,message:e.target.value}))} style={{minHeight:'90px'}} /></div>
-                      {inquiryStatus === 'err' && <p className="form-err">Fehler. Bitte versuchen Sie es erneut.</p>}
+                      <div className="fg"><label>Name *</label><input type="text" required placeholder="Your name" value={inquiryData.name} onChange={e => setInquiryData(p=>({...p,name:e.target.value}))} /></div>
+                      <div className="fg"><label>Email *</label><input type="email" required placeholder="your@email.com" value={inquiryData.email} onChange={e => setInquiryData(p=>({...p,email:e.target.value}))} /></div>
+                      <div className="fg"><label>Phone</label><input type="tel" placeholder="+1..." value={inquiryData.phone} onChange={e => setInquiryData(p=>({...p,phone:e.target.value}))} /></div>
+                      <div className="fg"><label>Your situation</label><textarea placeholder="Briefly describe what you have in mind…" value={inquiryData.message} onChange={e => setInquiryData(p=>({...p,message:e.target.value}))} style={{minHeight:'90px'}} /></div>
+                      {inquiryStatus === 'err' && <p className="form-err">Error. Please try again.</p>}
                       <button type="submit" className="btn-inquiry" style={{width:'100%',textAlign:'center'}} disabled={inquiryStatus==='sending'}>
-                        {inquiryStatus==='sending' ? 'Wird gesendet…' : 'Unverbindlich anfragen →'}
+                        {inquiryStatus==='sending' ? 'Sending…' : 'Enquire, no obligation →'}
                       </button>
                     </form>
                   )
                 )}
 
                 <div className="order-trust">
-                  <div className="trust-item">🔒 Sichere Verbindung via Stripe</div>
-                  <div className="trust-item">💎 Noble-Währung in Spalte rechts</div>
-                  <div className="trust-item">✉️ Antwort innerhalb 1 Werktag</div>
+                  <div className="trust-item">🔒 Secure connection via Stripe</div>
+                  <div className="trust-item">💎 Noble currency in the column on the right</div>
+                  <div className="trust-item">✉️ Reply within 1 business day</div>
                 </div>
               </div>
 
               {related.length > 0 && (
                 <div style={{ marginTop: '1.5rem' }}>
                   <div style={{ fontSize: '0.68rem', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--muted)', marginBottom: '0.75rem' }}>
-                    Ähnliche Produkte
+                    Related products
                   </div>
                   {related.map(r => (
-                    <Link key={r.slug} href={`/produkt/${r.slug}`} style={{ display:'flex', gap:'0.75rem', padding:'0.75rem', background:'var(--white)', border:'1px solid var(--lgray)', marginBottom:'0.5rem', borderRadius:'3px' }}>
+                    <Link key={r.slug} href={`/en/produkt/${r.slug}`} style={{ display:'flex', gap:'0.75rem', padding:'0.75rem', background:'var(--white)', border:'1px solid var(--lgray)', marginBottom:'0.5rem', borderRadius:'3px' }}>
                       <span style={{ fontSize: '1.3rem' }}>{r.flag}</span>
                       <div>
                         <div style={{ fontSize:'0.82rem', fontWeight:600, color:'var(--navy)' }}>{r.name}</div>
-                        <div style={{ fontSize:'0.75rem', color:'var(--gold2)' }}>{r.price ? `€${r.price.toLocaleString('de-DE')}` : 'Auf Anfrage'}</div>
+                        <div style={{ fontSize:'0.75rem', color:'var(--gold2)' }}>{r.price ? `€${r.price.toLocaleString('en-US')}` : 'On request'}</div>
                       </div>
                     </Link>
                   ))}
@@ -317,6 +319,7 @@ function ProduktContent({ slug }: { slug: string }) {
                 price={product.price}
                 productName={product.name}
                 affiliateRef={affiliateRef}
+                lang="en"
                 onNoblePayment={(result) => setNoblePaid(result)}
                 onPriceUpdate={setEuropanPreview}
               />
@@ -329,11 +332,11 @@ function ProduktContent({ slug }: { slug: string }) {
       <footer className="footer">
         <div className="container footer-inner">
           <div className="footer-links">
-            <Link href="/">← Zurück zum Shop</Link>
+            <Link href="/en">← Back to shop</Link>
             <a href="https://pan21.com" target="_blank" rel="noopener">PAN21.com</a>
             <a href="https://noble-limited.com" target="_blank" rel="noopener">Noble Limited</a>
           </div>
-          <p className="footer-legal">© {new Date().getFullYear()} PAN21.COM Corporate Consultants Ltd · Alle Preise in EUR, zzgl. etwaiger Behördengebühren und externer Kosten.</p>
+          <p className="footer-legal">© {new Date().getFullYear()} PAN21.COM Corporate Consultants Ltd · All prices in EUR, plus any government fees and external costs.</p>
         </div>
       </footer>
     </div>
@@ -341,10 +344,10 @@ function ProduktContent({ slug }: { slug: string }) {
 }
 
 import { Suspense } from 'react'
-export default function ProduktPage({ params }: { params: { slug: string } }) {
+export default function ProduktPageEn({ params }: { params: { slug: string } }) {
   return (
-    <Suspense fallback={<div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center'}}>Laden…</div>}>
-      <ProduktContent slug={params.slug} />
+    <Suspense fallback={<div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center'}}>Loading…</div>}>
+      <ProduktContentEn slug={params.slug} />
     </Suspense>
   )
 }

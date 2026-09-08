@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { PRODUCTS } from '@/lib/products'
+import { getProductsEn } from '@/lib/products.en'
 import { verifyToken } from '@/app/api/checkout-token/route'
 
 // Anti-Missbrauch: Dieser Endpoint hatte bisher KEINERLEI Schutz -- jeder
@@ -108,8 +109,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Ungültige Anfrage-Herkunft.' }, { status: 403 })
     }
 
-    const { slug, email, affiliate_ref, token } = await req.json()
+    const { slug, email, affiliate_ref, token, lang } = await req.json()
     if (!slug || !email) return NextResponse.json({ error: 'Missing fields' }, { status: 400 })
+    // Optional locale flag from the product page, used below only to route
+    // success/cancel back to the matching language. Defaults to the German
+    // paths when absent, so existing (pre-i18n) callers are unaffected.
+    const localePrefix = lang === 'en' ? 'en/' : ''
 
     // Challenge-Token -- muss von /api/checkout-token stammen, das nur die
     // echte Produktseite beim Laden aufruft. Erzwingt zusaetzlich eine
@@ -146,6 +151,11 @@ export async function POST(req: NextRequest) {
     const product = PRODUCTS.find(p => p.slug === slug)
     if (!product || !product.price) return NextResponse.json({ error: 'Product not found' }, { status: 400 })
 
+    // Stripe-facing name/description follow the page the customer ordered
+    // from; price/sku/slug/image stay pinned to the German PRODUCTS record
+    // (the single source of truth) regardless of language.
+    const displayProduct = lang === 'en' ? (getProductsEn().find(p => p.slug === slug) || product) : product
+
     const stripeKey = process.env.STRIPE_SECRET_KEY
     if (!stripeKey) return NextResponse.json({ error: 'Payment not configured' }, { status: 500 })
 
@@ -153,14 +163,14 @@ export async function POST(req: NextRequest) {
       'payment_method_types[]': 'card',
       'line_items[0][price_data][currency]': 'eur',
       'line_items[0][price_data][unit_amount]': String(Math.round(product.price * 100)),
-      'line_items[0][price_data][product_data][name]': product.name,
-      'line_items[0][price_data][product_data][description]': product.shortDesc,
+      'line_items[0][price_data][product_data][name]': displayProduct.name,
+      'line_items[0][price_data][product_data][description]': displayProduct.shortDesc,
       'line_items[0][price_data][product_data][images][0]': product.image.startsWith('http') ? product.image : `${siteUrl}${product.image}`,
       'line_items[0][quantity]': '1',
       'mode': 'payment',
       'customer_email': email,
-      'success_url': `${siteUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}&product=${encodeURIComponent(product.name)}`,
-      'cancel_url': `${siteUrl}/produkt/${slug}`,
+      'success_url': `${siteUrl}/${localePrefix}checkout/success?session_id={CHECKOUT_SESSION_ID}&product=${encodeURIComponent(displayProduct.name)}`,
+      'cancel_url': `${siteUrl}/${localePrefix}produkt/${slug}`,
       'metadata[product_slug]': slug,
       'metadata[product_name]': product.name,
       'metadata[customer_email]': email,

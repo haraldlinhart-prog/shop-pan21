@@ -28,7 +28,13 @@ export const metadata: Metadata = {
     locale: 'de_DE',
   },
   robots: { index: true, follow: true },
-  alternates: { canonical: 'https://shop.pan21.com' },
+  alternates: {
+    canonical: 'https://shop.pan21.com',
+    languages: {
+      de: 'https://shop.pan21.com',
+      en: 'https://shop.pan21.com/en',
+    },
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
