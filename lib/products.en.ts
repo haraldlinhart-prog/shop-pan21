@@ -137,7 +137,7 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
     shortDesc: 'Professional preparation and support for forming an American LLC for international entrepreneurs, digital business models and project-based US structures.',
     included: [
       'Pre-check of the desired company name',
-      'Basic assessment of suitable US states',
+      'A 30-minute support call in which we clarify your complete private and business circumstances and then determine the most suitable formation type and US state for you',
       'Preparation of the incorporation data',
       'Support with the LLC formation in the chosen state',
       'Guidance on Member, Manager and Operating Agreement',

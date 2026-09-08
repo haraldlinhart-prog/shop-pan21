@@ -165,7 +165,7 @@ export const PRODUCTS: Product[] = [
     heroImage: '/hero/usa.jpg',
     included: [
       'Vorprüfung der gewünschten Firmierung',
-      'Grundlegende Einordnung geeigneter US-Bundesstaaten',
+      '30-minütiges Support-Gespräch, in dem wir Ihre kompletten privaten und geschäftlichen Verhältnisse klären und die passende Gründungsform im geeigneten US-Bundesstaat für Sie ermitteln',
       'Vorbereitung der Gründungsdaten',
       'Begleitung der LLC-Gründung im gewählten Bundesstaat',
       'Hinweise zu Member, Manager und Operating Agreement',
