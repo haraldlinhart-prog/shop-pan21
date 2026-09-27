@@ -54,6 +54,27 @@ const TOOLS = [
     url: 'https://anti-spam.info',
     description: 'Öffentliches Versprechen: Spam wird nicht gelesen, nicht geklickt, nicht gekauft',
   },
+  {
+    slug: 'suchmaschinen-pro',
+    emoji: '🔍',
+    name: 'suchmaschinen.pro',
+    url: 'https://www.suchmaschinen.pro',
+    description: 'SEO-Artikel, direkt auf Ihrer eigenen Domain veröffentlicht',
+  },
+  {
+    slug: 'search-engines-pro',
+    emoji: '🌍',
+    name: 'search-engines.pro',
+    url: 'https://www.search-engines.pro',
+    description: 'SEO content on your own domain (English version)',
+  },
+  {
+    slug: 'abmahnschutz-pro',
+    emoji: '⚖️',
+    name: 'abmahnschutz.pro',
+    url: 'https://www.abmahnschutz.pro',
+    description: 'Erste Hilfe bei Massenabmahnungen und Vorsorge für Website-Betreiber',
+  },
 ]
 
 export async function GET() {
