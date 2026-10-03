@@ -72,7 +72,12 @@ const TOOLS = [
     emoji: '🌍',
     name: 'search-engines.pro',
     url: 'https://www.search-engines.pro',
-    description: 'SEO content on your own domain (English version)',
+    description: 'SEO content on your own domain, auto-shared to Facebook (English version)',
+    details: [
+      'search-engines.pro analyzes your website, finds the search terms with real traffic potential and writes matching articles. They are published natively under yourdomain.com/blog/ on your own domain, not on an isolated subdomain or via a JavaScript footer plugin, so every article adds directly to your main domain\'s visibility in Google. The content is yours and stays online even if you cancel.',
+      'New and fully working after our latest tests: the Facebook integration. Every new article is shared to your Facebook business page at the same time, so you reach not only people actively searching on Google but also readers in their Facebook feed who don\'t know you yet, with no extra effort and no ad budget.',
+      'Unlike Google Ads, you don\'t pay per click: your visibility grows with every article, and transparent reporting shows how many of them Google has actually indexed. The FREE plan costs €0 (1 article every 2 weeks, with badge). Paid plans range from €19 to €49 per month, up to one article every day. Cancel monthly, no minimum term.',
+    ],
   },
   {
     slug: 'abmahnschutz-pro',
