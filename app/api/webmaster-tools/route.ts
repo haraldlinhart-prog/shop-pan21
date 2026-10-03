@@ -59,7 +59,13 @@ const TOOLS = [
     emoji: '🔍',
     name: 'suchmaschinen.pro',
     url: 'https://www.suchmaschinen.pro',
-    description: 'SEO-Artikel, direkt auf Ihrer eigenen Domain veröffentlicht',
+    description: 'SEO-Artikel auf Ihrer eigenen Domain, automatisch auch auf Facebook geteilt',
+    // Ausführlicher Text nur für tools.webmaster.plus. Die E-Mail-Footer nutzen weiter nur `description`.
+    details: [
+      'suchmaschinen.pro wertet die Suchbegriffe aus Ihrer Google Search Console aus und findet Themen, nach denen Ihre Zielgruppe bereits sucht, für die Ihre Website aber noch keine passende Seite hat. Daraus schreibt eine KI regelmäßig Artikel und veröffentlicht sie automatisch im Blog auf Ihrer eigenen Domain, zum Beispiel unter ihredomain.de/blog/. Die Inhalte gehören Ihnen und bleiben online, auch wenn Sie kündigen.',
+      'Neu und nach den letzten Tests fehlerfrei: die Facebook-Anbindung. Jeder neue Artikel wird gleichzeitig auf Ihrer Facebook-Unternehmensseite geteilt. So erreichen Sie nicht nur Menschen, die bei Google aktiv suchen, sondern auch Leser im Facebook-Feed, die Sie noch nicht kennen, ohne zusätzlichen Aufwand und ohne Werbebudget.',
+      'Anders als bei Google Ads zahlen Sie nicht für jeden Klick: Die Sichtbarkeit wächst mit jedem Artikel. Der FREE-Plan ist kostenlos (1 Artikel alle 2 Wochen, mit Badge). Die bezahlten Pläne reichen von 19 € bis 49 € im Monat, bis hin zu einem Artikel täglich mit automatischer Überarbeitung von Artikeln, die bei Google abrutschen. Monatlich kündbar.',
+    ],
   },
   {
     slug: 'search-engines-pro',
