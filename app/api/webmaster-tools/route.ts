@@ -75,6 +75,27 @@ const TOOLS = [
     url: 'https://www.abmahnschutz.pro',
     description: 'Erste Hilfe bei Massenabmahnungen und Vorsorge für Website-Betreiber',
   },
+  {
+    slug: 'dsgvo-checken',
+    emoji: '🔒',
+    name: 'dsgvo-checken.de',
+    url: 'https://dsgvo-checken.de',
+    description: 'Kostenloser DSGVO-Check: Datenschutzerklärung, Cookie-Banner, Google Fonts, Tracking',
+  },
+  {
+    slug: 'email-checken',
+    emoji: '📧',
+    name: 'email-checken.de',
+    url: 'https://email-checken.de',
+    description: 'E-Mail-Sicherheitscheck: SPF, DKIM, DMARC und Blacklist-Prüfung',
+  },
+  {
+    slug: 'bfsg-checken',
+    emoji: '♿',
+    name: 'bfsg-checken.de',
+    url: 'https://bfsg-checken.de',
+    description: 'Barrierefreiheits-Check nach dem BFSG: Alt-Texte, Überschriften, Formulare und mehr',
+  },
 ]
 
 export async function GET() {
