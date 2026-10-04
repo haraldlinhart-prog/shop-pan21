@@ -41,13 +41,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="de">
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500;600&display=swap"
-          rel="stylesheet"
-        />
-        {/* Matomo 93 */}
         {/* Schema.org */}
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
           "@context": "https://schema.org",
@@ -61,8 +54,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           "hasMap": "https://pan21.com",
         })}} />
         <meta name="ai-crawlers" content="allowed" />
-              <script dangerouslySetInnerHTML={{__html: `var sc_project=13317697;var sc_invisible=1;var sc_security="458f783c";`}} />
-        <script async src="https://www.statcounter.com/counter/counter.js" />
       </head>
       <body>
         {children}
