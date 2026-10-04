@@ -333,7 +333,7 @@ function ProduktContent({ slug }: { slug: string }) {
             <a href="https://pan21.com" target="_blank" rel="noopener">PAN21.com</a>
             <a href="https://noble-limited.com" target="_blank" rel="noopener">Noble Limited</a>
           </div>
-          <p className="footer-legal">© {new Date().getFullYear()} PAN21.COM Corporate Consultants Ltd · Alle Preise in EUR, zzgl. etwaiger Behördengebühren und externer Kosten.</p>
+          <p className="footer-legal">© {new Date().getFullYear()} PAN21.com International LLC · Alle Preise in EUR, zzgl. etwaiger Behördengebühren und externer Kosten.</p>
         </div>
       </footer>
     </div>

@@ -336,7 +336,7 @@ function ProduktContentEn({ slug }: { slug: string }) {
             <a href="https://pan21.com" target="_blank" rel="noopener">PAN21.com</a>
             <a href="https://noble-limited.com" target="_blank" rel="noopener">Noble Limited</a>
           </div>
-          <p className="footer-legal">© {new Date().getFullYear()} PAN21.COM Corporate Consultants Ltd · All prices in EUR, plus any government fees and external costs.</p>
+          <p className="footer-legal">© {new Date().getFullYear()} PAN21.com International LLC · All prices in EUR, plus any government fees and external costs.</p>
         </div>
       </footer>
     </div>

@@ -314,7 +314,7 @@ export default function ShopPageEn() {
             <a href="https://pan21.net" target="_blank" rel="noopener">PAN21.net</a>
           </div>
           <p className="footer-legal">
-            © {new Date().getFullYear()} PAN21.COM Corporate Consultants Ltd · shop.pan21.com ·
+            © {new Date().getFullYear()} PAN21.com International LLC · shop.pan21.com ·
             All prices in EUR, plus any government fees, notary costs and external service-provider costs.
             No offer for tax evasion or circumvention of legal obligations.
           </p>
