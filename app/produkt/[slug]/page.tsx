@@ -330,6 +330,8 @@ function ProduktContent({ slug }: { slug: string }) {
         <div className="container footer-inner">
           <div className="footer-links">
             <Link href="/">← Zurück zum Shop</Link>
+            <Link href="/impressum">Impressum</Link>
+            <Link href="/datenschutz">Datenschutz</Link>
             <a href="https://pan21.com" target="_blank" rel="noopener">PAN21.com</a>
             <a href="https://noble-limited.com" target="_blank" rel="noopener">Noble Limited</a>
           </div>

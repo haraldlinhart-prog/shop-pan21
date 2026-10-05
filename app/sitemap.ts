@@ -50,5 +50,21 @@ export default function sitemap(): MetadataRoute.Sitemap {
     })
   }
 
+  // Rechtsseiten (DE + EN)
+  const legalPairs: [string, string][] = [
+    ['/impressum', '/en/legal-notice'],
+    ['/datenschutz', '/en/privacy'],
+  ]
+  for (const [dePath, enPath] of legalPairs) {
+    for (const path of [dePath, enPath]) {
+      entries.push({
+        url: `${base}${path}`,
+        changeFrequency: 'yearly',
+        priority: 0.2,
+        alternates: { languages: { de: `${base}${dePath}`, en: `${base}${enPath}` } },
+      })
+    }
+  }
+
   return entries
 }

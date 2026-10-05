@@ -310,6 +310,8 @@ export default function ShopPageEn() {
             <Link href="#products">Products</Link>
             <Link href="#process">Process</Link>
             <Link href="#contact">Contact</Link>
+            <Link href="/en/legal-notice">Legal notice</Link>
+            <Link href="/en/privacy">Privacy policy</Link>
             <a href="https://pan21.com" target="_blank" rel="noopener">PAN21.com</a>
             <a href="https://pan21.net" target="_blank" rel="noopener">PAN21.net</a>
           </div>

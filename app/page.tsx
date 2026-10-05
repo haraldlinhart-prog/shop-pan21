@@ -312,6 +312,8 @@ return (
             <Link href="#produkte">Produkte</Link>
             <Link href="#ablauf">Ablauf</Link>
             <Link href="#kontakt">Kontakt</Link>
+            <Link href="/impressum">Impressum</Link>
+            <Link href="/datenschutz">Datenschutz</Link>
             <a href="https://pan21.com" target="_blank" rel="noopener">PAN21.com</a>
             <a href="https://pan21.net" target="_blank" rel="noopener">PAN21.net</a>
           </div>
