@@ -211,7 +211,7 @@ function ProduktContentEn({ slug }: { slug: string }) {
                     : <span style={{ fontSize: '1rem', color: 'var(--gold2)' }}>{product.priceLabel}</span>
                   }
                 </div>
-                {product.price && <p className="order-hint" style={{ marginBottom: europanPreview && europanPreview.fullyCovered ? '0.9rem' : '0' }}>Plus any government and notary fees.</p>}
+                {product.price && <p className="order-hint" style={{ marginBottom: europanPreview && europanPreview.fullyCovered ? '0.9rem' : '0' }}>{product.priceNote ?? 'Plus any government and notary fees.'}</p>}
                 {europanPreview && europanPreview.fullyCovered && (
                   <div style={{ background: '#E8F5EE', border: '1px solid #B7E4CC', borderRadius: '6px', padding: '0.75rem 0.9rem', marginBottom: '1.25rem', fontSize: '0.78rem', color: '#1B7A3D', lineHeight: 1.6 }}>
                     Before EUROPAN bonus: <strong>€{product.price?.toLocaleString('en-US')}</strong><br />

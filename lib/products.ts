@@ -14,6 +14,7 @@ export type Product = {
   addons: string[]
   process: string[]
   hint: string
+  priceNote?: string  // optionaler Hinweis unter dem Preis; ersetzt den Standard-Hinweis "Zzgl. etwaiger Behörden- und Notargebühren."
   inquiry?: boolean  // true = Kontaktformular statt Warenkorb
   externalUrl?: string  // gesetzt = Karte verlinkt direkt auf die eigene Produktseite (andere PAN21-Domain), kein interner Checkout
   tags: string[]
@@ -32,12 +33,13 @@ export const PRODUCTS: Product[] = [
     heroImage: '/hero/deutschland-ug.jpg',
     included: [
       'Vorbereitung der Gründungsdaten',
-      'Abstimmung des gewünschten Firmennamens',
+      'Vorabprüfung von Firmenname und Unternehmensgegenstand mit der örtlichen IHK',
       'Gründung nach Musterprotokoll',
       'Vorbereitung der notariellen Gründung',
       'Handelsregisteranmeldung',
       'Begleitung bis zur Eintragung',
-      'Grundpaket mit einem Geschäftsführer und einem Gesellschafter',
+      'Notar- und Registergerichtsgebühren nach Musterprotokoll',
+      'Ein Geschäftsführer und bis zu drei Gesellschafter',
     ],
     notIncluded: [
       'Bankkontoeröffnung',
@@ -59,6 +61,7 @@ export const PRODUCTS: Product[] = [
       'Notarielle Gründung und Handelsregisteranmeldung',
       'Eintragung der Gesellschaft',
     ],
+    priceNote: 'Inklusive Notar- und Registergerichtsgebühren.',
     hint: 'Das Stammkapital der UG beträgt mindestens 1,00 EUR. Das Paket orientiert sich an einer Gründung mit einem Stammkapital von 1.000,00 EUR.',
     tags: ['UG', 'Unternehmergesellschaft', 'Deutschland', 'Firmengründung', 'haftungsbeschränkt'],
   },

@@ -16,6 +16,7 @@ export type ProductTranslation = {
   addons: string[]
   process: string[]
   hint: string
+  priceNote?: string
   tags: string[]
 }
 
@@ -25,12 +26,13 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
     shortDesc: 'Formation of a German Unternehmergesellschaft (haftungsbeschränkt) under the standard model protocol — including preparation of the incorporation data, notarial formation and commercial register entry.',
     included: [
       'Preparation of the incorporation data',
-      'Coordination of the desired company name',
+      'Pre-check of company name and business purpose with the local Chamber of Commerce (IHK)',
       'Formation under the standard model protocol (Musterprotokoll)',
       'Preparation of the notarial formation',
       'Commercial register filing',
       'Support through to registration',
-      'Basic package with one managing director and one shareholder',
+      'Notary and commercial register fees under the model protocol',
+      'One managing director and up to three shareholders',
     ],
     notIncluded: [
       'Bank account opening',
@@ -52,6 +54,7 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
       'Notarial formation and commercial register filing',
       'Registration of the company',
     ],
+    priceNote: 'Including notary and commercial register fees.',
     hint: 'The UG\'s share capital is at least €1.00. This package is based on a formation with share capital of €1,000.00.',
     tags: ['UG', 'Unternehmergesellschaft', 'Germany', 'Company formation', 'Limited liability'],
   },
@@ -1022,6 +1025,7 @@ export function getProductsEn(): Product[] {
       addons: t.addons,
       process: t.process,
       hint: t.hint,
+      priceNote: t.priceNote ?? p.priceNote,
       tags: t.tags,
     }
   })
