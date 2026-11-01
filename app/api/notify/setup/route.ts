@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
+import { notifyStripeEvent } from '@/lib/stripe-notify'
 
 export const dynamic = 'force-dynamic'
 
 // Einmalig: legt den Stripe-Webhook für die Meldestelle an (idempotent)
-const URL_ = 'https://shop.pan21.com/api/notify/stripe'
+const URL_ = 'https://shop.pan21.com/api/webhook'
 const EVENTS = ['payment_intent.succeeded', 'payment_intent.payment_failed', 'customer.subscription.created',
   'customer.subscription.deleted', 'invoice.payment_failed', 'charge.refunded', 'charge.dispute.created']
 
@@ -13,12 +14,17 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
   try {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2023-10-16' as any })
+  if (req.nextUrl.searchParams.get('test')) {
+    const evs = await stripe.events.list({ type: 'payment_intent.succeeded', limit: 1 })
+    if (!evs.data[0]) return NextResponse.json({ error: 'kein Event' })
+    return NextResponse.json({ test: evs.data[0].id, result: await notifyStripeEvent(evs.data[0].id) })
+  }
   const list = await stripe.webhookEndpoints.list({ limit: 100 })
   if (req.nextUrl.searchParams.get('list')) return NextResponse.json(list.data.map(w => ({ id: w.id, url: w.url, status: w.status, created: new Date(w.created * 1000).toISOString().slice(0, 10), desc: w.description, events: w.enabled_events })))
   const existing = list.data.find(w => w.url === URL_)
-  const ep = existing
-    ? await stripe.webhookEndpoints.update(existing.id, { enabled_events: EVENTS as any, disabled: false })
-    : await stripe.webhookEndpoints.create({ url: URL_, enabled_events: EVENTS as any, description: 'PAN21 Meldestelle -> nachrichten@pan21.com' })
+  if (!existing) return NextResponse.json({ error: 'Shop-Webhook nicht gefunden' }, { status: 404 })
+  const events = Array.from(new Set([...existing.enabled_events, ...EVENTS]))
+  const ep = await stripe.webhookEndpoints.update(existing.id, { enabled_events: events as any })
   const acct = await stripe.accounts.retrieve().catch(() => null as any)
   return NextResponse.json({
     ok: true, id: ep.id, status: ep.status, account: acct?.settings?.dashboard?.display_name || acct?.id,

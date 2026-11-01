@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { notifyStripeEvent, NOTIFY_TITLES } from '@/lib/stripe-notify'
 
 export async function POST(req: NextRequest) {
   const body = await req.text()
@@ -6,6 +7,12 @@ export async function POST(req: NextRequest) {
   let event: any
   try { event = JSON.parse(body) } catch {
     return NextResponse.json({ error: 'Invalid payload' }, { status: 400 })
+  }
+
+  // Zentrale Meldestelle (nachrichten@pan21.com): Zahlungen aller Netzwerk-Sites
+  if (event?.id && NOTIFY_TITLES[event.type]) {
+    try { await notifyStripeEvent(event.id) } catch (e) { console.error('notify', e) }
+    return NextResponse.json({ received: true })
   }
 
   if (event.type === 'checkout.session.completed') {
