@@ -1,0 +1,24 @@
+<?php
+/**
+ * Plugin Name: PAN21 Meldestelle
+ * Description: Schickt eine Blindkopie jeder Formular-, Bestell- und Registrierungs-Mail an nachrichten@pan21.com. (Must-Use-Plugin, zentral installiert)
+ * Version: 1.0
+ */
+if (!defined('ABSPATH')) exit;
+
+add_filter('wp_mail', function ($args) {
+    $copy = 'nachrichten@pan21.com';
+    $subject = isset($args['subject']) ? (string) $args['subject'] : '';
+    // Systemrauschen auslassen
+    if (preg_match('/passwor[dt]|auto.?update|automatische.?aktualisier|has been updated|wurde aktualisiert|Wiederherstellungsmodus|recovery mode|Datenexport|export request|Debug/i', $subject)) {
+        return $args;
+    }
+    $to = is_array($args['to']) ? implode(',', $args['to']) : (string) $args['to'];
+    if (stripos($to, $copy) !== false) return $args;
+    $headers = $args['headers'] ?? [];
+    if (!is_array($headers)) $headers = $headers === '' ? [] : explode("\n", str_replace("\r\n", "\n", $headers));
+    foreach ($headers as $h) { if (stripos($h, $copy) !== false) return $args; }
+    $headers[] = 'Bcc: ' . $copy;
+    $args['headers'] = $headers;
+    return $args;
+}, 999);
