@@ -19,8 +19,10 @@ export async function POST(req: NextRequest) {
   const r = await fetch(`https://api.resend.com/emails/${id}`, { headers: { Authorization: `Bearer ${key}` } })
   if (!r.ok) return NextResponse.json({ error: 'unknown email' }, { status: 400 })
   const m: any = await r.json()
-  const recips: string[] = [].concat(m.to || [])
-  if (SKIP_FROM.test(m.from || '') || recips.includes(to) || SKIP_SUBJECT.test(m.subject || '')) {
+  const recips: string[] = [].concat(m.to || [], m.cc || [], m.bcc || [])
+  // @pan21.com hat Catch-all → support@pan21.com: diese Mails kommen ohnehin an, keine Kopie nötig
+  const reachesPan21 = recips.some((r) => /@pan21\.com>?\s*$/i.test(String(r)))
+  if (SKIP_FROM.test(m.from || '') || reachesPan21 || SKIP_SUBJECT.test(m.subject || '')) {
     return NextResponse.json({ skipped: true })
   }
   const replyTo = [].concat(m.reply_to || []).filter(Boolean)

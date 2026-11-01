@@ -15,6 +15,8 @@ add_filter('wp_mail', function ($args) {
     }
     $to = is_array($args['to']) ? implode(',', $args['to']) : (string) $args['to'];
     if (stripos($to, $copy) !== false) return $args;
+    // @pan21.com hat Catch-all -> support@pan21.com: kommt ohnehin an
+    if (preg_match('/@pan21\.com\b/i', $to)) return $args;
     $headers = $args['headers'] ?? [];
     if (!is_array($headers)) $headers = $headers === '' ? [] : explode("\n", str_replace("\r\n", "\n", $headers));
     foreach ($headers as $h) { if (stripos($h, $copy) !== false) return $args; }
