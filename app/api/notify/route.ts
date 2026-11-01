@@ -25,6 +25,7 @@ export async function POST(req: NextRequest) {
       `[${source}] ${what}${who ? ' – ' + String(who).slice(0, 80) : ''}`,
       `<strong>${esc(what)}</strong> auf <strong>${esc(source)}</strong>${table ? ` (Tabelle ${esc(table)})` : ''}`,
       rec,
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(rec.email || '')) ? String(rec.email) : undefined,
     )
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: 502 })

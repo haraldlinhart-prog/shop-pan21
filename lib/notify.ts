@@ -17,7 +17,7 @@ export function rowsHtml(obj: Record<string, unknown>): string {
     }).join('')
 }
 
-export async function sendNotice(subject: string, intro: string, data: Record<string, unknown>) {
+export async function sendNotice(subject: string, intro: string, data: Record<string, unknown>, replyTo?: string) {
   const key = process.env.RESEND_API_KEY
   if (!key) throw new Error('RESEND_API_KEY fehlt')
   const to = process.env.NOTIFY_TO || 'nachrichten@pan21.com'
@@ -28,7 +28,7 @@ export async function sendNotice(subject: string, intro: string, data: Record<st
   const r = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ from: 'PAN21 Meldestelle <noreply@pan21.com>', to, subject, html }),
+    body: JSON.stringify({ from: 'PAN21 Meldestelle <noreply@pan21.com>', to, subject, html, ...(replyTo ? { reply_to: replyTo } : {}) }),
   })
   if (!r.ok) throw new Error(`Resend ${r.status}: ${await r.text()}`)
 }
