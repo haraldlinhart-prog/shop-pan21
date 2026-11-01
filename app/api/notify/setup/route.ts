@@ -14,6 +14,7 @@ export async function POST(req: NextRequest) {
   try {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2023-10-16' as any })
   const list = await stripe.webhookEndpoints.list({ limit: 100 })
+  if (req.nextUrl.searchParams.get('list')) return NextResponse.json(list.data.map(w => ({ id: w.id, url: w.url, status: w.status, created: new Date(w.created * 1000).toISOString().slice(0, 10), desc: w.description, events: w.enabled_events })))
   const existing = list.data.find(w => w.url === URL_)
   const ep = existing
     ? await stripe.webhookEndpoints.update(existing.id, { enabled_events: EVENTS as any, disabled: false })
