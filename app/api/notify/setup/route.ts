@@ -11,6 +11,7 @@ const EVENTS = ['payment_intent.succeeded', 'payment_intent.payment_failed', 'cu
 export async function POST(req: NextRequest) {
   if (req.headers.get('x-notify-secret') !== process.env.NOTIFY_SECRET || !process.env.NOTIFY_SECRET)
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
+  try {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2023-10-16' as any })
   const list = await stripe.webhookEndpoints.list({ limit: 100 })
   const existing = list.data.find(w => w.url === URL_)
@@ -22,4 +23,7 @@ export async function POST(req: NextRequest) {
     ok: true, id: ep.id, status: ep.status, account: acct?.settings?.dashboard?.display_name || acct?.id,
     all_webhooks: list.data.map(w => ({ url: w.url, status: w.status, events: w.enabled_events.length })),
   })
+  } catch (e: any) {
+    return NextResponse.json({ error: e?.message, type: e?.type, code: e?.code }, { status: 500 })
+  }
 }
