@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { notifyStripeEvent, NOTIFY_TITLES } from '@/lib/stripe-notify'
+import { verifiedStripeEvent } from '@/lib/stripe-verify'
 
 export async function POST(req: NextRequest) {
   const body = await req.text()
 
-  let event: any
-  try { event = JSON.parse(body) } catch {
-    return NextResponse.json({ error: 'Invalid payload' }, { status: 400 })
+  // Echtheit prüfen: Event direkt bei Stripe abrufen (Body allein wird nicht vertraut)
+  const event: any = await verifiedStripeEvent(body)
+  if (!event) {
+    return NextResponse.json({ error: 'Invalid or unverified event' }, { status: 400 })
   }
 
   // Zentrale Meldestelle (nachrichten@pan21.com): Zahlungen aller Netzwerk-Sites

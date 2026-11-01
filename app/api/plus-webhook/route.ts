@@ -1,20 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { PRODUCT_HANDLERS } from '@/lib/plusActivation'
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2023-10-16' })
+import { verifiedStripeEvent } from '@/lib/stripe-verify'
 
 export async function POST(req: NextRequest) {
   const rawBody = await req.text()
-  const sig = req.headers.get('stripe-signature') || ''
-
-  let event: Stripe.Event
-  try {
-    event = stripe.webhooks.constructEvent(rawBody, sig, process.env.STRIPE_WEBHOOK_SECRET!)
-  } catch (err: any) {
-    console.error('Webhook signature error:', err.message)
-    return NextResponse.json({ error: `Webhook Error: ${err.message}` }, { status: 400 })
-  }
+  // Früher: constructEvent mit STRIPE_WEBHOOK_SECRET – das ist aber das Secret des
+  // Shop-Webhooks, nicht dieses Endpoints -> jede Zustellung 400 -> Stripe hat den
+  // Endpoint deaktiviert. Jetzt: Event direkt bei Stripe abrufen.
+  const event = await verifiedStripeEvent(rawBody)
+  if (!event) return NextResponse.json({ error: 'Invalid or unverified event' }, { status: 400 })
 
   try {
     if (event.type === 'checkout.session.completed') {

@@ -21,6 +21,18 @@ export async function POST(req: NextRequest) {
   }
   const list = await stripe.webhookEndpoints.list({ limit: 100 })
   if (req.nextUrl.searchParams.get('list')) return NextResponse.json(list.data.map(w => ({ id: w.id, url: w.url, status: w.status, created: new Date(w.created * 1000).toISOString().slice(0, 10), desc: w.description, events: w.enabled_events })))
+  if (req.nextUrl.searchParams.get('enable_plus')) {
+    const plus = list.data.find(w => w.url === 'https://shop.pan21.com/api/plus-webhook')
+    if (!plus) return NextResponse.json({ error: 'plus-webhook nicht gefunden' })
+    const up = await stripe.webhookEndpoints.update(plus.id, { disabled: false })
+    // Verpasste PLUS-Käufe der letzten 30 Tage (älter hält Stripe nicht vor)
+    const missed: any[] = []
+    for await (const ev of stripe.events.list({ type: 'checkout.session.completed', limit: 100 })) {
+      const m: any = (ev.data.object as any).metadata || {}
+      if (m.product) missed.push({ event: ev.id, product: m.product, email: m.email, site: m.site_id, date: new Date(ev.created * 1000).toISOString().slice(0, 10) })
+    }
+    return NextResponse.json({ plus: up.id, status: up.status, plus_checkouts_last_30d: missed })
+  }
   const existing = list.data.find(w => w.url === URL_)
   if (!existing) return NextResponse.json({ error: 'Shop-Webhook nicht gefunden' }, { status: 404 })
   const events = Array.from(new Set([...existing.enabled_events, ...EVENTS]))
