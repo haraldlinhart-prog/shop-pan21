@@ -39,5 +39,11 @@ export async function POST(req: NextRequest) {
     })
     return NextResponse.json(await r.json(), { status: r.status })
   }
+  if (action === 'replay') {
+    // Test: eine bestimmte Mail durch den Kopie-Weg schicken
+    const id = req.nextUrl.searchParams.get('id')
+    const r = await fetch('https://shop.pan21.com/api/notify/resend', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ type: 'email.sent', data: { email_id: id } }) })
+    return NextResponse.json(await r.json(), { status: r.status })
+  }
   return NextResponse.json({ error: 'action?' }, { status: 400 })
 }
