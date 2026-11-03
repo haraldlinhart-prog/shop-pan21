@@ -565,23 +565,6 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
     hint: 'The Companies House Authentication Code is not requested directly in the order process — after ordering, you will receive separate instructions for securely submitting it. The service runs for 12 months from acceptance of the order and does not renew automatically. All prices plus official fees and external costs.',
     tags: ['UK Limited', 'Annual administration', 'Companies House', 'Compliance'],
   },
-  'geschaeftsadresse-pan-office': {
-    name: 'Book a Business Address',
-    shortDesc: 'Digital business address at over 100 locations worldwide — bookable instantly, with digital mail management. From 3 locations in one booking, the volume discount applies automatically.',
-    priceLabel: 'From €29.00/month — directly at pan-office.de',
-    included: [
-      'Over 100 locations worldwide to choose from',
-      'Digital mail management',
-      'Bookable instantly, no lease agreement',
-      'Volume discount from 3 locations',
-      '2% EUROPAN bonus on every booking',
-    ],
-    notIncluded: [],
-    addons: [],
-    process: [],
-    hint: 'This offer is booked directly at pan-office.de — current locations, prices and availability can always be viewed live there.',
-    tags: ['Business address', 'PO box', 'pan-office'],
-  },
   'europan-guthaben-aufladen': {
     name: 'Top Up EUROPAN Balance',
     shortDesc: 'Top up your EUROPAN balance directly — by credit card or bank transfer, in an amount of your choice. Redeemable network-wide, including here in the shop for the Doppel-Wums bonus.',
@@ -589,7 +572,7 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
     included: [
       'Instant credit on card payment',
       'Amount of your choice',
-      'Redeemable network-wide (shop, pan-office.de and others)',
+      'Redeemable network-wide (including the shop)',
       'Prerequisite for the Doppel-Wums bonus',
     ],
     notIncluded: [],
@@ -764,7 +747,7 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
   },
   'series-llc-gruendung': {
     name: 'Formation of an American Series LLC',
-    shortDesc: 'One master LLC, any number of series underneath it — each with its own liability shield. One-off formation from €49, annual administration from €19. Office, phone and internet options can be added directly during the order.',
+    shortDesc: 'One master LLC, any number of series underneath it — each with its own liability shield. One-off formation from €49, annual administration from €19. Phone and internet options can be added directly during the order.',
     priceLabel: 'Formation from €49 · annual administration from €19 — directly at einfach-llc.de',
     included: [
       'Master LLC with any number of series underneath it',
@@ -772,12 +755,12 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
       'Multiple members and managers possible',
       'Digital Operating Agreement included',
       'One-off formation from €49, annual administration from €19',
-      'Optional add-ons at order time: US office address, US phone number, web hosting/email',
+      'Optional add-ons at order time: US phone number, web hosting/email',
     ],
     notIncluded: [],
     addons: [],
     process: [],
-    hint: 'This offer is formed directly at einfach-llc.de. During the order process, office, phone and internet options (US business address, US phone number with automatic forwarding, website/email at 10com.net) can conveniently be added.',
+    hint: 'This offer is formed directly at einfach-llc.de. During the order process, phone and internet options (US phone number with automatic forwarding, website/email at 10com.net) can conveniently be added.',
     tags: ['Series LLC', 'USA', 'Company formation', 'Wyoming'],
   },
   'madagascar-start': {

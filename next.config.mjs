@@ -24,7 +24,10 @@ const nextConfig = {
     ])
     redirects.push(
       { source: '/produkt-kategorie/firmengruendung', destination: '/#produkte', permanent: true },
-      { source: '/produkt-kategorie/firmengruendung/', destination: '/#produkte', permanent: true }
+      { source: '/produkt-kategorie/firmengruendung/', destination: '/#produkte', permanent: true },
+      // Angebot eingestellt (PAN OFFICE). Die Shop-Widgets vieler Netzwerk-Sites verlinken noch auf diese URL.
+      { source: '/produkt/geschaeftsadresse-pan-office', destination: '/#produkte', permanent: true },
+      { source: '/en/produkt/geschaeftsadresse-pan-office', destination: '/en#products', permanent: true }
     )
     return redirects
   },
