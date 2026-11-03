@@ -8,7 +8,7 @@ const COINS = [
   { id: 'europan', label: 'EUROPAN', icon: '🇪🇺' },
 ]
 
-// Standard-Logik für EUROPAN-Bestellungen im gesamten PAN21-Netzwerk (siehe pan-office.de):
+// Standard-Logik für EUROPAN-Bestellungen im gesamten PAN21-Netzwerk:
 // 1) EUROPAN-Bonus (2%) — steht jedem verifizierten Konto zu, Kunde wählt "jetzt einsetzen"
 //    oder "auf dem Noble-Konto sparen".
 // 2) Doppel-Wums (zusätzlich 3%) — nur wenn der komplette (bereits um den Bonus reduzierte)
