@@ -372,16 +372,16 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
   }
   // Die Bestellmail geht an das deutschsprachige Team und ist deshalb immer deutsch beschriftet.
   const trustDe = s.trust === 'none' ? undefined : [
-    s.trust === 'md' ? ftDe.variants.md : s.trust === 'sh' ? ftDe.variants.sh : ftDe.variants.both,
+    ftDe.variants[s.trust],
     s.shType ? `${ftDe.shareholder}: ${ftDe.shTypes[s.shType]}` : '',
     withMd ? 'Alleiniger Kontozugriff zur Kenntnis genommen' : '',
-    withMd ? `${ftDe.account}: ${s.account ? `${ftDe.accounts[s.account]} (${TRUST_ACCOUNT_FEE[s.account]} € pauschal)` : ftDe.notWanted}` : '',
+    withMd ? (s.account ? `${ftDe.accounts[s.account]} (${TRUST_ACCOUNT_FEE[s.account]} € pauschal)` : `${ftDe.account}: ${ftDe.notWanted}`) : '',
     `${ftDe.payment}: ${s.billing === 'yearly' ? `${ftDe.payYearly} (${ftDe.payYearlySub})` : ftDe.payMonthly}`,
   ].filter(Boolean).join('; ')
   const trustLines = s.trust === 'none' ? [f.trustNone] : [
-    s.trust === 'md' ? f.trustMd : s.trust === 'sh' ? f.trustSh : f.trustBoth,
+    ft.variants[s.trust],
     s.shType ? `${ft.shareholder}: ${ft.shTypes[s.shType]}` : '',
-    withMd ? `${ft.account}: ${s.account ? `${ft.accounts[s.account]}, ${flatFee(TRUST_ACCOUNT_FEE[s.account], lang)}` : ft.notWanted}` : '',
+    withMd ? (s.account ? `${ft.accounts[s.account]}: ${flatFee(TRUST_ACCOUNT_FEE[s.account], lang)}` : `${ft.account}: ${ft.notWanted}`) : '',
     `${ft.payment}: ${s.billing === 'yearly' ? `${ft.payYearly} (${ft.payYearlySub})` : ft.payMonthly}`,
   ].filter(Boolean)
   const customer = { firstName: s.d.firstName, lastName: s.d.lastName, contactEmail: s.d.email, phone: s.d.phone, company: s.d.company, street: s.d.street, postalCode: s.d.postalCode, city: s.d.city, country: s.d.country, desiredName: s.d.desiredName, extras: extrasDe, domain: domainFull ? `${domainFull} (${money(domainPrice(domainTld), 'de')} pro Jahr)` : undefined, trust: trustDe }
@@ -444,7 +444,7 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
     title: chosen.name,
     chip: `${f.steps[1]}: ${s.form === 'ug' ? 'UG' : 'GmbH'}`,
     rows, totalLabel: f.totalLabel, total: money(total, lang),
-    note: `${chosen.priceNote ?? (lang === 'de' ? 'Zzgl. etwaiger Behörden- und Notargebühren.' : 'Plus any government and notary fees.')}${europanActive ? ` ${f.paidEuropan}` : ''}`,
+    note: `${chosen.priceNote ?? (lang === 'de' ? 'Zzgl. etwaiger Behörden- und Notargebühren.' : 'Plus any government and notary fees.')}${europanActive ? ` ${f.paidEuropan}` : ''}${s.trust !== 'none' || s.extras.length ? ` ${f.notInTotal}` : ''}`,
   }
 
   const pickButton = (form: LegalForm, label: string) => (

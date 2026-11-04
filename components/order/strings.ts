@@ -28,7 +28,7 @@ export const STRINGS = {
       trustSh: 'Treuhand: nur Gesellschafter', trustShSub: 'Ein Treuhänder wird Gesellschafter. Geschäftsführer werden Sie selbst.',
       trustBoth: 'Treuhand: Geschäftsführer und Gesellschafter', trustBothSub: 'Ein Treuhänder übernimmt beide Rollen. Sie zahlen beide Preise.',
       trustBankOnly: 'Eine Kontoeröffnung durch uns ist nur möglich, wenn Sie einen Treuhand-Geschäftsführer buchen. Werden Sie selbst Geschäftsführer, eröffnen Sie das Konto selbst.', trustBankHint: 'Bankkonto:',
-      trustRow: 'Treuhand', trustMoreLink: 'Alle Details zur Treuhand', trustMoreUrl: '/produkt/deutsche-treuhand-mandatsadministration',
+      trustRow: 'Treuhand', notInTotal: 'Treuhand und Zusatzleistungen sind in diesem Gesamtpreis nicht enthalten.', trustMoreLink: 'Alle Details zur Treuhand', trustMoreUrl: '/produkt/deutsche-treuhand-mandatsadministration',
       formTitle: 'Rechtsform wählen', formLead: 'Beide Pakete im Vergleich. Sie können die Auswahl bis zum Abschluss ändern.',
       chosen: '✓ Gewählt', chooseUg: 'UG wählen', chooseGmbh: 'GmbH wählen',
       rows: [
@@ -150,7 +150,7 @@ export const STRINGS = {
       trustSh: 'Trustee: shareholder only', trustShSub: 'A trustee becomes shareholder. You become managing director yourself.',
       trustBoth: 'Trustee: managing director and shareholder', trustBothSub: 'A trustee takes on both roles. You pay both prices.',
       trustBankOnly: 'We can only open an account if you book a trustee managing director. If you become managing director yourself, you open the account yourself.', trustBankHint: 'Bank account:',
-      trustRow: 'Trustee', trustMoreLink: 'All details about the trustee service', trustMoreUrl: '/en/produkt/deutsche-treuhand-mandatsadministration',
+      trustRow: 'Trustee', notInTotal: 'The trustee service and additional services are not included in this total.', trustMoreLink: 'All details about the trustee service', trustMoreUrl: '/en/produkt/deutsche-treuhand-mandatsadministration',
       formTitle: 'Choose the legal form', formLead: 'Both packages compared. You can change your choice until you complete the order.',
       chosen: '✓ Selected', chooseUg: 'Choose UG', chooseGmbh: 'Choose GmbH',
       rows: [
