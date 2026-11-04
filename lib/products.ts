@@ -45,6 +45,9 @@ export const PRODUCTS: Product[] = [
       addons: [
         'Beratung zur Geschäftsadresse',
         'Verwaltungs- und Strukturierungsoptionen nach Prüfung',
+        'Webspace mit WordPress-Vorinstallation',
+        'Domain-Registrierung',
+        'E-Mail-Adressen',
       ],
       hint: 'UG: Das Stammkapital beträgt mindestens 1,00 EUR. Das Paket orientiert sich an einer Gründung mit einem Stammkapital von 1.000,00 EUR. GmbH: Das Stammkapital beträgt grundsätzlich 25.000,00 EUR. Davon muss vor der Eintragung mindestens die gesetzlich erforderliche Einzahlung geleistet werden.',
       priceNote: 'UG: Inklusive Notar- und Registergerichtsgebühren. GmbH: Zzgl. etwaiger Behörden- und Notargebühren.',
@@ -78,6 +81,9 @@ export const PRODUCTS: Product[] = [
     addons: [
       'Beratung zur Geschäftsadresse',
       'Verwaltungs- und Geschäftsführungsstrukturen nach Prüfung',
+      'Webspace mit WordPress-Vorinstallation',
+      'Domain-Registrierung',
+      'E-Mail-Adressen',
     ],
     process: [
       'Bestellung des Gründungspakets',
@@ -122,6 +128,9 @@ export const PRODUCTS: Product[] = [
     addons: [
       'Beratung zur Geschäftsadresse',
       'Verwaltungs- und Strukturierungsoptionen nach Prüfung',
+      'Webspace mit WordPress-Vorinstallation',
+      'Domain-Registrierung',
+      'E-Mail-Adressen',
     ],
     process: [
       'Bestellung des Gründungspakets',

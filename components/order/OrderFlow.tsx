@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation'
 import { PRODUCTS, type Product } from '@/lib/products'
 import { PRODUCTS_EN } from '@/lib/products.en'
 import { BalanceWidget } from '@/components/BalanceWidget'
-import { FORMATION_SLUGS, LEGAL_LINKS, TRUST_ACCOUNT_FEE, TRUST_MONTHLY, TRUST_PAID_MONTHS_PER_YEAR, TRUST_SLUG, type LegalForm } from '@/lib/orderFlow'
+import { FORMATION_SLUGS, LEGAL_LINKS, TRUST_ACCOUNT_FEE, TRUST_MONTHLY, TRUST_PAID_MONTHS_PER_YEAR, TRUST_SLUG, HOSTING_ADDON_START, type LegalForm } from '@/lib/orderFlow'
 import { STRINGS, type Lang } from './strings'
 import '@/app/globals.css'
 import './order.css'
@@ -288,6 +288,7 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
   const price = chosen.price as number
   const hasLegal = Boolean(LEGAL_LINKS.terms && LEGAL_LINKS.withdrawal)
   const set = (k: string) => (v: string) => patch({ d: { ...s.d, [k]: v } })
+  const toggleExtra = (i: number) => patch({ extras: s.extras.includes(i) ? s.extras.filter(x => x !== i) : [...s.extras, i] })
 
   async function loadToken(forSlug: string) {
     const res = await fetch(`/api/checkout-token?slug=${encodeURIComponent(forSlug)}`)
@@ -416,10 +417,21 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
         <div className="ofl-head"><h1 className="ofl-h1" tabIndex={-1}>{f.extrasTitle}</h1><p className="ofl-lead">{f.extrasLead}</p></div>
         <div className="ofl-choices">
           <Card id="extra-none" type="checkbox" checked={s.extras.length === 0} onChange={() => patch({ extras: [] })} title={f.noThanks} price={money(0, lang)} sub={f.noThanksSub} />
-          {chosen.addons.map((a, i) => (
-            <Card key={a} id={`extra-${i}`} type="checkbox" checked={s.extras.includes(i)} onChange={() => patch({ extras: s.extras.includes(i) ? s.extras.filter(x => x !== i) : [...s.extras, i] })} title={a} price={f.extraPrice} sub={i === 0 ? f.addressSub : f.extraSub} />
+          {chosen.addons.slice(0, HOSTING_ADDON_START).map((a, i) => (
+            <Card key={a} id={`extra-${i}`} type="checkbox" checked={s.extras.includes(i)} onChange={() => toggleExtra(i)} title={a} price={f.extraPrice} sub={i === 0 ? f.addressSub : f.extraSub} />
           ))}
         </div>
+        <section className="ofl-sec">
+          <h2 className="ofl-h2">{f.hostingTitle}</h2>
+          <p className="ofl-lead">{f.hostingLead}</p>
+          <div className="ofl-choices">
+            {chosen.addons.slice(HOSTING_ADDON_START).map((a, n) => {
+              const i = HOSTING_ADDON_START + n
+              return <Card key={a} id={`extra-${i}`} type="checkbox" checked={s.extras.includes(i)} onChange={() => toggleExtra(i)} title={a} price={f.extraPrice} sub={f.hostingSubs[n]} />
+            })}
+          </div>
+          <div className="ofl-hint"><strong>{f.hostingAltTitle}</strong> {f.hostingAlt} <a href={f.hostingAltUrl} target="_blank" rel="noopener noreferrer">{f.hostingAltLink}</a></div>
+        </section>
         <Actions t={t} onBack={() => goTo(1)} onNext={() => goTo(3)} nextLabel={f.nextData} />
       </>}
 

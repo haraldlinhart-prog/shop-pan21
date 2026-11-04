@@ -43,6 +43,9 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
       addons: [
         'Advice on the business address',
         'Administration and structuring options, subject to review',
+        'Web space with WordPress pre-installed',
+        'Domain registration',
+        'Email addresses',
       ],
       hint: 'UG: The share capital is at least €1.00. This package is based on a formation with share capital of €1,000.00. GmbH: The share capital is generally €25,000.00, of which at least the legally required payment must be made before registration.',
       priceNote: 'UG: Including notary and commercial register fees. GmbH: Plus any government and notary fees.',
@@ -70,6 +73,9 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
     addons: [
       'Advice on the business address',
       'Administration and management structures, subject to review',
+      'Web space with WordPress pre-installed',
+      'Domain registration',
+      'Email addresses',
     ],
     process: [
       'Order the formation package',
@@ -106,6 +112,9 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
     addons: [
       'Advice on the business address',
       'Administration and structuring options, subject to review',
+      'Web space with WordPress pre-installed',
+      'Domain registration',
+      'Email addresses',
     ],
     process: [
       'Order the formation package',
