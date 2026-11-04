@@ -12,8 +12,8 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   const de = `${base}/produkt/${product.slug}`
   const en = `${base}/en/produkt/${product.slug}`
   return {
-    title: { absolute: `${product.name} | PAN21 Shop` },
-    description: product.shortDesc,
+    title: { absolute: `${product.card?.name ?? product.name} | PAN21 Shop` },
+    description: product.card?.lead ?? product.shortDesc,
     openGraph: { url: en, title: product.card?.name ?? product.name, description: product.shortDesc },
     alternates: {
       canonical: en,

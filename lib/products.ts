@@ -18,7 +18,7 @@ export type Product = {
   inquiry?: boolean  // true = Kontaktformular statt Warenkorb
   externalUrl?: string  // gesetzt = Karte verlinkt direkt auf die eigene Produktseite (andere PAN21-Domain), kein interner Checkout
   tags: string[]
-  card?: { name: string; shortDesc: string; priceFrom?: boolean }  // abweichender Text fuer die Kachel im Shop
+  card?: { name: string; shortDesc: string; priceFrom?: boolean; lead?: string; included?: string[]; addons?: string[]; hint?: string; priceNote?: string }  // abweichender Text fuer die Kachel im Shop
   hideCard?: boolean  // keine eigene Kachel im Shop; Seite, Checkout und Produkt-Feed bleiben
 }
 
@@ -29,6 +29,25 @@ export const PRODUCTS: Product[] = [
       name: 'Deutsche UG-/GmbH-Gründung',
       shortDesc: 'Gründung einer deutschen UG oder GmbH nach Musterprotokoll – inklusive Vorbereitung der Gründungsdaten, notarieller Gründung und Handelsregistereintragung. Die Rechtsform wählen Sie bei der Bestellung.',
       priceFrom: true,
+      lead: 'Gründung einer deutschen UG oder GmbH nach Musterprotokoll – inklusive Vorbereitung der Gründungsdaten, notarieller Gründung und Handelsregistereintragung.',
+      included: [
+        'Vorbereitung der Gründungsdaten',
+        'UG: Vorabprüfung von Firmenname und Unternehmensgegenstand mit der örtlichen IHK',
+        'GmbH: Abstimmung des gewünschten Firmennamens',
+        'Gründung nach Musterprotokoll',
+        'Vorbereitung der notariellen Gründung',
+        'Handelsregisteranmeldung',
+        'Begleitung bis zur Eintragung',
+        'UG: Notar- und Registergerichtsgebühren nach Musterprotokoll',
+        'UG: Ein Geschäftsführer und bis zu drei Gesellschafter',
+        'GmbH: Grundpaket mit einem Geschäftsführer und einem Gesellschafter',
+      ],
+      addons: [
+        'Beratung zur Geschäftsadresse',
+        'Verwaltungs- und Strukturierungsoptionen nach Prüfung',
+      ],
+      hint: 'UG: Das Stammkapital beträgt mindestens 1,00 EUR. Das Paket orientiert sich an einer Gründung mit einem Stammkapital von 1.000,00 EUR. GmbH: Das Stammkapital beträgt grundsätzlich 25.000,00 EUR. Davon muss vor der Eintragung mindestens die gesetzlich erforderliche Einzahlung geleistet werden.',
+      priceNote: 'UG: Inklusive Notar- und Registergerichtsgebühren. GmbH: Zzgl. etwaiger Behörden- und Notargebühren.',
     },
     sku: 'EUROPAN-DE-UG-001',
     name: 'Deutsche UG-Gründung',

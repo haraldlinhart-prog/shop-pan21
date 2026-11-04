@@ -19,6 +19,7 @@ export const STRINGS = {
       nextForm: 'Weiter zur Rechtsform →', nextExtras: 'Weiter zu den Zusatzleistungen →', nextData: 'Weiter zu Ihren Angaben →', nextReview: 'Weiter zur Prüfung →',
       europanBox: 'Mit EUROPAN-Guthaben sparen Sie bis zu 5 %: 2 % EUROPAN-Bonus und 3 % Doppel-Wums, wenn das Guthaben den ganzen Betrag deckt.',
       formHint: 'Im nächsten Schritt wählen Sie zwischen UG und GmbH.',
+      priceFromLabel: 'Preis ab',
       formTitle: 'Rechtsform wählen', formLead: 'Beide Pakete im Vergleich. Sie können die Auswahl bis zum Abschluss ändern.',
       chosen: '✓ Gewählt', chooseUg: 'UG wählen', chooseGmbh: 'GmbH wählen',
       rows: [
@@ -103,6 +104,7 @@ export const STRINGS = {
       nextForm: 'Continue to legal form →', nextExtras: 'Continue to additional services →', nextData: 'Continue to your details →', nextReview: 'Continue to review →',
       europanBox: 'With EUROPAN balance you save up to 5%: 2% EUROPAN bonus and 3% Doppel-Wums when your balance covers the full amount.',
       formHint: 'In the next step you choose between UG and GmbH.',
+      priceFromLabel: 'Price from',
       formTitle: 'Choose the legal form', formLead: 'Both packages compared. You can change your choice until you complete the order.',
       chosen: '✓ Selected', chooseUg: 'Choose UG', chooseGmbh: 'Choose GmbH',
       rows: [
