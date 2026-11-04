@@ -439,7 +439,7 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
     addons: [
       'Ongoing bookkeeping and accounting',
       'Registered Office renewal',
-      'Account opening at a fixed price',
+      'Account opening: €550 flat fee, regardless of the bank',
     ],
     process: [
       'Enquiry and initial structure description',
@@ -473,7 +473,7 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
       'Delaying insolvency or prejudicing creditors',
     ],
     addons: [
-      'Account opening: USA and Hong Kong at a fixed price, all other countries after separate review',
+      'Account opening: €550 flat fee, regardless of the bank',
       'Multi-jurisdiction holding structures by individual quote',
     ],
     process: [
@@ -512,7 +512,7 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
     addons: [
       'Account opening with digital providers such as Qonto, bunq or Finom: €350 flat fee',
       'Account opening with high-street banks such as Deutsche Bank or Commerzbank: €550 flat fee',
-      'Special requests are charged separately, e.g. an account with a foreign bank or a provider such as Currenxie',
+      'Special requests are charged separately, e.g. an account with a foreign bank for a German company or a provider such as Currenxie',
     ],
     process: [
       'Enquiry and initial structure description',

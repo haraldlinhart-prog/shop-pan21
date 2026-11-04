@@ -516,7 +516,7 @@ export const PRODUCTS: Product[] = [
     addons: [
       'Laufende Buchhaltung und Accounting',
       'Registered Office-Verlängerung',
-      'Kontoeröffnung zum Festpreis',
+      'Kontoeröffnung: 550 € pauschal, unabhängig von der Bank',
     ],
     process: [
       'Anfrage und erste Strukturbeschreibung',
@@ -557,7 +557,7 @@ export const PRODUCTS: Product[] = [
       'Insolvenzverschleppung oder Gläubigerbenachteiligung',
     ],
     addons: [
-      'Kontoeröffnung: USA und Hong Kong zum Festpreis, alle anderen Länder nach gesonderter Prüfung',
+      'Kontoeröffnung: 550 € pauschal, unabhängig von der Bank',
       'Multi-Jurisdiction-Holding-Strukturen nach individuellem Angebot',
     ],
     process: [
@@ -603,7 +603,7 @@ export const PRODUCTS: Product[] = [
     addons: [
       'Kontoeröffnung bei digitalen Anbietern wie Qonto, bunq oder Finom: 350 € pauschal',
       'Kontoeröffnung bei Filialbanken wie Deutsche Bank oder Commerzbank: 550 € pauschal',
-      'Sonderwünsche werden gesondert berechnet, z. B. ein Konto bei einer ausländischen Bank oder bei einem Anbieter wie Currenxie',
+      'Sonderwünsche werden gesondert berechnet, z. B. für eine deutsche Gesellschaft ein Konto bei einer ausländischen Bank oder bei einem Anbieter wie Currenxie',
     ],
     process: [
       'Anfrage und erste Strukturbeschreibung',
