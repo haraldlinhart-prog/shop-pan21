@@ -574,6 +574,14 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
             </div>
           )}
           <div className="ofl-hint"><strong>{f.hostingAltTitle}</strong> {f.hostingAlt} <a href={`${f.hostingAltUrl}${domainFull ? `&domain=${encodeURIComponent(domainFull)}` : ''}`} target="_blank" rel="noopener noreferrer">{f.hostingAltLink}</a></div>
+          <div className="ofl-tools">
+            <h3>{f.toolsTitle}</h3>
+            <p>{f.toolsLead}</p>
+            <ul>
+              {f.tools.map(tool => <li key={tool.name}><a href={tool.url} target="_blank" rel="noopener noreferrer">{tool.name}</a> {tool.text}</li>)}
+            </ul>
+            <p>{f.toolsAll} <a href={f.toolsAllUrl} target="_blank" rel="noopener noreferrer">tools.webmaster.plus</a></p>
+          </div>
         </section>
         <section className="ofl-sec">
           <h2 className="ofl-h2">{f.phoneTitle}</h2>

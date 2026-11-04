@@ -64,6 +64,15 @@ export const STRINGS = {
       hostingAltTitle: 'Lieber selbst buchen?',
       hostingAlt: 'Das Paket Pro können Sie auch direkt auf 1euro-hosting.de bestellen. Eine über 1euro-hosting.de registrierte Domain bleibt fest mit dem Hosting dort verbunden und lässt sich nicht zu einem anderen Anbieter umziehen.',
       hostingAltLink: 'Paket Pro auf 1euro-hosting.de', hostingAltUrl: 'https://1euro-hosting.de/bestellen?paket=pro',
+      toolsTitle: 'Kostenlose Tools für Ihre Website',
+      toolsLead: 'Wir haben eine ganze Reihe unabhängiger Webtools gebaut, die den Webauftritt unserer Kunden besser und einfacher machen.',
+      tools: [
+        { name: 'impressum-free.de', url: 'https://www.impressum-free.de', text: 'erstellt ein rechtssicheres Impressum.' },
+        { name: 'pagespeed-plus.de', url: 'https://www.pagespeed-plus.de', text: 'prüft, ob Ihre Website schnell genug ist.' },
+        { name: 'site-ok.de', url: 'https://www.site-ok.de', text: 'überwacht, ob Ihre Website erreichbar ist.' },
+        { name: 'pan21counter.de', url: 'https://www.pan21counter.de', text: 'fügt Ihrer Website einen Besucherzähler hinzu.' },
+      ],
+      toolsAll: 'Alle kostenlosen Tools finden Sie unter', toolsAllUrl: 'https://tools.webmaster.plus',
       phoneTitle: 'Telefon und Erreichbarkeit',
       phoneLead: 'Wir richten die Telefonanlage auf Wunsch für Ihre neue Gesellschaft ein. Ihre Auswahl wird als Wunsch mitgeschickt und ist nicht Teil dieser Zahlung. Die Gebühren werden gesondert abgerechnet.',
       phonePlans: [
@@ -188,6 +197,15 @@ export const STRINGS = {
       hostingAltTitle: 'Prefer to book it yourself?',
       hostingAlt: 'You can also order the Pro package directly on 1euro-hosting.de. A domain registered through 1euro-hosting.de stays tied to the hosting there and cannot be moved to another provider.',
       hostingAltLink: 'Pro package on 1euro-hosting.de', hostingAltUrl: 'https://1euro-hosting.de/bestellen?paket=pro',
+      toolsTitle: 'Free tools for your website',
+      toolsLead: 'We have built a whole range of independent web tools that make our customers\' web presence better and easier to manage.',
+      tools: [
+        { name: 'impressum-free.de', url: 'https://www.impressum-free.de/en', text: 'creates a legally compliant German Impressum.' },
+        { name: 'pagespeed-plus.de', url: 'https://www.pagespeed-plus.de/en', text: 'checks whether your website is fast enough.' },
+        { name: 'site-ok.de', url: 'https://www.site-ok.de/en', text: 'monitors whether your website is reachable.' },
+        { name: 'pan21counter.de', url: 'https://www.pan21counter.de/en/', text: 'adds a visitor counter to your website.' },
+      ],
+      toolsAll: 'You can find all free tools at', toolsAllUrl: 'https://tools.webmaster.plus/en',
       phoneTitle: 'Phone and availability',
       phoneLead: 'We set up the phone system for your new company on request. Your selection is sent along as a request and is not part of this payment. The fees are billed separately.',
       phonePlans: [
