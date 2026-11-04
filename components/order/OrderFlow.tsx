@@ -491,6 +491,7 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
 
       {s.step === 2 && <>
         <div className="ofl-head"><h1 className="ofl-h1" tabIndex={-1}>{f.trustTitle}</h1><p className="ofl-lead">{f.trustLead}</p></div>
+        <img className="ofl-photo" src="/hero/treuhand-handschlag.jpg" alt={f.trustImageAlt} width={1672} height={941} />
         <section className="ofl-sec"><h2 className="ofl-h2">{f.trustChoice}</h2>
           <div className="ofl-choices">
             <Card id="trust-none" name="trust" checked={s.trust === 'none'} onChange={() => chooseTrust('none')} title={f.trustNone} price={money(0, lang)} sub={f.trustNoneSub} />
