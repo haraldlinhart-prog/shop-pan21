@@ -46,6 +46,8 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
         'Pro web hosting package from 1euro-hosting.de',
         'Standard phone system from telefon-zentrale.com',
         'Phone exchange with AI from telefon-zentrale.com',
+        'Trustee for managing director and shareholder after a free pre-check',
+        'Bank account opening, only together with a trustee managing director',
       ],
       hint: 'UG: The share capital is at least €1.00. This package is based on a formation with share capital of €1,000.00. GmbH: The share capital is generally €25,000.00, of which at least the legally required payment must be made before registration.',
       priceNote: 'UG: Including notary and commercial register fees. GmbH: Plus any government and notary fees.',
