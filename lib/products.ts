@@ -516,7 +516,7 @@ export const PRODUCTS: Product[] = [
     addons: [
       'Laufende Buchhaltung und Accounting',
       'Registered Office-Verlängerung',
-      'Bankkonto- und Zahlungsadministration nach gesonderter Prüfung',
+      'Kontoeröffnung zum Festpreis',
     ],
     process: [
       'Anfrage und erste Strukturbeschreibung',
@@ -525,7 +525,7 @@ export const PRODUCTS: Product[] = [
       'Einrichtung der Nominee-/Treuhandstruktur',
       'Laufende Administration und Dokumentation',
     ],
-    hint: 'Dieses Angebot dient ausschließlich der professionellen, dokumentierten Gesellschaftsverwaltung. Eine Mandatsannahme erfolgt nur nach vollständiger KYC- und Compliance-Prüfung.',
+    hint: 'Dieses Angebot dient ausschließlich der professionellen, dokumentierten Gesellschaftsverwaltung. Eine Mandatsannahme erfolgt nur nach vollständiger KYC- und Compliance-Prüfung. Keine Einrichtungsgebühr, Mindestlaufzeit 3 Monate, Kündigung zum Monatsende mit 14 Tagen Frist, bei jährlicher Zahlung ein Monat Rabatt. Die Abrechnung erfolgt ohne Mehrwertsteuer durch die PAN21.com International LLC.',
     tags: ['UK Nominee', 'Treuhand', 'UK Limited', 'Gesellschaftsverwaltung'],
   },
   {
@@ -557,7 +557,7 @@ export const PRODUCTS: Product[] = [
       'Insolvenzverschleppung oder Gläubigerbenachteiligung',
     ],
     addons: [
-      'Bankkonto- und Zahlungsadministration nach gesonderter Prüfung',
+      'Kontoeröffnung: USA und Hong Kong zum Festpreis, alle anderen Länder nach gesonderter Prüfung',
       'Multi-Jurisdiction-Holding-Strukturen nach individuellem Angebot',
     ],
     process: [
@@ -568,7 +568,7 @@ export const PRODUCTS: Product[] = [
       'Einrichtung der internationalen Struktur',
       'Laufende Compliance-Administration',
     ],
-    hint: 'Dieses Angebot ist kein automatisch bestellbares Standardprodukt. Die endgültige Annahme, Strukturfreigabe und Preisbestätigung erfolgen ausschließlich nach individueller Due-Diligence-Prüfung.',
+    hint: 'Dieses Angebot ist kein automatisch bestellbares Standardprodukt. Die endgültige Annahme, Strukturfreigabe und Preisbestätigung erfolgen ausschließlich nach individueller Due-Diligence-Prüfung. Keine Einrichtungsgebühr, Mindestlaufzeit 3 Monate, Kündigung zum Monatsende mit 14 Tagen Frist, bei jährlicher Zahlung ein Monat Rabatt. Die Abrechnung erfolgt ohne Mehrwertsteuer durch die PAN21.com International LLC.',
     tags: ['Internationale Nominee', 'Treuhand', 'Asset Protection', 'Holding', 'Multi-Jurisdiction'],
   },
   {
@@ -613,7 +613,7 @@ export const PRODUCTS: Product[] = [
       'Einrichtung der Treuhand-/Mandatsstruktur',
       'Laufende Compliance- und Dokumentationsverwaltung',
     ],
-    hint: 'Die 285 €/Monat sind eine monatliche Basisgebühr für die organschaftliche Treuhandtätigkeit als Geschäftsführer. Die Gesellschafterstellung kostet 155 €/Monat; wer beide Rollen bucht, zahlt beide Preise. Tätigkeiten, die darüber hinausgehen, werden vorab angefragt und im Einzelfall separat abgerechnet. Dieses Angebot dient ausdrücklich nicht der verdeckten "Firmenbeerdigung", dem Herauslösen von Altverantwortlichen aus einer problematischen Gesellschaft oder der Verschleierung einer insolvenzreifen Situation. Bei Hinweisen auf unzulässige Nutzung wird kein Mandat übernommen bzw. ein laufendes sofort beendet. Kein automatisch bestellbares Standardprodukt — Mandatsannahme erst nach kostenloser Vorprüfung.',
+    hint: 'Die 285 €/Monat sind eine monatliche Basisgebühr für die organschaftliche Treuhandtätigkeit als Geschäftsführer. Die Gesellschafterstellung kostet 155 €/Monat; wer beide Rollen bucht, zahlt beide Preise. Tätigkeiten, die darüber hinausgehen, werden vorab angefragt und im Einzelfall separat abgerechnet. Dieses Angebot dient ausdrücklich nicht der verdeckten "Firmenbeerdigung", dem Herauslösen von Altverantwortlichen aus einer problematischen Gesellschaft oder der Verschleierung einer insolvenzreifen Situation. Bei Hinweisen auf unzulässige Nutzung wird kein Mandat übernommen bzw. ein laufendes sofort beendet. Kein automatisch bestellbares Standardprodukt — Mandatsannahme erst nach kostenloser Vorprüfung. Keine Einrichtungsgebühr, Mindestlaufzeit 3 Monate, Kündigung zum Monatsende mit 14 Tagen Frist, bei jährlicher Zahlung ein Monat Rabatt. Die Abrechnung erfolgt ohne Mehrwertsteuer durch die PAN21.com International LLC.',
     tags: ['Treuhand', 'Mandatsverwaltung', 'Deutschland', 'Compliance'],
   },
   {

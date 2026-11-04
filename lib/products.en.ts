@@ -439,7 +439,7 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
     addons: [
       'Ongoing bookkeeping and accounting',
       'Registered Office renewal',
-      'Bank account and payment administration after separate review',
+      'Account opening at a fixed price',
     ],
     process: [
       'Enquiry and initial structure description',
@@ -448,7 +448,7 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
       'Set-up of the nominee/trustee structure',
       'Ongoing administration and documentation',
     ],
-    hint: 'This offer serves exclusively professional, documented company administration. A mandate is only accepted after a complete KYC and compliance review.',
+    hint: 'This offer serves exclusively professional, documented company administration. A mandate is only accepted after a complete KYC and compliance review. No set-up fee, minimum term 3 months, cancellation at the end of a month with 14 days\' notice, one month discount for annual payment. Billed without VAT by PAN21.com International LLC.',
     tags: ['UK Nominee', 'Trustee', 'UK Limited', 'Company administration'],
   },
   'internationale-nominee-treuhandadministration': {
@@ -473,7 +473,7 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
       'Delaying insolvency or prejudicing creditors',
     ],
     addons: [
-      'Bank account and payment administration after separate review',
+      'Account opening: USA and Hong Kong at a fixed price, all other countries after separate review',
       'Multi-jurisdiction holding structures by individual quote',
     ],
     process: [
@@ -484,7 +484,7 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
       'Set-up of the international structure',
       'Ongoing compliance administration',
     ],
-    hint: 'This offer is not an automatically orderable standard product. Final acceptance, structure approval and price confirmation are given exclusively after an individual due-diligence review.',
+    hint: 'This offer is not an automatically orderable standard product. Final acceptance, structure approval and price confirmation are given exclusively after an individual due-diligence review. No set-up fee, minimum term 3 months, cancellation at the end of a month with 14 days\' notice, one month discount for annual payment. Billed without VAT by PAN21.com International LLC.',
     tags: ['International nominee', 'Trustee', 'Asset protection', 'Holding', 'Multi-jurisdiction'],
   },
   'deutsche-treuhand-mandatsadministration': {
@@ -522,7 +522,7 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
       'Set-up of the trustee/mandate structure',
       'Ongoing compliance and documentation administration',
     ],
-    hint: 'The €285/month is a monthly base fee for the corporate-officer trustee activity as managing director. The shareholder position costs €155/month; booking both roles means paying both prices. Work beyond that scope is requested in advance and billed separately case by case. This offer expressly does not serve the covert "burial" of a company, extracting former officers from a problematic company, or concealing a situation on the brink of insolvency. If there are indications of impermissible use, no mandate will be taken on, or an ongoing one will be ended immediately. Not an automatically orderable standard product — the mandate is only accepted after a free pre-check.',
+    hint: 'The €285/month is a monthly base fee for the corporate-officer trustee activity as managing director. The shareholder position costs €155/month; booking both roles means paying both prices. Work beyond that scope is requested in advance and billed separately case by case. This offer expressly does not serve the covert "burial" of a company, extracting former officers from a problematic company, or concealing a situation on the brink of insolvency. If there are indications of impermissible use, no mandate will be taken on, or an ongoing one will be ended immediately. Not an automatically orderable standard product — the mandate is only accepted after a free pre-check. No set-up fee, minimum term 3 months, cancellation at the end of a month with 14 days\' notice, one month discount for annual payment. Billed without VAT by PAN21.com International LLC.',
     tags: ['Trustee', 'Mandate administration', 'Germany', 'Compliance'],
   },
   'uk-limited-jahresadministration': {
