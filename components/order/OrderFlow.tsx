@@ -354,7 +354,7 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
   const ugPrice = PRODUCTS.find(p => p.slug === FORMATION_SLUGS.ug)!.price as number
   const gmbhPrice = PRODUCTS.find(p => p.slug === FORMATION_SLUGS.gmbh)!.price as number
   const rows: Rows = [{ label: f.packageRow, value: money(price, lang) }]
-  s.extras.forEach(i => { if (chosen.addons[i]) rows.push({ label: chosen.addons[i], value: f.extraPrice }) })
+  s.extras.forEach(i => { if (chosen.addons[i]) rows.push({ label: chosen.addons[i], value: i >= HOSTING_ADDON_START ? f.hostingPrice : f.extraPrice }) })
   if (europanActive) rows.push({ label: f.advantage, value: `− ${money(price - total, lang)}`, minus: true })
   // Erste Seite der gemeinsamen Kachel: noch keine Rechtsform gewaehlt, also beide Preise zeigen
   const overview = s.step === 0 && shown.card ? shown.card : null
@@ -427,7 +427,7 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
           <div className="ofl-choices">
             {chosen.addons.slice(HOSTING_ADDON_START).map((a, n) => {
               const i = HOSTING_ADDON_START + n
-              return <Card key={a} id={`extra-${i}`} type="checkbox" checked={s.extras.includes(i)} onChange={() => toggleExtra(i)} title={a} price={f.extraPrice} sub={f.hostingSubs[n]} />
+              return <Card key={a} id={`extra-${i}`} type="checkbox" checked={s.extras.includes(i)} onChange={() => toggleExtra(i)} title={a} price={f.hostingPrice} sub={f.hostingSub} />
             })}
           </div>
           <div className="ofl-hint"><strong>{f.hostingAltTitle}</strong> {f.hostingAlt} <a href={f.hostingAltUrl} target="_blank" rel="noopener noreferrer">{f.hostingAltLink}</a></div>
