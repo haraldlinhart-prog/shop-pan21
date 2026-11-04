@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 // Nur EUROPAN ist aktuell als Zahlungswährung im Shop aktiv. Die API kann technisch
 // auch N-Coin, SwissyCash und CryptoCoin — das ist aber bewusst (noch) nicht erwünscht.
@@ -25,7 +25,8 @@ type BalanceWidgetProps = {
   productName: string
   affiliateRef?: string
   prefillEmail?: string
-  embedded?: boolean
+  embedded?: boolean  // in der Bestellstrecke: Bezahlt wird im Hauptbereich, nicht im Widget
+  note?: string
   customer?: Record<string, string | undefined>
   lang?: Lang
   onNoblePayment?: (result: any) => void
@@ -90,8 +91,8 @@ const STRINGS: Record<Lang, any> = {
     total: 'Gesamt',
     processing: 'Verarbeitung…',
     payNowBtn: 'Jetzt mit EUROPAN bezahlen →',
-    payOrderBtn: 'Zahlungspflichtig bestellen →',
-    notFullyCoveredEmbedded: 'Guthaben deckt die Bestellung noch nicht komplett — bitte oben Kreditkarte wählen oder EUROPAN aufladen.',
+    payInFlow: 'Bezahlen können Sie im Schritt „Prüfen und bezahlen“.',
+    notFullyCoveredEmbedded: 'Guthaben deckt die Bestellung noch nicht komplett — bitte Kreditkarte wählen oder EUROPAN aufladen.',
     notFullyCovered: 'Guthaben deckt die Bestellung noch nicht komplett — bitte per Kreditkarte links bezahlen oder EUROPAN aufladen.',
     openDashboard: 'Dashboard öffnen →',
     createAccountCta: <>EUROPAN-Konto erstellen und<br />passenden Betrag vorbereiten</>,
@@ -144,8 +145,8 @@ const STRINGS: Record<Lang, any> = {
     total: 'Total',
     processing: 'Processing…',
     payNowBtn: 'Pay now with EUROPAN →',
-    payOrderBtn: 'Order with obligation to pay →',
-    notFullyCoveredEmbedded: 'Your balance does not yet fully cover the order — please choose credit card above, or top up your EUROPAN balance.',
+    payInFlow: 'You can pay in the "Review and pay" step.',
+    notFullyCoveredEmbedded: 'Your balance does not yet fully cover the order — please choose credit card, or top up your EUROPAN balance.',
     notFullyCovered: 'Your balance does not yet fully cover the order — please pay by card on the left, or top up your EUROPAN balance.',
     openDashboard: 'Open dashboard →',
     createAccountCta: <>Create a EUROPAN account and<br />prepare the matching amount</>,
@@ -158,8 +159,10 @@ const STRINGS: Record<Lang, any> = {
   },
 }
 
-export function BalanceWidget({ slug, price, affiliateRef, lang = 'de', embedded = false, customer, onNoblePayment, onPriceUpdate }: BalanceWidgetProps) {
+export function BalanceWidget({ slug, price, affiliateRef, lang = 'de', embedded = false, note, customer, onNoblePayment, onPriceUpdate }: BalanceWidgetProps) {
   const t = STRINGS[lang]
+  const customerRef = useRef(customer)
+  customerRef.current = customer
   const numberLocale = lang === 'en' ? 'en-US' : 'de-DE'
   const [showLogin, setShowLogin] = useState(false)
   const [email, setEmail] = useState('')
@@ -225,7 +228,7 @@ export function BalanceWidget({ slug, price, affiliateRef, lang = 'de', embedded
     } else {
       onPriceUpdate(null)
     }
-  }, [verified, afterDoppelWums, fullyCovered])
+  }, [verified, afterDoppelWums, fullyCovered, slug])
 
   async function handlePay() {
     if (!verified || !fullyCovered) return
@@ -234,7 +237,7 @@ export function BalanceWidget({ slug, price, affiliateRef, lang = 'de', embedded
       const res = await fetch('/api/noble-pay', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, pin, slug, coin_id: selectedCoin, affiliate_ref: affiliateRef, customer }),
+        body: JSON.stringify({ email, pin, slug, coin_id: selectedCoin, affiliate_ref: affiliateRef, customer: customerRef.current }),
       })
       const data = await res.json()
       if (!res.ok) { setError(data.error || t.payFailed); setPaying(false); return }
@@ -275,6 +278,8 @@ export function BalanceWidget({ slug, price, affiliateRef, lang = 'de', embedded
             </span>
           )}
         </h4>
+
+        {note && <p style={{ fontSize: '0.72rem', color: gray, lineHeight: 1.5, margin: '0 0 0.7rem' }}>{note}</p>}
 
         {/* Bestellwert ohne EUROPAN-Vorteil */}
         <div style={statBox}>
@@ -390,14 +395,18 @@ export function BalanceWidget({ slug, price, affiliateRef, lang = 'de', embedded
               <strong style={{ color: gold, fontFamily: 'Georgia, serif', fontSize: '1.2rem' }}>€{finalTotal.toFixed(2)}</strong>
             </div>
 
-            {fullyCovered ? (
+            {embedded ? (
+              !note && <div style={{ background: fullyCovered ? greenBg : cream, border: '1px solid #E2DDD8', borderRadius: '6px', padding: '0.7rem', textAlign: 'center', fontSize: '0.78rem', color: fullyCovered ? green : gray, marginTop: '0.75rem' }}>
+                {fullyCovered ? t.payInFlow : t.notFullyCoveredEmbedded}
+              </div>
+            ) : fullyCovered ? (
               <button onClick={handlePay} disabled={paying}
                 style={{ width: '100%', background: '#0D5C33', color: '#fff', border: 'none', padding: '0.75rem', borderRadius: '6px', fontSize: '0.85rem', fontWeight: 700, cursor: 'pointer', marginTop: '0.75rem' }}>
-                {paying ? t.processing : (embedded ? t.payOrderBtn : t.payNowBtn)}
+                {paying ? t.processing : t.payNowBtn}
               </button>
             ) : (
               <div style={{ background: cream, border: '1px solid #E2DDD8', borderRadius: '6px', padding: '0.7rem', textAlign: 'center', fontSize: '0.78rem', color: gray, marginTop: '0.75rem' }}>
-                {embedded ? t.notFullyCoveredEmbedded : t.notFullyCovered}
+                {t.notFullyCovered}
               </div>
             )}
 

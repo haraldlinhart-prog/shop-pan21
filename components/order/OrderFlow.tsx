@@ -80,7 +80,7 @@ function ReviewRow({ label, value, onChange, t }: { label: string; value: ReactN
 }
 
 /* ---------- Rahmen: Kopf, Fortschritt, Zusammenfassung, Fuss ---------- */
-function Shell({ lang, slug, steps, step, goTo, summary, affiliateRef, children }: { lang: Lang; slug: string; steps: string[]; step: number; goTo: (n: number) => void; summary: Summary; affiliateRef: string; children: ReactNode }) {
+function Shell({ lang, slug, steps, step, goTo, summary, affiliateRef, side, children }: { lang: Lang; slug: string; steps: string[]; step: number; goTo: (n: number) => void; summary: Summary; affiliateRef: string; side: ReactNode; children: ReactNode }) {
   const t = STRINGS[lang]
   const [sheet, setSheet] = useState(false)
   const [details, setDetails] = useState(true)
@@ -131,6 +131,7 @@ function Shell({ lang, slug, steps, step, goTo, summary, affiliateRef, children 
               {children}
             </main>
             {!done && (
+              <div className="ofl-side">
               <aside className={`ofl-sum${sheet ? ' open' : ''}`} aria-label={t.summary}>
                 <button type="button" className="ofl-mob-bar" aria-expanded={sheet} onClick={() => setSheet(!sheet)}>
                   <span>{summary.totalLabel} <span className="ofl-chev">▴</span></span>
@@ -154,6 +155,8 @@ function Shell({ lang, slug, steps, step, goTo, summary, affiliateRef, children 
                   <span className="ofl-sum-note">{summary.note}</span>
                 </div>
               </aside>
+              {side}
+              </div>
             )}
           </div>
         </div>
@@ -273,7 +276,7 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
   const [errors, setErrors] = useState<Errors>({})
   const [busy, setBusy] = useState(false)
   const [payError, setPayError] = useState('')
-  const [preview, setPreview] = useState<{ finalTotal: number; fullyCovered: boolean } | null>(null)
+  const [preview, setPreview] = useState<{ finalTotal: number; fullyCovered: boolean; pay: () => void | Promise<void> } | null>(null)
   const [paid, setPaid] = useState<{ order_reference?: string } | null>(null)
   const tokenRef = useRef<{ slug: string; at: number; token: string } | null>(null)
 
@@ -321,6 +324,13 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
     return !Object.keys(e).length
   }
 
+  async function payEuropan() {
+    if (!preview) return
+    if (hasLegal && !s.terms) { setErrors({ terms: f.errTerms }); focusFirstError(); return }
+    setErrors({}); setBusy(true)
+    try { await preview.pay() } finally { setBusy(false) }
+  }
+
   async function payCard() {
     if (hasLegal && !s.terms) { setErrors({ terms: f.errTerms }); focusFirstError(); return }
     setErrors({}); setPayError(''); setBusy(true)
@@ -351,13 +361,14 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
   }
 
   const pickButton = (form: LegalForm, label: string) => (
-    <button type="button" id={`pick-${form}`} className="ofl-pick" aria-pressed={s.form === form} onClick={() => { patch({ form }); setPreview(null) }}>{s.form === form ? f.chosen : label}</button>
+    <button type="button" id={`pick-${form}`} className="ofl-pick" aria-pressed={s.form === form} onClick={() => patch({ form })}>{s.form === form ? f.chosen : label}</button>
   )
   const ugPrice = PRODUCTS.find(p => p.slug === FORMATION_SLUGS.ug)!.price as number
   const gmbhPrice = PRODUCTS.find(p => p.slug === FORMATION_SLUGS.gmbh)!.price as number
 
   return (
-    <Shell lang={lang} slug={slug} steps={f.steps} step={s.step} goTo={goTo} summary={summary} affiliateRef={affiliateRef}>
+    <Shell lang={lang} slug={slug} steps={f.steps} step={s.step} goTo={goTo} summary={summary} affiliateRef={affiliateRef}
+      side={<BalanceWidget embedded slug={chosenSlug} price={price} productName={chosenDe.name} affiliateRef={affiliateRef} lang={lang} customer={customer} onPriceUpdate={setPreview} onNoblePayment={r => { setPaid(r); clear(); goTo(5) }} />}>
       {s.step === 0 && <>
         <Hero product={shown} />
         <div className="ofl-head">
@@ -437,14 +448,9 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
         </section>
         <section className="ofl-sec"><h2 className="ofl-h2">{f.payTitle}</h2>
           <div className="ofl-choices">
-            <Card id="pay-card" name="pay" checked={s.pay === 'card'} onChange={() => { patch({ pay: 'card' }); setPreview(null) }} title={f.card} sub={f.cardSub} />
+            <Card id="pay-card" name="pay" checked={s.pay === 'card'} onChange={() => patch({ pay: 'card' })} title={f.card} sub={f.cardSub} />
             <Card id="pay-europan" name="pay" checked={s.pay === 'europan'} onChange={() => patch({ pay: 'europan' })} title={f.europan} price={f.europanPr} sub={f.europanSub} />
           </div>
-          {s.pay === 'europan' && (
-            <BalanceWidget key={chosenSlug} embedded slug={chosenSlug} price={price} productName={chosenDe.name} affiliateRef={affiliateRef} lang={lang} customer={customer}
-              onPriceUpdate={setPreview}
-              onNoblePayment={r => { setPaid(r); clear(); goTo(5) }} />
-          )}
         </section>
         {hasLegal && <section className="ofl-sec">
           <label className="ofl-check" htmlFor="terms">
@@ -460,7 +466,12 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
               <Actions t={t} onBack={() => goTo(3)} onNext={payCard} disabled={busy} gold nextLabel={busy ? f.loading : `${f.orderBtn} — ${money(price, lang)}`} />
               <p className="ofl-note">{f.cardFine}</p>
             </>
-          : <Actions t={t} onBack={() => goTo(3)} />}
+          : <>
+              {!preview && <span className="ofl-err">{f.europanLogin}</span>}
+              {preview && !preview.fullyCovered && <span className="ofl-err">{f.europanLow}</span>}
+              <Actions t={t} onBack={() => goTo(3)} onNext={preview?.fullyCovered ? payEuropan : undefined} disabled={busy} gold nextLabel={busy ? f.loading : `${f.orderBtn} — )(\u00a0${preview ? preview.finalTotal.toLocaleString(t.numberLocale, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''}`} />
+              {preview?.fullyCovered && <p className="ofl-note">{f.europanFine}</p>}
+            </>}
       </>}
 
       {s.step === 5 && <>
@@ -580,7 +591,10 @@ function TrustFlow({ slug, lang }: { slug: string; lang: Lang }) {
   )
 
   return (
-    <Shell lang={lang} slug={slug} steps={f.steps} step={s.step} goTo={goTo} summary={summary} affiliateRef={affiliateRef}>
+    <Shell lang={lang} slug={slug} steps={f.steps} step={s.step} goTo={goTo} summary={summary} affiliateRef={affiliateRef}
+      side={s.variant && monthly === 0
+        ? <p className="ofl-note ofl-side-note">{f.europanCountry}</p>
+        : <BalanceWidget embedded note={f.europanNote} slug={slug} price={(monthly || TRUST_MONTHLY.managingDirector) * (s.billing === 'yearly' ? TRUST_PAID_MONTHS_PER_YEAR : 1)} productName={productDe.name} affiliateRef={affiliateRef} lang={lang} />}>
       {s.step === 0 && <>
         <Hero product={product} />
         <div className="ofl-head">
