@@ -37,6 +37,7 @@ body:has(.ofl) #pan21-nl-wrap { display: none; }
 .ofl-head, .ofl-sec { display: flex; flex-direction: column; gap: 0.55rem; }
 .ofl-hero { max-width: 340px; aspect-ratio: 1 / 1; border: 1px solid var(--lgray); overflow: hidden; }
 .ofl-hero img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.ofl-photo { display: block; width: 100%; height: auto; border: 1px solid var(--lgray); }
 .ofl-list { display: flex; flex-direction: column; gap: 0.35rem; font-size: 0.94rem; color: var(--gray); }
 .ofl-list li { padding-left: 1.35rem; position: relative; }
 .ofl-list.yes li::before { content: "✓"; position: absolute; left: 0; color: var(--ofl-green); font-weight: 700; }
