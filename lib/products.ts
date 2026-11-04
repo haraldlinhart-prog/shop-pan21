@@ -47,10 +47,10 @@ export const PRODUCTS: Product[] = [
       'Laufende Buchhaltung',
       'Steuerliche Beratung',
       'Individuelle Satzung außerhalb des Musterprotokolls',
-      'Laufende Geschäftsadresse, sofern nicht gesondert gebucht',
+      'Laufende Geschäftsadresse',
     ],
     addons: [
-      'Ergänzende Geschäftsadresse / Postservice',
+      'Beratung zur Geschäftsadresse',
       'Verwaltungs- und Geschäftsführungsstrukturen nach Prüfung',
     ],
     process: [
@@ -90,11 +90,10 @@ export const PRODUCTS: Product[] = [
       'Laufende Buchhaltung',
       'Steuerliche Beratung',
       'Individuelle Satzung außerhalb des Musterprotokolls',
-      'Laufende Geschäftsadresse, sofern nicht gesondert gebucht',
+      'Laufende Geschäftsadresse',
     ],
     addons: [
-      'Ergänzende Office- oder Geschäftsadressen',
-      'Postservice-Leistungen',
+      'Beratung zur Geschäftsadresse',
       'Verwaltungs- und Strukturierungsoptionen nach Prüfung',
     ],
     process: [

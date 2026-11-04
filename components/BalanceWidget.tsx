@@ -25,6 +25,8 @@ type BalanceWidgetProps = {
   productName: string
   affiliateRef?: string
   prefillEmail?: string
+  embedded?: boolean
+  customer?: Record<string, string | undefined>
   lang?: Lang
   onNoblePayment?: (result: any) => void
   onPriceUpdate?: (info: { finalTotal: number; fullyCovered: boolean; doppelWumsIncluded: boolean; pay: () => void } | null) => void
@@ -88,6 +90,8 @@ const STRINGS: Record<Lang, any> = {
     total: 'Gesamt',
     processing: 'Verarbeitung…',
     payNowBtn: 'Jetzt mit EUROPAN bezahlen →',
+    payOrderBtn: 'Zahlungspflichtig bestellen →',
+    notFullyCoveredEmbedded: 'Guthaben deckt die Bestellung noch nicht komplett — bitte oben Kreditkarte wählen oder EUROPAN aufladen.',
     notFullyCovered: 'Guthaben deckt die Bestellung noch nicht komplett — bitte per Kreditkarte links bezahlen oder EUROPAN aufladen.',
     openDashboard: 'Dashboard öffnen →',
     createAccountCta: <>EUROPAN-Konto erstellen und<br />passenden Betrag vorbereiten</>,
@@ -140,6 +144,8 @@ const STRINGS: Record<Lang, any> = {
     total: 'Total',
     processing: 'Processing…',
     payNowBtn: 'Pay now with EUROPAN →',
+    payOrderBtn: 'Order with obligation to pay →',
+    notFullyCoveredEmbedded: 'Your balance does not yet fully cover the order — please choose credit card above, or top up your EUROPAN balance.',
     notFullyCovered: 'Your balance does not yet fully cover the order — please pay by card on the left, or top up your EUROPAN balance.',
     openDashboard: 'Open dashboard →',
     createAccountCta: <>Create a EUROPAN account and<br />prepare the matching amount</>,
@@ -152,7 +158,7 @@ const STRINGS: Record<Lang, any> = {
   },
 }
 
-export function BalanceWidget({ slug, price, affiliateRef, lang = 'de', onNoblePayment, onPriceUpdate }: BalanceWidgetProps) {
+export function BalanceWidget({ slug, price, affiliateRef, lang = 'de', embedded = false, customer, onNoblePayment, onPriceUpdate }: BalanceWidgetProps) {
   const t = STRINGS[lang]
   const numberLocale = lang === 'en' ? 'en-US' : 'de-DE'
   const [showLogin, setShowLogin] = useState(false)
@@ -228,7 +234,7 @@ export function BalanceWidget({ slug, price, affiliateRef, lang = 'de', onNobleP
       const res = await fetch('/api/noble-pay', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, pin, slug, coin_id: selectedCoin, affiliate_ref: affiliateRef }),
+        body: JSON.stringify({ email, pin, slug, coin_id: selectedCoin, affiliate_ref: affiliateRef, customer }),
       })
       const data = await res.json()
       if (!res.ok) { setError(data.error || t.payFailed); setPaying(false); return }
@@ -245,7 +251,7 @@ export function BalanceWidget({ slug, price, affiliateRef, lang = 'de', onNobleP
   const statValue: React.CSSProperties = { fontFamily: 'Georgia, serif', fontSize: '1.15rem', fontWeight: 700, color: navy }
 
   if (success) return (
-    <div style={{ position: 'sticky', top: '88px' }}>
+    <div style={embedded ? undefined : { position: 'sticky', top: '88px' }}>
       <div style={card}>
         <h4 style={{ fontFamily: 'Georgia, serif', color: navy, fontSize: '1.05rem', marginBottom: '0.75rem' }}>{t.paymentSuccessTitle}</h4>
         <div style={{ background: greenBg, border: `1px solid ${greenBorder}`, borderRadius: '6px', padding: '0.9rem', fontSize: '0.82rem', color: green, lineHeight: 1.7 }}>
@@ -259,7 +265,7 @@ export function BalanceWidget({ slug, price, affiliateRef, lang = 'de', onNobleP
   )
 
   return (
-    <div style={{ position: 'sticky', top: '88px' }}>
+    <div style={embedded ? undefined : { position: 'sticky', top: '88px' }}>
       <div style={card}>
         <h4 style={{ fontFamily: 'Georgia, serif', color: navy, fontSize: '1.05rem', marginBottom: '0.9rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           {t.yourAdvantage}
@@ -387,11 +393,11 @@ export function BalanceWidget({ slug, price, affiliateRef, lang = 'de', onNobleP
             {fullyCovered ? (
               <button onClick={handlePay} disabled={paying}
                 style={{ width: '100%', background: '#0D5C33', color: '#fff', border: 'none', padding: '0.75rem', borderRadius: '6px', fontSize: '0.85rem', fontWeight: 700, cursor: 'pointer', marginTop: '0.75rem' }}>
-                {paying ? t.processing : t.payNowBtn}
+                {paying ? t.processing : (embedded ? t.payOrderBtn : t.payNowBtn)}
               </button>
             ) : (
               <div style={{ background: cream, border: '1px solid #E2DDD8', borderRadius: '6px', padding: '0.7rem', textAlign: 'center', fontSize: '0.78rem', color: gray, marginTop: '0.75rem' }}>
-                {t.notFullyCovered}
+                {embedded ? t.notFullyCoveredEmbedded : t.notFullyCovered}
               </div>
             )}
 

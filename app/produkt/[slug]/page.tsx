@@ -7,6 +7,8 @@ import { BalanceWidget } from '@/components/BalanceWidget'
 import { notFound } from 'next/navigation'
 import '@/app/globals.css'
 import './produkt.css'
+import { OrderFlow } from '@/components/order/OrderFlow'
+import { hasOrderFlow } from '@/lib/orderFlow'
 
 function ProduktContent({ slug }: { slug: string }) {
   const product = PRODUCTS.find(p => p.slug === slug)
@@ -346,7 +348,7 @@ import { Suspense } from 'react'
 export default function ProduktPage({ params }: { params: { slug: string } }) {
   return (
     <Suspense fallback={<div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center'}}>Laden…</div>}>
-      <ProduktContent slug={params.slug} />
+      {hasOrderFlow(params.slug) ? <OrderFlow slug={params.slug} lang="de" /> : <ProduktContent slug={params.slug} />}
     </Suspense>
   )
 }

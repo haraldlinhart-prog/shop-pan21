@@ -1,0 +1,160 @@
+/* Gefuehrte Bestellstrecke. Nutzt die Farben und Schriften aus globals.css.
+   --ofl-gold ist dunkler als --gold2, damit kleine Schrift auf Weiss lesbar bleibt. */
+.ofl { --ofl-gold: #8A6318; --ofl-line: #AEB8C4; --ofl-red: #B91C1C; --ofl-green: #15803D; background: var(--snow); padding-top: 68px; color: var(--text); font-size: 1rem; line-height: 1.55; }
+body:has(.ofl) #pan21-nl-wrap { display: none; }
+.ofl h1, .ofl h2 { font-family: var(--ff-d); color: var(--navy); font-weight: 600; margin: 0; text-wrap: balance; }
+.ofl p { margin: 0; }
+.ofl ul, .ofl ol { margin: 0; padding: 0; list-style: none; }
+.ofl button { font-family: inherit; cursor: pointer; }
+.ofl :focus-visible { outline: 2px solid var(--ofl-gold); outline-offset: 2px; }
+.ofl-wrap { max-width: 1140px; margin: 0 auto; padding-left: 2rem; padding-right: 2rem; }
+
+/* Fortschritt */
+.ofl-prog-band { background: var(--white); border-bottom: 1px solid var(--lgray); }
+.ofl .ofl-prog { display: flex; padding: 1rem 0 0.85rem; }
+.ofl-prog li { flex: 1; min-width: 0; position: relative; text-align: center; }
+.ofl-prog li::before { content: ""; position: absolute; top: 14px; left: -50%; width: 100%; height: 2px; background: var(--lgray); }
+.ofl-prog li:first-child::before { display: none; }
+.ofl-prog li.done::before, .ofl-prog li.now::before { background: var(--gold); }
+.ofl-pbtn { position: relative; z-index: 1; background: none; border: 0; padding: 0; color: var(--gray); font-size: 0.8rem; line-height: 1.25; display: flex; flex-direction: column; align-items: center; gap: 0.35rem; width: 100%; }
+.ofl .ofl-pbtn[disabled] { cursor: default; }
+.ofl-dot { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--white); border: 2px solid var(--lgray); font-weight: 600; font-size: 0.84rem; color: var(--gray); }
+.done .ofl-dot { background: var(--gold); border-color: var(--gold); color: var(--navy); }
+.now .ofl-dot { background: var(--navy); border-color: var(--navy); color: var(--white); }
+.now .ofl-pbtn { color: var(--navy); font-weight: 600; }
+.done .ofl-pbtn { color: var(--navy); }
+.ofl-prog-now { display: none; font-size: 0.9rem; font-weight: 600; color: var(--navy); padding-bottom: 0.75rem; text-align: center; }
+
+/* Raster */
+.ofl-layout { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 1.75rem; align-items: start; padding-top: 1.75rem; padding-bottom: 3rem; }
+.ofl-layout.one { grid-template-columns: minmax(0, 720px); justify-content: center; }
+.ofl-panel { background: var(--white); border: 1px solid var(--lgray); padding: 1.75rem; display: flex; flex-direction: column; gap: 1.5rem; min-width: 0; }
+.ofl-eyebrow { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ofl-gold); }
+.ofl-h1 { font-size: clamp(1.8rem, 4vw, 2.4rem); line-height: 1.15; }
+.ofl-h1:focus { outline: none; }
+.ofl-h2 { font-size: 1.35rem; line-height: 1.2; }
+.ofl-lead { color: var(--gray); }
+.ofl-head, .ofl-sec { display: flex; flex-direction: column; gap: 0.55rem; }
+.ofl-hero { max-width: 340px; aspect-ratio: 1 / 1; border: 1px solid var(--lgray); overflow: hidden; }
+.ofl-hero img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.ofl-list { display: flex; flex-direction: column; gap: 0.35rem; font-size: 0.94rem; color: var(--gray); }
+.ofl-list li { padding-left: 1.35rem; position: relative; }
+.ofl-list.yes li::before { content: "✓"; position: absolute; left: 0; color: var(--ofl-green); font-weight: 700; }
+.ofl-list.no li::before { content: "✗"; position: absolute; left: 0; color: var(--ofl-red); }
+.ofl-list.plus li::before { content: "+"; position: absolute; left: 0; color: var(--ofl-gold); font-weight: 700; }
+.ofl-list.dot li::before { content: ""; position: absolute; left: 0.2rem; top: 0.62em; width: 6px; height: 6px; background: var(--gold); }
+.ofl-steps { display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.94rem; color: var(--gray); }
+.ofl-steps li { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 0.4rem; }
+.ofl-steps b { font-family: var(--ff-d); color: var(--ofl-gold); font-size: 1.05rem; }
+.ofl-steps li.ok b { color: var(--ofl-green); }
+.ofl-hint { background: var(--snow); border-left: 3px solid var(--gold); padding: 0.85rem 1rem; font-size: 0.92rem; color: var(--gray); }
+.ofl-hint strong { color: var(--navy); }
+.ofl-note { font-size: 0.86rem; color: var(--gray); }
+.ofl-note a, .ofl-sum a { color: var(--ofl-gold); text-decoration: underline; }
+.ofl-related { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.5rem; }
+.ofl-related a { display: flex; gap: 0.75rem; padding: 0.75rem; border: 1px solid var(--lgray); }
+.ofl-related b { display: block; font-size: 0.86rem; color: var(--navy); }
+.ofl-related small { font-size: 0.78rem; color: var(--ofl-gold); }
+
+/* Vergleich */
+.ofl-table { border-collapse: collapse; width: 100%; font-size: 0.92rem; table-layout: fixed; }
+.ofl-table th, .ofl-table td { padding: 0.65rem 0.7rem; border-bottom: 1px solid var(--lgray); text-align: left; vertical-align: top; }
+.ofl-table thead th { font-weight: 600; color: var(--navy); border-bottom: 2px solid var(--lgray); }
+.ofl-table tbody th { font-weight: 500; color: var(--gray); }
+.ofl-table th:first-child { width: 27%; }
+.ofl-table .sel { background: #FBF6EA; }
+.ofl-tname { font-family: var(--ff-d); font-size: 1.25rem; line-height: 1.2; display: block; }
+.ofl-tprice { font-size: 1.02rem; font-weight: 600; display: block; margin-bottom: 0.5rem; }
+.ofl-pick { width: 100%; padding: 0.5rem; border: 1px solid var(--navy); background: var(--white); color: var(--navy); font-weight: 600; font-size: 0.88rem; border-radius: 3px; }
+.ofl-pick[aria-pressed="true"] { background: var(--navy); color: var(--white); }
+
+/* Karten */
+.ofl-choices { display: flex; flex-direction: column; gap: 0.6rem; }
+.ofl-card { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; gap: 0.2rem 0.7rem; align-items: start; padding: 0.9rem 1rem; border: 1px solid var(--lgray); background: var(--white); cursor: pointer; }
+.ofl-card:has(input:checked) { border-color: var(--ofl-gold); box-shadow: inset 0 0 0 1px var(--ofl-gold); }
+.ofl-card input { margin: 0.25rem 0 0; width: 17px; height: 17px; accent-color: var(--navy); }
+.ofl-card b { color: var(--navy); font-weight: 600; }
+.ofl-card small { grid-column: 2 / -1; color: var(--gray); font-size: 0.86rem; }
+.ofl-pr { color: var(--navy); font-weight: 600; font-size: 0.9rem; text-align: right; max-width: 13rem; }
+.ofl-pr:empty { display: none; }
+
+/* Formular */
+.ofl-form { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; }
+.ofl-f { display: flex; flex-direction: column; gap: 0.25rem; min-width: 0; }
+.ofl-f.w { grid-column: 1 / -1; }
+.ofl-f label { font-size: 0.86rem; font-weight: 500; color: var(--navy); }
+.ofl-f input, .ofl-f textarea { width: 100%; padding: 0.62rem 0.7rem; border: 1px solid var(--ofl-line); border-radius: 3px; background: var(--white); color: var(--text); font: inherit; }
+.ofl-f textarea { min-height: 100px; resize: vertical; }
+.ofl-f.bad input, .ofl-f.bad textarea { border-color: var(--ofl-red); }
+.ofl-err { color: var(--ofl-red); font-size: 0.84rem; }
+.ofl-check { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 0.6rem; font-size: 0.92rem; cursor: pointer; }
+.ofl-check input { margin: 0.2rem 0 0; width: 17px; height: 17px; accent-color: var(--navy); }
+
+/* Knoepfe */
+.ofl-actions { display: flex; flex-wrap: wrap; gap: 0.65rem; align-items: center; justify-content: space-between; padding-top: 0.25rem; }
+.ofl-btn { background: var(--navy); color: var(--white); border: 1px solid var(--navy); padding: 0.8rem 1.35rem; font-weight: 600; border-radius: 3px; font-size: 0.98rem; }
+.ofl-btn:hover { background: var(--navy2); }
+.ofl-btn.gold { background: var(--gold3); border-color: var(--gold3); color: var(--navy); }
+.ofl-btn.gold:hover { background: var(--gold); }
+.ofl-btn[disabled] { opacity: 0.6; cursor: wait; }
+.ofl-back { background: var(--white); color: var(--navy); border: 1px solid var(--ofl-line); padding: 0.8rem 1.1rem; border-radius: 3px; font-weight: 500; }
+.ofl-link { background: none; border: 0; padding: 0; color: var(--ofl-gold); text-decoration: underline; font-size: 0.88rem; font-weight: 500; }
+
+/* Pruefen */
+.ofl-rev { display: flex; flex-direction: column; margin: 0; }
+.ofl-rev > div { display: grid; grid-template-columns: 170px minmax(0, 1fr) auto; gap: 0.2rem 0.8rem; padding: 0.6rem 0; border-bottom: 1px solid var(--lgray); font-size: 0.94rem; }
+.ofl-rev dt { color: var(--gray); margin: 0; }
+.ofl-rev dd { margin: 0; color: var(--text); overflow-wrap: anywhere; white-space: pre-line; }
+
+/* Zusammenfassung */
+.ofl-sum { position: sticky; top: 84px; background: var(--white); border: 1px solid var(--lgray); border-top: 3px solid var(--gold); display: flex; flex-direction: column; }
+.ofl-sum-sec { padding: 1.05rem 1.15rem; display: flex; flex-direction: column; gap: 0.35rem; }
+.ofl-sum-sec + .ofl-sum-sec { border-top: 1px solid var(--lgray); }
+.ofl-sum h2 { font-size: 1.25rem; line-height: 1.2; }
+.ofl-sum-tg { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; background: none; border: 0; padding: 0; width: 100%; text-align: left; color: var(--navy); font-weight: 600; }
+.ofl-chev { display: inline-block; transition: transform 0.15s; }
+[aria-expanded="true"] > .ofl-chev, [aria-expanded="true"] .ofl-chev { transform: rotate(180deg); }
+.ofl-row { display: flex; justify-content: space-between; gap: 0.8rem; font-size: 0.9rem; color: var(--gray); }
+.ofl-row span:last-child { color: var(--text); text-align: right; font-variant-numeric: tabular-nums; }
+.ofl-row.minus span:last-child { color: var(--ofl-green); }
+.ofl-total { display: flex; justify-content: space-between; align-items: baseline; gap: 0.8rem; font-weight: 600; color: var(--navy); }
+.ofl-total b { font-family: var(--ff-d); font-size: 1.6rem; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ofl-sum-note { font-size: 0.82rem; color: var(--gray); }
+.ofl-mob-bar { display: none; }
+
+/* Fertig */
+.ofl-ok { width: 58px; height: 58px; border-radius: 50%; background: #E8F5EE; border: 1px solid #B7E4CC; display: grid; place-items: center; color: var(--ofl-green); font-size: 1.5rem; font-weight: 700; }
+
+@media (max-width: 860px) {
+  .ofl-nav .nav-links, .ofl-nav .ofl-nav-advice { display: none; }
+  .ofl-nav .nav-logo-text { white-space: nowrap; }
+  .ofl-nav .nav-logo-sub { white-space: nowrap; }
+  .ofl-wrap { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .ofl-layout { grid-template-columns: minmax(0, 1fr); padding-top: 1rem; padding-bottom: 6.5rem; }
+  .ofl-layout.one { grid-template-columns: minmax(0, 1fr); padding-bottom: 2rem; }
+  .ofl-panel { padding: 1.15rem; }
+  .ofl-pbtn .lb { display: none; }
+  .ofl .ofl-prog { padding-bottom: 0.5rem; }
+  .ofl-prog-now { display: block; }
+  .ofl-sum { position: fixed; left: 0; right: 0; bottom: 0; top: auto; z-index: 50; border: 0; border-top: 2px solid var(--gold); box-shadow: 0 -6px 20px rgba(11, 31, 58, 0.14); max-height: 75vh; overflow-y: auto; padding-bottom: env(safe-area-inset-bottom, 0px); }
+  .ofl-sum .full { display: none; }
+  .ofl-sum.open .full { display: flex; }
+  .ofl-sum .ofl-total { display: none; }
+  .ofl-mob-bar { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; width: 100%; background: var(--white); border: 0; padding: 0.7rem max(16px, env(safe-area-inset-right, 0px)) 0.7rem max(16px, env(safe-area-inset-left, 0px)); color: var(--navy); font-weight: 600; text-align: left; }
+  .ofl-mob-bar b { font-family: var(--ff-d); font-size: 1.35rem; font-variant-numeric: tabular-nums; }
+  .ofl-sum-sec { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .ofl-form { grid-template-columns: 1fr; }
+  .ofl-card { grid-template-columns: 22px minmax(0, 1fr); }
+  .ofl-pr { grid-column: 2; text-align: left; max-width: none; }
+  .ofl-rev > div { grid-template-columns: minmax(0, 1fr) auto; }
+  .ofl-rev dd { grid-column: 1 / -1; grid-row: 2; }
+  .ofl-actions .ofl-btn { flex: 1 1 100%; order: -1; }
+  .ofl-actions .ofl-back { flex: 1 1 100%; }
+  .ofl-table, .ofl-table thead, .ofl-table tbody { display: block; }
+  .ofl-table tr { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .ofl-table thead th:first-child { display: none; }
+  .ofl-table th:first-child { width: auto; }
+  .ofl-table tbody th { grid-column: 1 / -1; border-bottom: 0; padding: 0.7rem 0.5rem 0.1rem; font-weight: 600; color: var(--navy); }
+  .ofl-table td, .ofl-table thead th { padding: 0.45rem 0.5rem 0.6rem; }
+}
+@media (prefers-reduced-motion: reduce) { .ofl-chev { transition: none; } }

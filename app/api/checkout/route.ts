@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { PRODUCTS } from '@/lib/products'
 import { getProductsEn } from '@/lib/products.en'
 import { verifyToken } from '@/app/api/checkout-token/route'
+import { sanitizeCustomer, customerToMetadata } from '@/lib/orderCustomer'
 
 // Anti-Missbrauch: Dieser Endpoint hatte bisher KEINERLEI Schutz -- jeder
 // konnte per direktem POST beliebig viele Stripe-Checkout-Sessions ohne
@@ -109,7 +110,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Ungültige Anfrage-Herkunft.' }, { status: 403 })
     }
 
-    const { slug, email, affiliate_ref, token, lang } = await req.json()
+    const { slug, email, affiliate_ref, token, lang, customer } = await req.json()
     if (!slug || !email) return NextResponse.json({ error: 'Missing fields' }, { status: 400 })
     // Optional locale flag from the product page, used below only to route
     // success/cancel back to the matching language. Defaults to the German
@@ -177,6 +178,11 @@ export async function POST(req: NextRequest) {
       'metadata[sku]': product.sku,
       'metadata[affiliate_ref]': affiliate_ref || '',
     })
+
+    // Angaben aus der Bestellstrecke (Rechnungsadresse, Wuensche) laufen als
+    // Metadaten mit und erscheinen in der Bestellmail. Der Preis bleibt allein
+    // serverseitig aus PRODUCTS, der Browser kann ihn nicht beeinflussen.
+    for (const [key, value] of Object.entries(customerToMetadata(sanitizeCustomer(customer)))) params.set(key, value)
 
     if (product.price >= HIGH_VALUE_THRESHOLD_EUR) {
       params.set('payment_method_options[card][request_three_d_secure]', 'any')

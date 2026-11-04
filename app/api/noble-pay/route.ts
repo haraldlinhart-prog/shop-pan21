@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { PRODUCTS } from '@/lib/products'
+import { customerHtml, sanitizeCustomer } from '@/lib/orderCustomer'
 
 const NOBLE_API_URL = (process.env.NOBLE_API_URL || 'https://www.noble-limited.com').replace(/^https:\/\/noble-limited\.com/, 'https://www.noble-limited.com')
 const NOBLE_API_KEY = process.env.NOBLE_API_KEY || ''
@@ -19,7 +20,7 @@ const COIN_LABELS: Record<string, string> = {
 // verifying the customer actually owns the account before any money moves. Never
 // call debit without first confirming the PIN via balance-by-email.
 export async function POST(req: NextRequest) {
-  const { email, pin, slug, coin_id, affiliate_ref } = await req.json().catch(() => ({}))
+  const { email, pin, slug, coin_id, affiliate_ref, customer } = await req.json().catch(() => ({}))
 
   if (!email || !pin || !slug || !coin_id) {
     return NextResponse.json({ error: 'Missing fields' }, { status: 400 })
@@ -90,6 +91,7 @@ export async function POST(req: NextRequest) {
 <strong>Bezahlt mit:</strong> ${product.price} ${COIN_LABELS[coin_id] || coin_id}<br>
 <strong>Referenz:</strong> ${orderRef}<br>
 <strong>Neues Guthaben:</strong> ${debitData.new_balance} ${COIN_LABELS[coin_id] || coin_id}</p>
+${customerHtml(sanitizeCustomer(customer))}
 <p>Wir melden uns innerhalb eines Werktags mit den nächsten Schritten.</p>`,
       }),
     }).catch(() => {})

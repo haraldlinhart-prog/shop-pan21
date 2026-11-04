@@ -40,10 +40,10 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
       'Ongoing bookkeeping',
       'Tax advice',
       'Individual articles of association outside the model protocol',
-      'Ongoing business address, unless booked separately',
+      'Ongoing business address',
     ],
     addons: [
-      'Supplementary business address / mail service',
+      'Advice on the business address',
       'Administration and management structures, subject to review',
     ],
     process: [
@@ -76,11 +76,10 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
       'Ongoing bookkeeping',
       'Tax advice',
       'Individual articles of association outside the model protocol',
-      'Ongoing business address, unless booked separately',
+      'Ongoing business address',
     ],
     addons: [
-      'Supplementary office or business addresses',
-      'Mail service',
+      'Advice on the business address',
       'Administration and structuring options, subject to review',
     ],
     process: [

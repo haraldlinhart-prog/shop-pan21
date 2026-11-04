@@ -7,6 +7,8 @@ import { BalanceWidget } from '@/components/BalanceWidget'
 import { notFound } from 'next/navigation'
 import '@/app/globals.css'
 import '../../../produkt/[slug]/produkt.css'
+import { OrderFlow } from '@/components/order/OrderFlow'
+import { hasOrderFlow } from '@/lib/orderFlow'
 
 // English mirror of app/produkt/[slug]/page.tsx — see that file for the
 // canonical German version. Kept as a parallel component (not a shared one)
@@ -349,7 +351,7 @@ import { Suspense } from 'react'
 export default function ProduktPageEn({ params }: { params: { slug: string } }) {
   return (
     <Suspense fallback={<div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center'}}>Loading…</div>}>
-      <ProduktContentEn slug={params.slug} />
+      {hasOrderFlow(params.slug) ? <OrderFlow slug={params.slug} lang="en" /> : <ProduktContentEn slug={params.slug} />}
     </Suspense>
   )
 }
