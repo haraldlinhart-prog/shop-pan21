@@ -267,13 +267,14 @@ function Hero({ product }: { product: Product }) {
 
 /* ---------- Gruendung: UG und GmbH ---------- */
 type DomainResults = Record<string, { available: boolean | null; price: number | null }>
-type FormationState = { step: number; form: LegalForm; extras: number[]; pay: 'card' | 'europan'; terms: boolean; d: Record<string, string> }
+type TrustChoice = 'none' | 'md' | 'sh' | 'both'
+type FormationState = { step: number; form: LegalForm; extras: number[]; pay: 'card' | 'europan'; terms: boolean; d: Record<string, string>; trust: TrustChoice; shType: '' | 'natural' | 'legal' | 'foreign'; bankAck: boolean; account: '' | 'digital' | 'branch'; billing: 'monthly' | 'yearly' }
 
 function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
-  const t = STRINGS[lang], f = t.formation
+  const t = STRINGS[lang], f = t.formation, ft = t.trust, ftDe = STRINGS.de.trust
   const affiliateRef = useAffiliateRef()
   const startForm: LegalForm = slug === FORMATION_SLUGS.gmbh ? 'gmbh' : 'ug'
-  const { state: s, patch, goTo, clear } = useFlowState<FormationState>(`pan21-order-${slug}`, { step: 0, form: startForm, extras: [], pay: 'card', terms: false, d: {} })
+  const { state: s, patch, goTo, clear } = useFlowState<FormationState>(`pan21-order-${slug}`, { step: 0, form: startForm, extras: [], pay: 'card', terms: false, d: {}, trust: 'none', shType: '', bankAck: false, account: '', billing: 'monthly' })
   const [errors, setErrors] = useState<Errors>({})
   const [busy, setBusy] = useState(false)
   const [payError, setPayError] = useState('')
@@ -305,7 +306,7 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
   // Der Schluessel laeuft nach 15 Minuten ab und gilt erst nach 3 Sekunden.
   // Deshalb wird er beim Betreten der Pruefseite geholt und vor dem Bezahlen geprueft.
   useEffect(() => {
-    if (s.step === 4) loadToken(chosenSlug).catch(() => {})
+    if (s.step === 5) loadToken(chosenSlug).catch(() => {})
   }, [s.step, chosenSlug])
 
   async function readyToken(): Promise<string> {
@@ -352,7 +353,38 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
     if (msg) focusFirstError()
     return !msg
   }
-  const customer = { firstName: s.d.firstName, lastName: s.d.lastName, contactEmail: s.d.email, phone: s.d.phone, company: s.d.company, street: s.d.street, postalCode: s.d.postalCode, city: s.d.city, country: s.d.country, desiredName: s.d.desiredName, extras: extrasDe, domain: domainFull ? `${domainFull} (${money(domainPrice(domainTld), 'de')} pro Jahr)` : undefined }
+  // Treuhand: Wer selbst Geschaeftsfuehrer wird, bekommt keine Kontoeroeffnung ueber uns.
+  const withMd = s.trust === 'md' || s.trust === 'both'
+  const withSh = s.trust === 'sh' || s.trust === 'both'
+  const shPrice = s.shType === 'foreign' ? ft.byCountry : perMonth(TRUST_MONTHLY.shareholder, lang)
+  function chooseTrust(v: TrustChoice) {
+    const md = v === 'md' || v === 'both', sh = v === 'sh' || v === 'both'
+    setErrors({})
+    patch({ trust: v, shType: sh ? s.shType : '', bankAck: md ? s.bankAck : false, account: md ? s.account : '', billing: v === 'none' ? 'monthly' : s.billing })
+  }
+  function validateTrust(): boolean {
+    const e: Errors = {}
+    if (withSh && !s.shType) e.shType = ft.errSh
+    if (withMd && !s.bankAck) e.bankAck = ft.errBankAck
+    setErrors(e)
+    if (Object.keys(e).length) focusFirstError()
+    return !Object.keys(e).length
+  }
+  // Die Bestellmail geht an das deutschsprachige Team und ist deshalb immer deutsch beschriftet.
+  const trustDe = s.trust === 'none' ? undefined : [
+    ftDe.variants[s.trust],
+    s.shType ? `${ftDe.shareholder}: ${ftDe.shTypes[s.shType]}` : '',
+    withMd ? 'Alleiniger Kontozugriff zur Kenntnis genommen' : '',
+    withMd ? (s.account ? `${ftDe.accounts[s.account]} (${TRUST_ACCOUNT_FEE[s.account]} € pauschal)` : `${ftDe.account}: ${ftDe.notWanted}`) : '',
+    `${ftDe.payment}: ${s.billing === 'yearly' ? `${ftDe.payYearly} (${ftDe.payYearlySub})` : ftDe.payMonthly}`,
+  ].filter(Boolean).join('; ')
+  const trustLines = s.trust === 'none' ? [f.trustNone] : [
+    ft.variants[s.trust],
+    s.shType ? `${ft.shareholder}: ${ft.shTypes[s.shType]}` : '',
+    withMd ? (s.account ? `${ft.accounts[s.account]}: ${flatFee(TRUST_ACCOUNT_FEE[s.account], lang)}` : `${ft.account}: ${ft.notWanted}`) : '',
+    `${ft.payment}: ${s.billing === 'yearly' ? `${ft.payYearly} (${ft.payYearlySub})` : ft.payMonthly}`,
+  ].filter(Boolean)
+  const customer = { firstName: s.d.firstName, lastName: s.d.lastName, contactEmail: s.d.email, phone: s.d.phone, company: s.d.company, street: s.d.street, postalCode: s.d.postalCode, city: s.d.city, country: s.d.country, desiredName: s.d.desiredName, extras: extrasDe, domain: domainFull ? `${domainFull} (${money(domainPrice(domainTld), 'de')} pro Jahr)` : undefined, trust: trustDe }
 
   function validateData(): boolean {
     const e: Errors = {}
@@ -395,6 +427,9 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
   const gmbhPrice = PRODUCTS.find(p => p.slug === FORMATION_SLUGS.gmbh)!.price as number
   const rows: Rows = [{ label: f.packageRow, value: money(price, lang) }]
   s.extras.forEach(i => { if (chosen.addons[i]) rows.push({ label: chosen.addons[i], value: i >= PHONE_ADDON_START ? f.phonePlans[i - PHONE_ADDON_START].row : i >= HOSTING_ADDON_START ? f.hostingPrice : f.extraPrice }) })
+  if (withMd) rows.push({ label: `${f.trustRow}: ${ft.mdRow}`, value: perMonth(TRUST_MONTHLY.managingDirector, lang) })
+  if (withSh) rows.push({ label: `${f.trustRow}: ${ft.shRow}`, value: shPrice })
+  if (withMd && s.account) rows.push({ label: ft.accounts[s.account], value: flatFee(TRUST_ACCOUNT_FEE[s.account], lang) })
   if (domainFull) rows.push({ label: `${f.domainRow}: ${domainFull}`, value: `${money(domainPrice(domainTld), lang)}${f.domainYear}` })
   if (europanActive) rows.push({ label: f.advantage, value: `− ${money(price - total, lang)}`, minus: true })
   // Erste Seite der gemeinsamen Kachel: noch keine Rechtsform gewaehlt, also beide Preise zeigen
@@ -409,7 +444,7 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
     title: chosen.name,
     chip: `${f.steps[1]}: ${s.form === 'ug' ? 'UG' : 'GmbH'}`,
     rows, totalLabel: f.totalLabel, total: money(total, lang),
-    note: `${chosen.priceNote ?? (lang === 'de' ? 'Zzgl. etwaiger Behörden- und Notargebühren.' : 'Plus any government and notary fees.')}${europanActive ? ` ${f.paidEuropan}` : ''}`,
+    note: `${chosen.priceNote ?? (lang === 'de' ? 'Zzgl. etwaiger Behörden- und Notargebühren.' : 'Plus any government and notary fees.')}${europanActive ? ` ${f.paidEuropan}` : ''}${s.trust !== 'none' || s.extras.length ? ` ${f.notInTotal}` : ''}`,
   }
 
   const pickButton = (form: LegalForm, label: string) => (
@@ -418,7 +453,7 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
 
   return (
     <Shell lang={lang} slug={slug} steps={f.steps} step={s.step} goTo={goTo} summary={summary} affiliateRef={affiliateRef}
-      side={<BalanceWidget embedded slug={chosenSlug} price={price} productName={chosenDe.name} affiliateRef={affiliateRef} lang={lang} customer={customer} onPriceUpdate={setPreview} onNoblePayment={r => { setPaid(r); clear(); goTo(5) }} />}>
+      side={<BalanceWidget embedded slug={chosenSlug} price={price} productName={chosenDe.name} affiliateRef={affiliateRef} lang={lang} customer={customer} onPriceUpdate={setPreview} onNoblePayment={r => { setPaid(r); clear(); goTo(6) }} />}>
       {s.step === 0 && <>
         <Hero product={shown} />
         <div className="ofl-head">
@@ -451,10 +486,56 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
             ))}
           </tbody>
         </table>
-        <Actions t={t} onBack={() => goTo(0)} onNext={() => goTo(2)} nextLabel={f.nextExtras} />
+        <Actions t={t} onBack={() => goTo(0)} onNext={() => goTo(2)} nextLabel={f.nextTrust} />
       </>}
 
       {s.step === 2 && <>
+        <div className="ofl-head"><h1 className="ofl-h1" tabIndex={-1}>{f.trustTitle}</h1><p className="ofl-lead">{f.trustLead}</p></div>
+        <section className="ofl-sec"><h2 className="ofl-h2">{f.trustChoice}</h2>
+          <div className="ofl-choices">
+            <Card id="trust-none" name="trust" checked={s.trust === 'none'} onChange={() => chooseTrust('none')} title={f.trustNone} price={money(0, lang)} sub={f.trustNoneSub} />
+            <Card id="trust-md" name="trust" checked={s.trust === 'md'} onChange={() => chooseTrust('md')} title={f.trustMd} price={perMonth(TRUST_MONTHLY.managingDirector, lang)} sub={f.trustMdSub} />
+            <Card id="trust-sh" name="trust" checked={s.trust === 'sh'} onChange={() => chooseTrust('sh')} title={f.trustSh} price={perMonth(TRUST_MONTHLY.shareholder, lang)} sub={f.trustShSub} />
+            <Card id="trust-both" name="trust" checked={s.trust === 'both'} onChange={() => chooseTrust('both')} title={f.trustBoth} price={perMonth(TRUST_MONTHLY.managingDirector + TRUST_MONTHLY.shareholder, lang)} sub={f.trustBothSub} />
+          </div>
+        </section>
+        {withSh && <section className="ofl-sec"><h2 className="ofl-h2">{ft.shTitle}</h2>
+          <div className="ofl-choices">
+            {(['natural', 'legal', 'foreign'] as const).map(v => (
+              <Card key={v} id={`sh-${v}`} name="shType" checked={s.shType === v} onChange={() => { patch({ shType: v }); setErrors(({ shType, ...r }) => r) }} title={ft.shTypes[v]} price={v === 'foreign' ? ft.shForeignPr : undefined} />
+            ))}
+          </div>
+          {errors.shType && <span className="ofl-err">{errors.shType}</span>}
+        </section>}
+        {withMd && <section className="ofl-sec"><h2 className="ofl-h2">{ft.bankTitle}</h2><p className="ofl-lead">{ft.bankText}</p>
+          <label className="ofl-check" htmlFor="bankAck">
+            <input id="bankAck" type="checkbox" checked={s.bankAck} onChange={e => { patch({ bankAck: e.target.checked }); setErrors(({ bankAck, ...r }) => r) }} />
+            <span>{ft.bankAck}</span>
+          </label>
+          {errors.bankAck && <span className="ofl-err">{errors.bankAck}</span>}
+        </section>}
+        {withMd && <section className="ofl-sec"><h2 className="ofl-h2">{ft.accountTitle}</h2><p className="ofl-note">{ft.accountNote}</p><p className="ofl-note">{ft.accountView}</p>
+          <div className="ofl-choices">
+            <Card id="account-none" name="account" checked={!s.account} onChange={() => patch({ account: '' })} title={ft.accountNone} price={money(0, lang)} />
+            {(['digital', 'branch'] as const).map(a => (
+              <Card key={a} id={`account-${a}`} name="account" checked={s.account === a} onChange={() => patch({ account: a })} title={ft.accounts[a]} price={flatFee(TRUST_ACCOUNT_FEE[a], lang)} />
+            ))}
+          </div>
+        </section>}
+        {!withMd && <div className="ofl-hint"><strong>{f.trustBankHint}</strong> {f.trustBankOnly}</div>}
+        {s.trust !== 'none' && <section className="ofl-sec"><h2 className="ofl-h2">{ft.payTitle}</h2>
+          <div className="ofl-choices">
+            <Card id="billing-monthly" name="billing" checked={s.billing === 'monthly'} onChange={() => patch({ billing: 'monthly' })} title={ft.payMonthly} />
+            <Card id="billing-yearly" name="billing" checked={s.billing === 'yearly'} onChange={() => patch({ billing: 'yearly' })} title={ft.payYearly} sub={ft.payYearlySub} />
+          </div>
+        </section>}
+        {s.trust !== 'none' && <section className="ofl-sec"><h2 className="ofl-h2">{ft.termsTitle}</h2><Bullets items={ft.termsList} kind="dot" />
+          <p className="ofl-note"><Link href={f.trustMoreUrl} target="_blank">{f.trustMoreLink}</Link></p>
+        </section>}
+        <Actions t={t} onBack={() => goTo(1)} onNext={() => { if (validateTrust()) goTo(3) }} nextLabel={f.nextExtras} />
+      </>}
+
+      {s.step === 3 && <>
         <div className="ofl-head"><h1 className="ofl-h1" tabIndex={-1}>{f.extrasTitle}</h1><p className="ofl-lead">{f.extrasLead}</p></div>
         <div className="ofl-choices">
           <Card id="extra-none" type="checkbox" checked={s.extras.length === 0} onChange={() => patch({ extras: [] })} title={f.noThanks} price={money(0, lang)} sub={f.noThanksSub} />
@@ -504,10 +585,10 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
           <p className="ofl-note">{f.phoneNote}</p>
           <div className="ofl-hint"><strong>{f.phoneAltTitle}</strong> {f.phoneAlt} <a href={f.phoneAltUrl} target="_blank" rel="noopener noreferrer">{f.phoneAltLink}</a></div>
         </section>
-        <Actions t={t} onBack={() => goTo(1)} onNext={() => { if (validateExtras()) goTo(3) }} nextLabel={f.nextData} />
+        <Actions t={t} onBack={() => goTo(2)} onNext={() => { if (validateExtras()) goTo(4) }} nextLabel={f.nextData} />
       </>}
 
-      {s.step === 3 && <>
+      {s.step === 4 && <>
         <div className="ofl-head"><h1 className="ofl-h1" tabIndex={-1}>{f.dataTitle}</h1><p className="ofl-lead">{f.dataLead}</p></div>
         <section className="ofl-sec"><h2 className="ofl-h2">{f.contact}</h2><div className="ofl-form">
           <Field id="firstName" label={f.firstName} req auto="given-name" value={s.d.firstName} onChange={set('firstName')} error={errors.firstName} />
@@ -525,19 +606,20 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
         <section className="ofl-sec"><h2 className="ofl-h2">{f.newCompany}</h2><div className="ofl-form">
           <Field id="desiredName" label={f.desiredName} wide value={s.d.desiredName} onChange={set('desiredName')} />
         </div></section>
-        <Actions t={t} onBack={() => goTo(2)} onNext={() => { if (validateData()) goTo(4) }} nextLabel={f.nextReview} />
+        <Actions t={t} onBack={() => goTo(3)} onNext={() => { if (validateData()) goTo(5) }} nextLabel={f.nextReview} />
       </>}
 
-      {s.step === 4 && <>
+      {s.step === 5 && <>
         <div className="ofl-head"><h1 className="ofl-h1" tabIndex={-1}>{f.reviewTitle}</h1></div>
         <section className="ofl-sec"><h2 className="ofl-h2">{f.yourOrder}</h2>
           <dl className="ofl-rev">
             <ReviewRow t={t} label={f.package} value={chosen.name} onChange={() => goTo(1)} />
-            <ReviewRow t={t} label={f.extra} value={s.extras.length ? s.extras.map(i => chosen.addons[i]).join('\n') : f.none} onChange={() => goTo(2)} />
-            {domainFull && <ReviewRow t={t} label={f.domainRow} value={`${domainFull} (${money(domainPrice(domainTld), lang)}${f.domainYear})`} onChange={() => goTo(2)} />}
-            <ReviewRow t={t} label={f.contact} value={[`${s.d.firstName} ${s.d.lastName}`, s.d.email, s.d.phone].filter(Boolean).join('\n')} onChange={() => goTo(3)} />
-            <ReviewRow t={t} label={f.billingShort} value={[s.d.company, s.d.street, `${s.d.postalCode} ${s.d.city}`, s.d.country].filter(Boolean).join('\n')} onChange={() => goTo(3)} />
-            {s.d.desiredName && <ReviewRow t={t} label={f.desiredShort} value={s.d.desiredName} onChange={() => goTo(3)} />}
+            <ReviewRow t={t} label={f.trustRow} value={trustLines.join('\n')} onChange={() => goTo(2)} />
+            <ReviewRow t={t} label={f.extra} value={s.extras.length ? s.extras.map(i => chosen.addons[i]).join('\n') : f.none} onChange={() => goTo(3)} />
+            {domainFull && <ReviewRow t={t} label={f.domainRow} value={`${domainFull} (${money(domainPrice(domainTld), lang)}${f.domainYear})`} onChange={() => goTo(3)} />}
+            <ReviewRow t={t} label={f.contact} value={[`${s.d.firstName} ${s.d.lastName}`, s.d.email, s.d.phone].filter(Boolean).join('\n')} onChange={() => goTo(4)} />
+            <ReviewRow t={t} label={f.billingShort} value={[s.d.company, s.d.street, `${s.d.postalCode} ${s.d.city}`, s.d.country].filter(Boolean).join('\n')} onChange={() => goTo(4)} />
+            {s.d.desiredName && <ReviewRow t={t} label={f.desiredShort} value={s.d.desiredName} onChange={() => goTo(4)} />}
           </dl>
         </section>
         <section className="ofl-sec"><h2 className="ofl-h2">{f.payTitle}</h2>
@@ -557,18 +639,18 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
         {payError && <span className="ofl-err">{payError}</span>}
         {s.pay === 'card'
           ? <>
-              <Actions t={t} onBack={() => goTo(3)} onNext={payCard} disabled={busy} gold nextLabel={busy ? f.loading : `${f.orderBtn} — ${money(price, lang)}`} />
+              <Actions t={t} onBack={() => goTo(4)} onNext={payCard} disabled={busy} gold nextLabel={busy ? f.loading : `${f.orderBtn} — ${money(price, lang)}`} />
               <p className="ofl-note">{f.cardFine}</p>
             </>
           : <>
               {!preview && <span className="ofl-err">{f.europanLogin}</span>}
               {preview && !preview.fullyCovered && <span className="ofl-err">{f.europanLow}</span>}
-              <Actions t={t} onBack={() => goTo(3)} onNext={preview?.fullyCovered ? payEuropan : undefined} disabled={busy} gold nextLabel={busy ? f.loading : `${f.orderBtn} — )(\u00a0${preview ? preview.finalTotal.toLocaleString(t.numberLocale, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''}`} />
+              <Actions t={t} onBack={() => goTo(4)} onNext={preview?.fullyCovered ? payEuropan : undefined} disabled={busy} gold nextLabel={busy ? f.loading : `${f.orderBtn} — )(\u00a0${preview ? preview.finalTotal.toLocaleString(t.numberLocale, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''}`} />
               {preview?.fullyCovered && <p className="ofl-note">{f.europanFine}</p>}
             </>}
       </>}
 
-      {s.step === 5 && <>
+      {s.step === 6 && <>
         <div className="ofl-ok" aria-hidden="true">✓</div>
         <div className="ofl-head">
           <h1 className="ofl-h1" tabIndex={-1}>{f.doneTitle}</h1>
@@ -645,7 +727,7 @@ function TrustFlow({ slug, lang }: { slug: string; lang: Lang }) {
     add(de.staff, s.staff === 'yes' ? de.yes : de.no)
     if (s.staff === 'yes') { add(de.staffCount, s.d.staffCount); add(de.staffCost, s.d.staffCost); add(de.capital, s.d.capital) }
     add(de.special, s.special === 'yes' ? de.yes : de.no)
-    add(de.account, s.account ? `${de.accounts[s.account]} (${TRUST_ACCOUNT_FEE[s.account]} € pauschal)` : de.notWanted)
+    if (withMd) add(de.account, s.account ? `${de.accounts[s.account]} (${TRUST_ACCOUNT_FEE[s.account]} € pauschal)` : de.notWanted)
     add(de.payment, s.billing === 'yearly' ? `${de.payYearly} (${de.payYearlySub})` : de.payMonthly)
     add(de.billingShort, [s.d.street, `${s.d.postalCode} ${s.d.city}`, s.d.country].join(', '))
     add(de.situationShort, s.d.situation)
@@ -733,7 +815,7 @@ function TrustFlow({ slug, lang }: { slug: string; lang: Lang }) {
         <section className="ofl-sec"><h2 className="ofl-h2">{f.variantTitle}</h2>
           <div className="ofl-choices">
             {(['md', 'sh', 'both'] as const).map(v => (
-              <Card key={v} id={`variant-${v}`} name="variant" checked={s.variant === v} onChange={() => { patch({ variant: v, shType: trustNeedsSh(v) ? s.shType : '', bankAck: trustNeedsMd(v) ? s.bankAck : false }); setErrors(({ variant, ...r }) => r) }} title={f.variants[v]} />
+              <Card key={v} id={`variant-${v}`} name="variant" checked={s.variant === v} onChange={() => { patch({ variant: v, shType: trustNeedsSh(v) ? s.shType : '', bankAck: trustNeedsMd(v) ? s.bankAck : false, account: trustNeedsMd(v) ? s.account : '' }); setErrors(({ variant, ...r }) => r) }} title={f.variants[v]} />
             ))}
           </div>
           {errors.variant && <span className="ofl-err">{errors.variant}</span>}
@@ -766,14 +848,15 @@ function TrustFlow({ slug, lang }: { slug: string; lang: Lang }) {
           {errors.special && <span className="ofl-err">{errors.special}</span>}
         </section>
 
-        <section className="ofl-sec"><h2 className="ofl-h2">{f.accountTitle}</h2><p className="ofl-note">{f.accountNote}</p><p className="ofl-note">{f.accountView}</p>
+        {!withMd && <div className="ofl-hint"><strong>{t.formation.trustBankHint}</strong> {t.formation.trustBankOnly}</div>}
+        {withMd && <section className="ofl-sec"><h2 className="ofl-h2">{f.accountTitle}</h2><p className="ofl-note">{f.accountNote}</p><p className="ofl-note">{f.accountView}</p>
           <div className="ofl-choices">
             <Card id="account-none" name="account" checked={!s.account} onChange={() => patch({ account: '' })} title={f.accountNone} price={money(0, lang)} />
             {(['digital', 'branch'] as const).map(a => (
               <Card key={a} id={`account-${a}`} name="account" checked={s.account === a} onChange={() => patch({ account: a })} title={f.accounts[a]} price={flatFee(TRUST_ACCOUNT_FEE[a], lang)} />
             ))}
           </div>
-        </section>
+        </section>}
         <section className="ofl-sec"><h2 className="ofl-h2">{f.payTitle}</h2>
           <div className="ofl-choices">
             <Card id="billing-monthly" name="billing" checked={s.billing === 'monthly'} onChange={() => { patch({ billing: 'monthly' }); setErrors(({ billing, ...r }) => r) }} title={f.payMonthly} />
@@ -812,7 +895,7 @@ function TrustFlow({ slug, lang }: { slug: string; lang: Lang }) {
           {s.shType && <ReviewRow t={t} label={f.shareholder} value={f.shTypes[s.shType]} onChange={() => goTo(1)} />}
           <ReviewRow t={t} label={f.staff} value={s.staff === 'yes' ? [f.yes, `${f.staffCount}: ${s.d.staffCount}`, `${f.staffCost}: ${s.d.staffCost}`, `${f.capital}: ${s.d.capital}`].join('\n') : f.no} onChange={() => goTo(1)} />
           <ReviewRow t={t} label={f.special} value={s.special === 'yes' ? f.yes : f.no} onChange={() => goTo(1)} />
-          <ReviewRow t={t} label={f.account} value={s.account ? `${f.accounts[s.account]}: ${flatFee(TRUST_ACCOUNT_FEE[s.account], lang)}` : f.notWanted} onChange={() => goTo(1)} />
+          {withMd && <ReviewRow t={t} label={f.account} value={s.account ? `${f.accounts[s.account]}: ${flatFee(TRUST_ACCOUNT_FEE[s.account], lang)}` : f.notWanted} onChange={() => goTo(1)} />}
           <ReviewRow t={t} label={f.payment} value={s.billing === 'yearly' ? `${f.payYearly} (${f.payYearlySub})` : f.payMonthly} onChange={() => goTo(1)} />
           <ReviewRow t={t} label={f.situationShort} value={s.d.situation || f.noEntry} onChange={() => goTo(1)} />
           <ReviewRow t={t} label={f.contact} value={[s.d.name, s.d.email, s.d.tel].filter(Boolean).join('\n')} onChange={() => goTo(2)} />

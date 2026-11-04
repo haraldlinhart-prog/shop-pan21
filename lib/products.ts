@@ -48,6 +48,8 @@ export const PRODUCTS: Product[] = [
         'Webhosting Paket Pro von 1euro-hosting.de',
         'Telefonanlage Standard von telefon-zentrale.com',
         'Telefonzentrale mit KI von telefon-zentrale.com',
+        'Treuhand für Geschäftsführer und Gesellschafter nach kostenloser Vorprüfung',
+        'Bankkontoeröffnung, nur zusammen mit einem Treuhand-Geschäftsführer',
       ],
       hint: 'UG: Das Stammkapital beträgt mindestens 1,00 EUR. Das Paket orientiert sich an einer Gründung mit einem Stammkapital von 1.000,00 EUR. GmbH: Das Stammkapital beträgt grundsätzlich 25.000,00 EUR. Davon muss vor der Eintragung mindestens die gesetzlich erforderliche Einzahlung geleistet werden.',
       priceNote: 'UG: Inklusive Notar- und Registergerichtsgebühren. GmbH: Zzgl. etwaiger Behörden- und Notargebühren.',
@@ -636,8 +638,8 @@ export const PRODUCTS: Product[] = [
       'Konstruktionen, bei denen der tatsächliche Zweck nicht vollständig offengelegt wird',
     ],
     addons: [
-      'Kontoeröffnung bei digitalen Anbietern wie Qonto, bunq oder Finom: 350 € pauschal',
-      'Kontoeröffnung bei Filialbanken wie Deutsche Bank oder Commerzbank: 550 € pauschal',
+      'Kontoeröffnung bei digitalen Anbietern wie Qonto, bunq oder Finom, nur mit Treuhand-Geschäftsführer: 350 € pauschal',
+      'Kontoeröffnung bei Filialbanken wie Deutsche Bank oder Commerzbank, nur mit Treuhand-Geschäftsführer: 550 € pauschal',
       'Sonderwünsche werden gesondert berechnet, z. B. für eine deutsche Gesellschaft ein Konto bei einer ausländischen Bank oder bei einem Anbieter wie Currenxie',
     ],
     process: [

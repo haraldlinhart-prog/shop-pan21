@@ -46,6 +46,8 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
         'Pro web hosting package from 1euro-hosting.de',
         'Standard phone system from telefon-zentrale.com',
         'Phone exchange with AI from telefon-zentrale.com',
+        'Trustee for managing director and shareholder after a free pre-check',
+        'Bank account opening, only together with a trustee managing director',
       ],
       hint: 'UG: The share capital is at least €1.00. This package is based on a formation with share capital of €1,000.00. GmbH: The share capital is generally €25,000.00, of which at least the legally required payment must be made before registration.',
       priceNote: 'UG: Including notary and commercial register fees. GmbH: Plus any government and notary fees.',
@@ -543,8 +545,8 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
       'Constructions where the actual purpose is not fully disclosed',
     ],
     addons: [
-      'Account opening with digital providers such as Qonto, bunq or Finom: €350 flat fee',
-      'Account opening with high-street banks such as Deutsche Bank or Commerzbank: €550 flat fee',
+      'Account opening with digital providers such as Qonto, bunq or Finom, only with a trustee managing director: €350 flat fee',
+      'Account opening with high-street banks such as Deutsche Bank or Commerzbank, only with a trustee managing director: €550 flat fee',
       'Special requests are charged separately, e.g. an account with a foreign bank for a German company or a provider such as Currenxie',
     ],
     process: [
