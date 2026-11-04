@@ -354,7 +354,7 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
   s.extras.forEach(i => { if (chosen.addons[i]) rows.push({ label: chosen.addons[i], value: f.extraPrice }) })
   if (europanActive) rows.push({ label: f.advantage, value: `− ${money(price - total, lang)}`, minus: true })
   const summary: Summary = {
-    title: chosen.name,
+    title: s.step === 0 ? (shown.card?.name ?? chosen.name) : chosen.name,
     chip: `${f.steps[1]}: ${s.form === 'ug' ? 'UG' : 'GmbH'}`,
     rows, totalLabel: f.totalLabel, total: money(total, lang),
     note: `${chosen.priceNote ?? (lang === 'de' ? 'Zzgl. etwaiger Behörden- und Notargebühren.' : 'Plus any government and notary fees.')}${europanActive ? ` ${f.paidEuropan}` : ''}`,
@@ -373,7 +373,7 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
         <Hero product={shown} />
         <div className="ofl-head">
           <span className="ofl-eyebrow">{shown.flag} {shown.category}</span>
-          <h1 className="ofl-h1" tabIndex={-1}>{shown.name}</h1>
+          <h1 className="ofl-h1" tabIndex={-1}>{shown.card?.name ?? shown.name}</h1>
           <p className="ofl-lead">{shown.shortDesc}</p>
           <p style={{ fontWeight: 600, color: 'var(--navy)' }}>{f.formHint}</p>
         </div>

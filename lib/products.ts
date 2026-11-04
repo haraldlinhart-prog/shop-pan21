@@ -26,7 +26,7 @@ export const PRODUCTS: Product[] = [
   {
     slug: 'deutsche-ug-gruendung',
     card: {
-      name: 'Deutsche UG- oder GmbH-Gründung',
+      name: 'Deutsche UG-/GmbH-Gründung',
       shortDesc: 'Gründung einer deutschen UG oder GmbH nach Musterprotokoll – inklusive Vorbereitung der Gründungsdaten, notarieller Gründung und Handelsregistereintragung. Die Rechtsform wählen Sie bei der Bestellung.',
       priceFrom: true,
     },

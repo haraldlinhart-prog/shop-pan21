@@ -24,7 +24,7 @@ export type ProductTranslation = {
 export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
   'deutsche-ug-gruendung': {
     card: {
-      name: 'German UG or GmbH Formation',
+      name: 'German UG/GmbH Formation',
       shortDesc: 'Formation of a German UG or GmbH under the standard model protocol — including preparation of the incorporation data, notarial formation and commercial register entry. You choose the legal form when ordering.',
       priceFrom: true,
     },
