@@ -601,10 +601,8 @@ export const PRODUCTS: Product[] = [
       'Konstruktionen, bei denen der tatsächliche Zweck nicht vollständig offengelegt wird',
     ],
     addons: [
-      'Digitale Kontoanbieter: Finom / bunq Vorprüfung',
-      'High-Street-Banken: Deutsche Bank / Commerzbank / HVB',
-      'Komplexe Bankprüfung mit Treuhand-/Organfunktion',
-      'Geschäftsführungs-, Organ- oder besondere Zahlungsadministration',
+      'Kontoeröffnung bei digitalen Anbietern wie Qonto, bunq oder Finom: 350 € pauschal',
+      'Kontoeröffnung bei Filialbanken wie Deutsche Bank oder Commerzbank: 550 € pauschal',
     ],
     process: [
       'Anfrage und erste Strukturbeschreibung',

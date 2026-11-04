@@ -510,10 +510,8 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
       'Constructions where the actual purpose is not fully disclosed',
     ],
     addons: [
-      'Digital account providers: Finom / bunq pre-check',
-      'High-street banks: Deutsche Bank / Commerzbank / HVB',
-      'Complex bank review with trustee/officer function',
-      'Management, officer or special payment administration',
+      'Account opening with digital providers such as Qonto, bunq or Finom: €350 flat fee',
+      'Account opening with high-street banks such as Deutsche Bank or Commerzbank: €550 flat fee',
     ],
     process: [
       'Enquiry and initial structure description',
