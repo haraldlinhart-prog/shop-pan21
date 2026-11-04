@@ -727,7 +727,7 @@ function TrustFlow({ slug, lang }: { slug: string; lang: Lang }) {
     add(de.staff, s.staff === 'yes' ? de.yes : de.no)
     if (s.staff === 'yes') { add(de.staffCount, s.d.staffCount); add(de.staffCost, s.d.staffCost); add(de.capital, s.d.capital) }
     add(de.special, s.special === 'yes' ? de.yes : de.no)
-    add(de.account, s.account ? `${de.accounts[s.account]} (${TRUST_ACCOUNT_FEE[s.account]} € pauschal)` : de.notWanted)
+    if (withMd) add(de.account, s.account ? `${de.accounts[s.account]} (${TRUST_ACCOUNT_FEE[s.account]} € pauschal)` : de.notWanted)
     add(de.payment, s.billing === 'yearly' ? `${de.payYearly} (${de.payYearlySub})` : de.payMonthly)
     add(de.billingShort, [s.d.street, `${s.d.postalCode} ${s.d.city}`, s.d.country].join(', '))
     add(de.situationShort, s.d.situation)
@@ -815,7 +815,7 @@ function TrustFlow({ slug, lang }: { slug: string; lang: Lang }) {
         <section className="ofl-sec"><h2 className="ofl-h2">{f.variantTitle}</h2>
           <div className="ofl-choices">
             {(['md', 'sh', 'both'] as const).map(v => (
-              <Card key={v} id={`variant-${v}`} name="variant" checked={s.variant === v} onChange={() => { patch({ variant: v, shType: trustNeedsSh(v) ? s.shType : '', bankAck: trustNeedsMd(v) ? s.bankAck : false }); setErrors(({ variant, ...r }) => r) }} title={f.variants[v]} />
+              <Card key={v} id={`variant-${v}`} name="variant" checked={s.variant === v} onChange={() => { patch({ variant: v, shType: trustNeedsSh(v) ? s.shType : '', bankAck: trustNeedsMd(v) ? s.bankAck : false, account: trustNeedsMd(v) ? s.account : '' }); setErrors(({ variant, ...r }) => r) }} title={f.variants[v]} />
             ))}
           </div>
           {errors.variant && <span className="ofl-err">{errors.variant}</span>}
@@ -848,14 +848,15 @@ function TrustFlow({ slug, lang }: { slug: string; lang: Lang }) {
           {errors.special && <span className="ofl-err">{errors.special}</span>}
         </section>
 
-        <section className="ofl-sec"><h2 className="ofl-h2">{f.accountTitle}</h2><p className="ofl-note">{f.accountNote}</p><p className="ofl-note">{f.accountView}</p>
+        {!withMd && <div className="ofl-hint"><strong>{t.formation.trustBankHint}</strong> {t.formation.trustBankOnly}</div>}
+        {withMd && <section className="ofl-sec"><h2 className="ofl-h2">{f.accountTitle}</h2><p className="ofl-note">{f.accountNote}</p><p className="ofl-note">{f.accountView}</p>
           <div className="ofl-choices">
             <Card id="account-none" name="account" checked={!s.account} onChange={() => patch({ account: '' })} title={f.accountNone} price={money(0, lang)} />
             {(['digital', 'branch'] as const).map(a => (
               <Card key={a} id={`account-${a}`} name="account" checked={s.account === a} onChange={() => patch({ account: a })} title={f.accounts[a]} price={flatFee(TRUST_ACCOUNT_FEE[a], lang)} />
             ))}
           </div>
-        </section>
+        </section>}
         <section className="ofl-sec"><h2 className="ofl-h2">{f.payTitle}</h2>
           <div className="ofl-choices">
             <Card id="billing-monthly" name="billing" checked={s.billing === 'monthly'} onChange={() => { patch({ billing: 'monthly' }); setErrors(({ billing, ...r }) => r) }} title={f.payMonthly} />
@@ -894,7 +895,7 @@ function TrustFlow({ slug, lang }: { slug: string; lang: Lang }) {
           {s.shType && <ReviewRow t={t} label={f.shareholder} value={f.shTypes[s.shType]} onChange={() => goTo(1)} />}
           <ReviewRow t={t} label={f.staff} value={s.staff === 'yes' ? [f.yes, `${f.staffCount}: ${s.d.staffCount}`, `${f.staffCost}: ${s.d.staffCost}`, `${f.capital}: ${s.d.capital}`].join('\n') : f.no} onChange={() => goTo(1)} />
           <ReviewRow t={t} label={f.special} value={s.special === 'yes' ? f.yes : f.no} onChange={() => goTo(1)} />
-          <ReviewRow t={t} label={f.account} value={s.account ? `${f.accounts[s.account]}: ${flatFee(TRUST_ACCOUNT_FEE[s.account], lang)}` : f.notWanted} onChange={() => goTo(1)} />
+          {withMd && <ReviewRow t={t} label={f.account} value={s.account ? `${f.accounts[s.account]}: ${flatFee(TRUST_ACCOUNT_FEE[s.account], lang)}` : f.notWanted} onChange={() => goTo(1)} />}
           <ReviewRow t={t} label={f.payment} value={s.billing === 'yearly' ? `${f.payYearly} (${f.payYearlySub})` : f.payMonthly} onChange={() => goTo(1)} />
           <ReviewRow t={t} label={f.situationShort} value={s.d.situation || f.noEntry} onChange={() => goTo(1)} />
           <ReviewRow t={t} label={f.contact} value={[s.d.name, s.d.email, s.d.tel].filter(Boolean).join('\n')} onChange={() => goTo(2)} />

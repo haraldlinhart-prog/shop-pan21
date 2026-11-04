@@ -93,7 +93,7 @@ export const STRINGS = {
       whoTitle: 'Wen Sie bekommen', whoLead: 'Die Geschäftsführung übernimmt eine natürliche Person mit kaufmännischer Ausbildung. Sie versichert beim Notar gegenüber dem Handelsregister unter anderem:',
       whoList: ['Sie ist noch nie im In- oder Ausland wegen einer Straftat verurteilt worden.', 'Ihr ist die Ausübung von Beruf oder Gewerbe nicht untersagt, auch nicht in einem anderen EU- oder EWR-Staat.', 'Sie unterliegt keinem gerichtlichen Einwilligungsvorbehalt.'],
       whoEnd: 'Falsche Angaben dabei sind strafbar (§ 82 GmbHG).',
-      bankTitle: 'Bankkonto', bankText: 'Wer eine Geschäftsführung bucht, überlässt dem Treuhand-Geschäftsführer die alleinige Verfügung über das Bankkonto der Firma. Der Auftraggeber kann über das Konto nicht verfügen. Ob er es einsehen kann, hängt von der jeweiligen Bank ab.',
+      bankTitle: 'Bankkonto', bankText: 'Wer eine Geschäftsführung bucht, überlässt dem Treuhand-Geschäftsführer die alleinige Verfügung über das Bankkonto der Firma. Der Auftraggeber kann über das Konto nicht verfügen. Ob er es einsehen kann, hängt von der jeweiligen Bank ab. Eine Kontoeröffnung durch uns ist nur zusammen mit einem Treuhand-Geschäftsführer möglich.',
       termsTitle: 'Ablauf und Konditionen', termsList: [
         'Nach der kostenlosen Vorprüfung bestellen und bezahlen Sie. Danach wird Ihr individueller Vertrag erstellt.',
         'Bei jährlicher Zahlung erhalten Sie 12 Monate zum Preis von 11.',
@@ -215,7 +215,7 @@ export const STRINGS = {
       whoTitle: 'Who you get', whoLead: 'The management is taken on by a natural person with commercial training. Before the notary, this person declares to the commercial register, among other things:',
       whoList: ['They have never been convicted of a criminal offence in Germany or abroad.', 'They are not prohibited from practising a profession or trade, including in another EU or EEA state.', 'They are not subject to a court-ordered reservation of consent (Einwilligungsvorbehalt).'],
       whoEnd: 'False statements in this declaration are a criminal offence (§ 82 GmbHG).',
-      bankTitle: 'Bank account', bankText: "Anyone booking a management role leaves sole control of the company's bank account to the trustee managing director. The client cannot dispose of the account. Whether the client can view it depends on the bank.",
+      bankTitle: 'Bank account', bankText: "Anyone booking a management role leaves sole control of the company's bank account to the trustee managing director. The client cannot dispose of the account. Whether the client can view it depends on the bank. We can only open an account together with a trustee managing director.",
       termsTitle: 'Process and conditions', termsList: [
         'After the free pre-check, you order and pay. Your individual contract is then drawn up.',
         'With annual payment you get 12 months for the price of 11.',
