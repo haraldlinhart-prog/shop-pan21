@@ -455,7 +455,7 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
     <Shell lang={lang} slug={slug} steps={f.steps} step={s.step} goTo={goTo} summary={summary} affiliateRef={affiliateRef}
       side={<BalanceWidget embedded slug={chosenSlug} price={price} productName={chosenDe.name} affiliateRef={affiliateRef} lang={lang} customer={customer} onPriceUpdate={setPreview} onNoblePayment={r => { setPaid(r); clear(); goTo(6) }} />}>
       {s.step === 0 && <>
-        <Hero product={shown} />
+        {f.bannerSrc ? <img className="ofl-photo" src={f.bannerSrc} alt={f.bannerAlt} width={1945} height={809} /> : <Hero product={shown} />}
         <div className="ofl-head">
           <span className="ofl-eyebrow">{shown.flag} {shown.category}</span>
           <h1 className="ofl-h1" tabIndex={-1}>{shown.card?.name ?? shown.name}</h1>
