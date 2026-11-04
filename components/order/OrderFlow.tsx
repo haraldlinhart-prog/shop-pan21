@@ -600,6 +600,7 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
 
       {s.step === 4 && <>
         <div className="ofl-head"><h1 className="ofl-h1" tabIndex={-1}>{f.dataTitle}</h1><p className="ofl-lead">{f.dataLead}</p></div>
+        <img className="ofl-photo" src="/hero/angaben-formular.jpg" alt={f.dataImageAlt} width={1672} height={941} />
         <section className="ofl-sec"><h2 className="ofl-h2">{f.contact}</h2><div className="ofl-form">
           <Field id="firstName" label={f.firstName} req auto="given-name" value={s.d.firstName} onChange={set('firstName')} error={errors.firstName} />
           <Field id="lastName" label={f.lastName} req auto="family-name" value={s.d.lastName} onChange={set('lastName')} error={errors.lastName} />
