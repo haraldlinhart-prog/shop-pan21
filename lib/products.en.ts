@@ -18,10 +18,16 @@ export type ProductTranslation = {
   hint: string
   priceNote?: string
   tags: string[]
+  card?: { name: string; shortDesc: string; priceFrom?: boolean }
 }
 
 export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
   'deutsche-ug-gruendung': {
+    card: {
+      name: 'German UG or GmbH Formation',
+      shortDesc: 'Formation of a German UG or GmbH under the standard model protocol — including preparation of the incorporation data, notarial formation and commercial register entry. You choose the legal form when ordering.',
+      priceFrom: true,
+    },
     name: 'German UG Formation',
     shortDesc: 'Formation of a German Unternehmergesellschaft (haftungsbeschränkt) under the standard model protocol — including preparation of the incorporation data, notarial formation and commercial register entry.',
     included: [
@@ -1008,6 +1014,7 @@ export function getProductsEn(): Product[] {
       hint: t.hint,
       priceNote: t.priceNote ?? p.priceNote,
       tags: t.tags,
+      card: t.card ?? p.card,
     }
   })
 }

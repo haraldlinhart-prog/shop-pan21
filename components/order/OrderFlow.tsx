@@ -242,7 +242,7 @@ function focusFirstError() {
 /* ---------- Angebotsseite (Schritt 1): zeigt den ganzen Produkttext, auch fuer Suchmaschinen ---------- */
 function Related({ product, lang }: { product: Product; lang: Lang }) {
   const t = STRINGS[lang]
-  const related = productsFor(lang).filter(p => p.slug !== product.slug && p.category === product.category && !p.externalUrl).slice(0, 2)
+  const related = productsFor(lang).filter(p => p.slug !== product.slug && p.category === product.category && !p.externalUrl && !p.hideCard).slice(0, 2)
   if (!related.length) return null
   return (
     <section className="ofl-sec">
@@ -251,7 +251,7 @@ function Related({ product, lang }: { product: Product; lang: Lang }) {
         {related.map(r => (
           <Link key={r.slug} href={`${t.productPath}${r.slug}`}>
             <span>{r.flag}</span>
-            <span><b>{r.name}</b><small>{r.price ? money(r.price, lang) : t.onRequest}</small></span>
+            <span><b>{r.card?.name ?? r.name}</b><small>{r.price ? money(r.price, lang) : t.onRequest}</small></span>
           </Link>
         ))}
       </div>
@@ -375,6 +375,7 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
           <span className="ofl-eyebrow">{shown.flag} {shown.category}</span>
           <h1 className="ofl-h1" tabIndex={-1}>{shown.name}</h1>
           <p className="ofl-lead">{shown.shortDesc}</p>
+          <p style={{ fontWeight: 600, color: 'var(--navy)' }}>{f.formHint}</p>
         </div>
         <section className="ofl-sec"><h2 className="ofl-h2">{t.included}</h2><Bullets items={shown.included} kind="yes" /></section>
         <section className="ofl-sec"><h2 className="ofl-h2">{t.notIncluded}</h2><Bullets items={shown.notIncluded} kind="no" /></section>
