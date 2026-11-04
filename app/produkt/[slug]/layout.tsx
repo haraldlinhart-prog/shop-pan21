@@ -13,7 +13,7 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   const en = `${base}/en/produkt/${product.slug}`
   return {
     title: product.card?.name ?? product.name,
-    description: product.shortDesc,
+    description: product.card?.lead ?? product.shortDesc,
     openGraph: { url: de, title: product.card?.name ?? product.name, description: product.shortDesc },
     alternates: {
       canonical: de,

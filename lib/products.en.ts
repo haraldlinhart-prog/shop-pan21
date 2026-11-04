@@ -18,7 +18,7 @@ export type ProductTranslation = {
   hint: string
   priceNote?: string
   tags: string[]
-  card?: { name: string; shortDesc: string; priceFrom?: boolean }
+  card?: { name: string; shortDesc: string; priceFrom?: boolean; lead?: string; included?: string[]; addons?: string[]; hint?: string; priceNote?: string }
 }
 
 export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
@@ -27,6 +27,25 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
       name: 'German UG/GmbH Formation',
       shortDesc: 'Formation of a German UG or GmbH under the standard model protocol — including preparation of the incorporation data, notarial formation and commercial register entry. You choose the legal form when ordering.',
       priceFrom: true,
+      lead: 'Formation of a German UG or GmbH under the standard model protocol — including preparation of the incorporation data, notarial formation and commercial register entry.',
+      included: [
+        'Preparation of the incorporation data',
+        'UG: Pre-check of company name and business purpose with the local Chamber of Commerce (IHK)',
+        'GmbH: Coordination of the desired company name',
+        'Formation under the standard model protocol (Musterprotokoll)',
+        'Preparation of the notarial formation',
+        'Commercial register filing',
+        'Support through to registration',
+        'UG: Notary and commercial register fees under the model protocol',
+        'UG: One managing director and up to three shareholders',
+        'GmbH: Basic package with one managing director and one shareholder',
+      ],
+      addons: [
+        'Advice on the business address',
+        'Administration and structuring options, subject to review',
+      ],
+      hint: 'UG: The share capital is at least €1.00. This package is based on a formation with share capital of €1,000.00. GmbH: The share capital is generally €25,000.00, of which at least the legally required payment must be made before registration.',
+      priceNote: 'UG: Including notary and commercial register fees. GmbH: Plus any government and notary fees.',
     },
     name: 'German UG Formation',
     shortDesc: 'Formation of a German Unternehmergesellschaft (haftungsbeschränkt) under the standard model protocol — including preparation of the incorporation data, notarial formation and commercial register entry.',
