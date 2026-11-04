@@ -4,6 +4,16 @@ export const FORMATION_SLUGS = { ug: 'deutsche-ug-gruendung', gmbh: 'deutsche-gm
 export const TRUST_SLUG = 'deutsche-treuhand-mandatsadministration'
 // Ab dieser Stelle gehoeren die Zusatzleistungen (addons) von UG und GmbH zur Gruppe Webhosting
 export const HOSTING_ADDON_START = 2
+// Domain-Preise pro Jahr wie auf 1euro-hosting.de (lib/tldPricing.ts dort); die Pruefung liefert den aktuellen Preis
+export const HOSTING_URL = 'https://1euro-hosting.de'
+export const HOSTING_DOMAIN_PRICES: Record<string, number> = { de: 5.9, eu: 11.9, com: 14.9, org: 15.9, net: 19.9 }
+export const HOSTING_DOMAIN_TLDS = Object.keys(HOSTING_DOMAIN_PRICES)
+export function cleanDomainName(value: string): string {
+  return value.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0].replace(/\.(de|eu|com|org|net)$/, '')
+}
+export function isValidDomainName(name: string): boolean {
+  return /^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?$/.test(name)
+}
 
 export type LegalForm = keyof typeof FORMATION_SLUGS
 

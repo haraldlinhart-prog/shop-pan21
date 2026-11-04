@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation'
 import { PRODUCTS, type Product } from '@/lib/products'
 import { PRODUCTS_EN } from '@/lib/products.en'
 import { BalanceWidget } from '@/components/BalanceWidget'
-import { FORMATION_SLUGS, LEGAL_LINKS, TRUST_ACCOUNT_FEE, TRUST_MONTHLY, TRUST_PAID_MONTHS_PER_YEAR, TRUST_SLUG, HOSTING_ADDON_START, type LegalForm } from '@/lib/orderFlow'
+import { HOSTING_DOMAIN_PRICES, HOSTING_DOMAIN_TLDS, cleanDomainName, isValidDomainName, FORMATION_SLUGS, LEGAL_LINKS, TRUST_ACCOUNT_FEE, TRUST_MONTHLY, TRUST_PAID_MONTHS_PER_YEAR, TRUST_SLUG, HOSTING_ADDON_START, type LegalForm } from '@/lib/orderFlow'
 import { STRINGS, type Lang } from './strings'
 import '@/app/globals.css'
 import './order.css'
@@ -37,10 +37,10 @@ function Field({ id, label, value, onChange, error, req, wide, type, area, place
   )
 }
 
-function Card({ id, name, type = 'radio', checked, onChange, title, price, sub }: { id: string; name?: string; type?: 'radio' | 'checkbox'; checked: boolean; onChange: () => void; title: string; price?: string; sub?: string }) {
+function Card({ id, name, type = 'radio', checked, onChange, title, price, sub, disabled }: { id: string; name?: string; type?: 'radio' | 'checkbox'; checked: boolean; onChange: () => void; title: string; price?: string; sub?: string; disabled?: boolean }) {
   return (
     <label className="ofl-card" htmlFor={id}>
-      <input id={id} name={name} type={type} checked={checked} onChange={onChange} />
+      <input id={id} name={name} type={type} checked={checked} disabled={disabled} onChange={onChange} />
       <b>{title}</b>
       <span className="ofl-pr">{price || ''}</span>
       {sub && <small>{sub}</small>}
@@ -266,6 +266,7 @@ function Hero({ product }: { product: Product }) {
 }
 
 /* ---------- Gruendung: UG und GmbH ---------- */
+type DomainResults = Record<string, { available: boolean | null; price: number | null }>
 type FormationState = { step: number; form: LegalForm; extras: number[]; pay: 'card' | 'europan'; terms: boolean; d: Record<string, string> }
 
 function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
@@ -278,6 +279,9 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
   const [payError, setPayError] = useState('')
   const [preview, setPreview] = useState<{ finalTotal: number; fullyCovered: boolean; pay: () => void | Promise<void> } | null>(null)
   const [paid, setPaid] = useState<{ order_reference?: string } | null>(null)
+  const [domainCheck, setDomainCheck] = useState<{ name: string; results: DomainResults } | null>(null)
+  const [domainChecking, setDomainChecking] = useState(false)
+  const [domainMsg, setDomainMsg] = useState('')
   const tokenRef = useRef<{ slug: string; at: number; token: string } | null>(null)
 
   const products = productsFor(lang)
@@ -312,7 +316,42 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
   }
 
   const extrasDe = s.extras.map(i => chosenDe.addons[i]).filter(Boolean).join('; ')
-  const customer = { firstName: s.d.firstName, lastName: s.d.lastName, contactEmail: s.d.email, phone: s.d.phone, company: s.d.company, street: s.d.street, postalCode: s.d.postalCode, city: s.d.city, country: s.d.country, desiredName: s.d.desiredName, extras: extrasDe }
+  const hostingChosen = s.extras.includes(HOSTING_ADDON_START)
+  const domainName = cleanDomainName(s.d.domainName || '')
+  const domainTld = s.d.domainTld || ''
+  const checkedResults = domainCheck && domainCheck.name === domainName ? domainCheck.results : null
+  const domainPrice = (tld: string) => checkedResults?.[tld]?.price ?? HOSTING_DOMAIN_PRICES[tld]
+  const domainFull = hostingChosen && domainTld && isValidDomainName(domainName) ? `${domainName}.${domainTld}` : ''
+
+  async function checkDomain() {
+    setDomainMsg('')
+    if (!isValidDomainName(domainName)) { setErrors({ domainName: f.domainErrName }); focusFirstError(); return }
+    setErrors({}); setDomainChecking(true)
+    try {
+      const res = await fetch(`/api/check-domain?name=${encodeURIComponent(domainName)}`)
+      const data = await res.json()
+      if (!res.ok) throw new Error('check')
+      const results: DomainResults = {}
+      for (const r of data.results) results[r.tld] = { available: r.available, price: r.price }
+      setDomainCheck({ name: domainName, results })
+      if (Object.values(results).every(r => r.available === null)) setDomainMsg(f.domainErrFailed)
+      if (domainTld && results[domainTld]?.available === false) patch({ d: { ...s.d, domainTld: '' } })
+    } catch { setDomainCheck(null); setDomainMsg(f.domainErrFailed) }
+    setDomainChecking(false)
+  }
+
+  function validateExtras(): boolean {
+    if (!hostingChosen) return true
+    const hasName = Boolean((s.d.domainName || '').trim())
+    let msg = ''
+    if (hasName && !isValidDomainName(domainName)) msg = f.domainErrName
+    else if (domainTld && !hasName) msg = f.domainErrName
+    else if (hasName && !domainTld) msg = f.domainErrTld
+    setErrors(msg ? { domainName: msg } : {})
+    if (msg) focusFirstError()
+    return !msg
+  }
+  const customer = { firstName: s.d.firstName, lastName: s.d.lastName, contactEmail: s.d.email, phone: s.d.phone, company: s.d.company, street: s.d.street, postalCode: s.d.postalCode, city: s.d.city, country: s.d.country, desiredName: s.d.desiredName, extras: extrasDe, domain: domainFull ? `${domainFull} (${money(domainPrice(domainTld), 'de')} pro Jahr)` : undefined }
 
   function validateData(): boolean {
     const e: Errors = {}
@@ -355,6 +394,7 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
   const gmbhPrice = PRODUCTS.find(p => p.slug === FORMATION_SLUGS.gmbh)!.price as number
   const rows: Rows = [{ label: f.packageRow, value: money(price, lang) }]
   s.extras.forEach(i => { if (chosen.addons[i]) rows.push({ label: chosen.addons[i], value: i >= HOSTING_ADDON_START ? f.hostingPrice : f.extraPrice }) })
+  if (domainFull) rows.push({ label: `${f.domainRow}: ${domainFull}`, value: `${money(domainPrice(domainTld), lang)}${f.domainYear}` })
   if (europanActive) rows.push({ label: f.advantage, value: `− ${money(price - total, lang)}`, minus: true })
   // Erste Seite der gemeinsamen Kachel: noch keine Rechtsform gewaehlt, also beide Preise zeigen
   const overview = s.step === 0 && shown.card ? shown.card : null
@@ -430,9 +470,28 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
               return <Card key={a} id={`extra-${i}`} type="checkbox" checked={s.extras.includes(i)} onChange={() => toggleExtra(i)} title={a} price={f.hostingPrice} sub={f.hostingSub} />
             })}
           </div>
-          <div className="ofl-hint"><strong>{f.hostingAltTitle}</strong> {f.hostingAlt} <a href={f.hostingAltUrl} target="_blank" rel="noopener noreferrer">{f.hostingAltLink}</a></div>
+          {hostingChosen && (
+            <div className="ofl-domain">
+              <h3>{f.domainTitle}</h3>
+              <p>{f.domainLead}</p>
+              <div className="ofl-domain-row">
+                <Field id="domainName" label={f.domainName} placeholder={f.domainPlaceholder} value={s.d.domainName} onChange={v => { setDomainMsg(''); set('domainName')(v) }} error={errors.domainName} auto="off" />
+                <button type="button" className="ofl-btn" disabled={domainChecking} onClick={checkDomain}>{domainChecking ? f.domainChecking : f.domainCheck}</button>
+              </div>
+              {domainMsg && <p role="status">{domainMsg}</p>}
+              <div className="ofl-choices">
+                <Card id="domain-none" name="domain-tld" checked={!domainTld} onChange={() => { setErrors({}); patch({ d: { ...s.d, domainTld: '', domainName: '' } }) }} title={f.domainNone} price={money(0, lang)} sub={f.domainNoneSub} />
+                {HOSTING_DOMAIN_TLDS.map(tld => {
+                  const state = checkedResults?.[tld]?.available
+                  return <Card key={tld} id={`domain-${tld}`} name="domain-tld" checked={domainTld === tld} disabled={state === false} onChange={() => { setErrors({}); patch({ d: { ...s.d, domainTld: tld } }) }} title={`${domainName && isValidDomainName(domainName) ? domainName : ''}.${tld}`} price={`${money(domainPrice(tld), lang)}${f.domainYear}`} sub={checkedResults ? (state === true ? f.domainFree : state === false ? f.domainTaken : f.domainUnknown) : undefined} />
+                })}
+              </div>
+              <p>{f.domainNote}</p>
+            </div>
+          )}
+          <div className="ofl-hint"><strong>{f.hostingAltTitle}</strong> {f.hostingAlt} <a href={`${f.hostingAltUrl}${domainFull ? `&domain=${encodeURIComponent(domainFull)}` : ''}`} target="_blank" rel="noopener noreferrer">{f.hostingAltLink}</a></div>
         </section>
-        <Actions t={t} onBack={() => goTo(1)} onNext={() => goTo(3)} nextLabel={f.nextData} />
+        <Actions t={t} onBack={() => goTo(1)} onNext={() => { if (validateExtras()) goTo(3) }} nextLabel={f.nextData} />
       </>}
 
       {s.step === 3 && <>
@@ -462,6 +521,7 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
           <dl className="ofl-rev">
             <ReviewRow t={t} label={f.package} value={chosen.name} onChange={() => goTo(1)} />
             <ReviewRow t={t} label={f.extra} value={s.extras.length ? s.extras.map(i => chosen.addons[i]).join('\n') : f.none} onChange={() => goTo(2)} />
+            {domainFull && <ReviewRow t={t} label={f.domainRow} value={`${domainFull} (${money(domainPrice(domainTld), lang)}${f.domainYear})`} onChange={() => goTo(2)} />}
             <ReviewRow t={t} label={f.contact} value={[`${s.d.firstName} ${s.d.lastName}`, s.d.email, s.d.phone].filter(Boolean).join('\n')} onChange={() => goTo(3)} />
             <ReviewRow t={t} label={f.billingShort} value={[s.d.company, s.d.street, `${s.d.postalCode} ${s.d.city}`, s.d.country].filter(Boolean).join('\n')} onChange={() => goTo(3)} />
             {s.d.desiredName && <ReviewRow t={t} label={f.desiredShort} value={s.d.desiredName} onChange={() => goTo(3)} />}
