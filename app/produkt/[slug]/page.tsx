@@ -7,6 +7,8 @@ import { BalanceWidget } from '@/components/BalanceWidget'
 import { notFound } from 'next/navigation'
 import '@/app/globals.css'
 import './produkt.css'
+import { OrderFlow } from '@/components/order/OrderFlow'
+import { hasOrderFlow } from '@/lib/orderFlow'
 
 function ProduktContent({ slug }: { slug: string }) {
   const product = PRODUCTS.find(p => p.slug === slug)
@@ -119,7 +121,7 @@ function ProduktContent({ slug }: { slug: string }) {
             <div style={{ background: '#F0FDF4', border: '1px solid #86EFAC', borderLeft: '4px solid #16A34A', padding: '1rem 1.25rem', marginBottom: '1.5rem', borderRadius: '3px' }}>
               <div style={{ fontWeight: 700, color: '#15803D', marginBottom: '0.3rem' }}>Zahlung mit Noble-Währung erfolgreich</div>
               <div style={{ fontSize: '0.82rem', color: '#166534' }}>
-                Referenz: <strong>{noblePaid.order_reference}</strong> · Doppel-Wums Bonus gutgeschrieben.
+                Referenz: <strong>{noblePaid.order_reference}</strong> · EUROPAN-Vorteil verrechnet.
               </div>
             </div>
           )}
@@ -183,8 +185,8 @@ function ProduktContent({ slug }: { slug: string }) {
               <div className="europan-box">
                 <div className="europan-badge">EUROPAN</div>
                 <p>
-                  Mit einem Noble-Konto können Sie mit EUROPAN, N-Coin, SwissyCash oder CryptoCoin bezahlen
-                  und erhalten den <strong style={{ color: '#C9963A' }}>Doppel-Wums-Bonus: 5% EUROPAN</strong> zurück.
+                  Mit einem EUROPAN-Konto zahlen Sie weniger: <strong style={{ color: '#C9963A' }}>bis zu 5 % Vorteil</strong>,
+                  davon 2 % EUROPAN-Bonus und 3 % Doppel-Wums, wenn das Guthaben den ganzen Betrag deckt.
                   Guthaben rechts einsehen.
                 </p>
               </div>
@@ -346,7 +348,7 @@ import { Suspense } from 'react'
 export default function ProduktPage({ params }: { params: { slug: string } }) {
   return (
     <Suspense fallback={<div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center'}}>Laden…</div>}>
-      <ProduktContent slug={params.slug} />
+      {hasOrderFlow(params.slug) ? <OrderFlow slug={params.slug} lang="de" /> : <ProduktContent slug={params.slug} />}
     </Suspense>
   )
 }

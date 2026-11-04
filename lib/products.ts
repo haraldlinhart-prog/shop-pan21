@@ -18,11 +18,18 @@ export type Product = {
   inquiry?: boolean  // true = Kontaktformular statt Warenkorb
   externalUrl?: string  // gesetzt = Karte verlinkt direkt auf die eigene Produktseite (andere PAN21-Domain), kein interner Checkout
   tags: string[]
+  card?: { name: string; shortDesc: string; priceFrom?: boolean }  // abweichender Text fuer die Kachel im Shop
+  hideCard?: boolean  // keine eigene Kachel im Shop; Seite, Checkout und Produkt-Feed bleiben
 }
 
 export const PRODUCTS: Product[] = [
   {
     slug: 'deutsche-ug-gruendung',
+    card: {
+      name: 'Deutsche UG-/GmbH-Gründung',
+      shortDesc: 'Gründung einer deutschen UG oder GmbH nach Musterprotokoll – inklusive Vorbereitung der Gründungsdaten, notarieller Gründung und Handelsregistereintragung. Die Rechtsform wählen Sie bei der Bestellung.',
+      priceFrom: true,
+    },
     sku: 'EUROPAN-DE-UG-001',
     name: 'Deutsche UG-Gründung',
     shortDesc: 'Gründung einer deutschen Unternehmergesellschaft (haftungsbeschränkt) nach Musterprotokoll – inklusive Vorbereitung der Gründungsdaten, notarieller Gründung und Handelsregistereintragung.',
@@ -47,10 +54,10 @@ export const PRODUCTS: Product[] = [
       'Laufende Buchhaltung',
       'Steuerliche Beratung',
       'Individuelle Satzung außerhalb des Musterprotokolls',
-      'Laufende Geschäftsadresse, sofern nicht gesondert gebucht',
+      'Laufende Geschäftsadresse',
     ],
     addons: [
-      'Ergänzende Geschäftsadresse / Postservice',
+      'Beratung zur Geschäftsadresse',
       'Verwaltungs- und Geschäftsführungsstrukturen nach Prüfung',
     ],
     process: [
@@ -67,6 +74,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     slug: 'deutsche-gmbh-gruendung',
+    hideCard: true,
     sku: 'EUROPAN-DE-GMBH-001',
     name: 'Deutsche GmbH-Gründung',
     shortDesc: 'Gründung einer deutschen GmbH nach Musterprotokoll – inklusive Vorbereitung der Gründungsdaten, notarieller Gründung und Handelsregistereintragung.',
@@ -90,11 +98,10 @@ export const PRODUCTS: Product[] = [
       'Laufende Buchhaltung',
       'Steuerliche Beratung',
       'Individuelle Satzung außerhalb des Musterprotokolls',
-      'Laufende Geschäftsadresse, sofern nicht gesondert gebucht',
+      'Laufende Geschäftsadresse',
     ],
     addons: [
-      'Ergänzende Office- oder Geschäftsadressen',
-      'Postservice-Leistungen',
+      'Beratung zur Geschäftsadresse',
       'Verwaltungs- und Strukturierungsoptionen nach Prüfung',
     ],
     process: [
@@ -494,7 +501,7 @@ export const PRODUCTS: Product[] = [
     name: 'UK Limited Nominee- und Treuhandadministration',
     shortDesc: 'Professionelle Nominee- und Treuhandverwaltung für UK Limited Strukturen — dokumentiert, compliance-orientiert und vollständig transparent bezüglich wirtschaftlich Berechtigter.',
     price: null,
-    priceLabel: 'Ab individuelles Angebot nach Prüfung',
+    priceLabel: 'Geschäftsführer 175 €/Monat, Gesellschafter 42 €/Monat',
     inquiry: true,
     category: 'UK / Großbritannien',
     flag: '🇬🇧',
@@ -516,7 +523,7 @@ export const PRODUCTS: Product[] = [
     addons: [
       'Laufende Buchhaltung und Accounting',
       'Registered Office-Verlängerung',
-      'Bankkonto- und Zahlungsadministration nach gesonderter Prüfung',
+      'Kontoeröffnung: 550 € pauschal, unabhängig von der Bank',
     ],
     process: [
       'Anfrage und erste Strukturbeschreibung',
@@ -525,16 +532,16 @@ export const PRODUCTS: Product[] = [
       'Einrichtung der Nominee-/Treuhandstruktur',
       'Laufende Administration und Dokumentation',
     ],
-    hint: 'Dieses Angebot dient ausschließlich der professionellen, dokumentierten Gesellschaftsverwaltung. Eine Mandatsannahme erfolgt nur nach vollständiger KYC- und Compliance-Prüfung.',
+    hint: 'Dieses Angebot dient ausschließlich der professionellen, dokumentierten Gesellschaftsverwaltung. Eine Mandatsannahme erfolgt nur nach vollständiger KYC- und Compliance-Prüfung. Keine Einrichtungsgebühr, Mindestlaufzeit 3 Monate, Kündigung zum Monatsende mit 14 Tagen Frist, bei jährlicher Zahlung ein Monat Rabatt. Die Abrechnung erfolgt ohne Mehrwertsteuer durch die PAN21.com International LLC.',
     tags: ['UK Nominee', 'Treuhand', 'UK Limited', 'Gesellschaftsverwaltung'],
   },
   {
     slug: 'internationale-nominee-treuhandadministration',
     sku: 'EUROPAN-INT-NOMINEE-TRUST-001',
     name: 'Internationale Nominee- und Treuhandadministration',
-    shortDesc: 'Jurisdiktionsübergreifende Nominee-, Treuhand- und Mandatsadministration für internationale Gesellschaftsstrukturen — z. B. Hong Kong, Irland, Belize, Nevis, Cayman, Australien oder Neuseeland.',
+    shortDesc: 'Jurisdiktionsübergreifende Nominee-, Treuhand- und Mandatsadministration für internationale Gesellschaftsstrukturen — z. B. USA, Hong Kong, Irland, Belize, Nevis, Cayman, Australien oder Neuseeland.',
     price: null,
-    priceLabel: 'Ab €2.490 — individuelles Angebot nach Due Diligence',
+    priceLabel: 'USA und Hong Kong: Geschäftsführer 145 €/Monat, Gesellschafter 42 €/Monat — alle anderen Länder auf Anfrage',
     inquiry: true,
     category: 'International',
     flag: '🌐',
@@ -557,7 +564,7 @@ export const PRODUCTS: Product[] = [
       'Insolvenzverschleppung oder Gläubigerbenachteiligung',
     ],
     addons: [
-      'Bankkonto- und Zahlungsadministration nach gesonderter Prüfung',
+      'Kontoeröffnung: 550 € pauschal, unabhängig von der Bank',
       'Multi-Jurisdiction-Holding-Strukturen nach individuellem Angebot',
     ],
     process: [
@@ -568,7 +575,7 @@ export const PRODUCTS: Product[] = [
       'Einrichtung der internationalen Struktur',
       'Laufende Compliance-Administration',
     ],
-    hint: 'Dieses Angebot ist kein automatisch bestellbares Standardprodukt. Die endgültige Annahme, Strukturfreigabe und Preisbestätigung erfolgen ausschließlich nach individueller Due-Diligence-Prüfung. Nominee Director ab €7.900/Jahr, komplexe Strukturen ab €14.900/Jahr.',
+    hint: 'Dieses Angebot ist kein automatisch bestellbares Standardprodukt. Die endgültige Annahme, Strukturfreigabe und Preisbestätigung erfolgen ausschließlich nach individueller Due-Diligence-Prüfung. Keine Einrichtungsgebühr, Mindestlaufzeit 3 Monate, Kündigung zum Monatsende mit 14 Tagen Frist, bei jährlicher Zahlung ein Monat Rabatt. Die Abrechnung erfolgt ohne Mehrwertsteuer durch die PAN21.com International LLC.',
     tags: ['Internationale Nominee', 'Treuhand', 'Asset Protection', 'Holding', 'Multi-Jurisdiction'],
   },
   {
@@ -577,7 +584,7 @@ export const PRODUCTS: Product[] = [
     name: 'Deutsche Treuhand- und Mandatsadministration',
     shortDesc: 'Treuhand-Service für deutsche Gesellschaften — Mandatsannahme ausschließlich nach kostenloser Vorprüfung von wirtschaftlich Berechtigten, Zweck und Hintergrund.',
     price: null,
-    priceLabel: 'Vorprüfung kostenlos — Treuhandtätigkeit 280 €/Monat (Basisgebühr)',
+    priceLabel: 'Vorprüfung kostenlos — Geschäftsführer 285 €/Monat (Basisgebühr), Gesellschafter 155 €/Monat',
     inquiry: true,
     category: 'Deutschland',
     flag: '🇩🇪',
@@ -601,10 +608,9 @@ export const PRODUCTS: Product[] = [
       'Konstruktionen, bei denen der tatsächliche Zweck nicht vollständig offengelegt wird',
     ],
     addons: [
-      'Digitale Kontoanbieter: Finom / bunq Vorprüfung',
-      'High-Street-Banken: Deutsche Bank / Commerzbank / HVB',
-      'Komplexe Bankprüfung mit Treuhand-/Organfunktion',
-      'Geschäftsführungs-, Organ- oder besondere Zahlungsadministration',
+      'Kontoeröffnung bei digitalen Anbietern wie Qonto, bunq oder Finom: 350 € pauschal',
+      'Kontoeröffnung bei Filialbanken wie Deutsche Bank oder Commerzbank: 550 € pauschal',
+      'Sonderwünsche werden gesondert berechnet, z. B. für eine deutsche Gesellschaft ein Konto bei einer ausländischen Bank oder bei einem Anbieter wie Currenxie',
     ],
     process: [
       'Anfrage und erste Strukturbeschreibung',
@@ -614,7 +620,7 @@ export const PRODUCTS: Product[] = [
       'Einrichtung der Treuhand-/Mandatsstruktur',
       'Laufende Compliance- und Dokumentationsverwaltung',
     ],
-    hint: 'Die 280 €/Monat sind eine monatliche Basisgebühr für die organschaftliche Treuhandtätigkeit. Tätigkeiten, die darüber hinausgehen, werden vorab angefragt und im Einzelfall separat abgerechnet. Dieses Angebot dient ausdrücklich nicht der verdeckten "Firmenbeerdigung", dem Herauslösen von Altverantwortlichen aus einer problematischen Gesellschaft oder der Verschleierung einer insolvenzreifen Situation. Bei Hinweisen auf unzulässige Nutzung wird kein Mandat übernommen bzw. ein laufendes sofort beendet. Kein automatisch bestellbares Standardprodukt — Mandatsannahme erst nach kostenloser Vorprüfung.',
+    hint: 'Die 285 €/Monat sind eine monatliche Basisgebühr für die organschaftliche Treuhandtätigkeit als Geschäftsführer. Die Gesellschafterstellung kostet 155 €/Monat; wer beide Rollen bucht, zahlt beide Preise. Tätigkeiten, die darüber hinausgehen, werden vorab angefragt und im Einzelfall separat abgerechnet. Dieses Angebot dient ausdrücklich nicht der verdeckten "Firmenbeerdigung", dem Herauslösen von Altverantwortlichen aus einer problematischen Gesellschaft oder der Verschleierung einer insolvenzreifen Situation. Bei Hinweisen auf unzulässige Nutzung wird kein Mandat übernommen bzw. ein laufendes sofort beendet. Kein automatisch bestellbares Standardprodukt — Mandatsannahme erst nach kostenloser Vorprüfung. Keine Einrichtungsgebühr, Mindestlaufzeit 3 Monate, Kündigung zum Monatsende mit 14 Tagen Frist, bei jährlicher Zahlung ein Monat Rabatt. Die Abrechnung erfolgt ohne Mehrwertsteuer durch die PAN21.com International LLC.',
     tags: ['Treuhand', 'Mandatsverwaltung', 'Deutschland', 'Compliance'],
   },
   {

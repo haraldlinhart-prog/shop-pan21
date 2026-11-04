@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { PRODUCTS } from '@/lib/products'
+import { customerHtml, sanitizeCustomer } from '@/lib/orderCustomer'
 
 const NOBLE_API_URL = (process.env.NOBLE_API_URL || 'https://www.noble-limited.com').replace(/^https:\/\/noble-limited\.com/, 'https://www.noble-limited.com')
 const NOBLE_API_KEY = process.env.NOBLE_API_KEY || ''
+
+const EUROPAN_BONUS_PCT = 0.02
+const DOPPELWUMS_PCT = 0.03
 
 const COIN_LABELS: Record<string, string> = {
   europan:    'EUROPAN',
@@ -19,7 +23,7 @@ const COIN_LABELS: Record<string, string> = {
 // verifying the customer actually owns the account before any money moves. Never
 // call debit without first confirming the PIN via balance-by-email.
 export async function POST(req: NextRequest) {
-  const { email, pin, slug, coin_id, affiliate_ref } = await req.json().catch(() => ({}))
+  const { email, pin, slug, coin_id, affiliate_ref, customer, use_bonus } = await req.json().catch(() => ({}))
 
   if (!email || !pin || !slug || !coin_id) {
     return NextResponse.json({ error: 'Missing fields' }, { status: 400 })
@@ -36,6 +40,16 @@ export async function POST(req: NextRequest) {
   const product = PRODUCTS.find(p => p.slug === slug)
   if (!product?.price) return NextResponse.json({ error: 'Product not found' }, { status: 404 })
 
+  // Registrierte EUROPAN-Kunden zahlen den reduzierten Preis direkt, statt erst
+  // den vollen Preis zu zahlen und den Vorteil danach gutgeschrieben zu bekommen.
+  // Gleiche Rechnung wie im BalanceWidget. Mit "auf dem Noble-Konto sparen" wird
+  // der 2%-Bonus nicht abgezogen, sondern unten gutgeschrieben.
+  const useBonus = use_bonus !== false
+  const bonus = Math.round(product.price * EUROPAN_BONUS_PCT * 100) / 100
+  const doppelWums = Math.round(product.price * DOPPELWUMS_PCT * 100) / 100
+  const required = Math.round((product.price - (useBonus ? bonus : 0)) * 100) / 100
+  const amount = Math.round((required - doppelWums) * 100) / 100
+
   // 0. Verify PIN + fetch authoritative balance before touching anything
   const verifyRes = await fetch(`${NOBLE_API_URL}/api/v1/balance-by-email`, {
     method: 'POST',
@@ -48,7 +62,7 @@ export async function POST(req: NextRequest) {
   if (!verifyRes.ok) return NextResponse.json({ error: 'Noble API error' }, { status: verifyRes.status })
 
   const verifyData = await verifyRes.json()
-  if ((verifyData.balance || 0) < product.price) {
+  if ((verifyData.balance || 0) < required) {
     return NextResponse.json({ error: 'Guthaben nicht ausreichend.', balance: verifyData.balance }, { status: 402 })
   }
 
@@ -61,7 +75,7 @@ export async function POST(req: NextRequest) {
     body: JSON.stringify({
       email,
       coin_id,
-      amount: product.price,
+      amount,
       description: `Kauf: ${product.name} auf shop.pan21.com`,
       reference: orderRef,
     }),
@@ -87,9 +101,10 @@ export async function POST(req: NextRequest) {
         reply_to: orderTo,
         subject: `Bestellbestätigung: ${product.name} (${COIN_LABELS[coin_id] || coin_id})`,
         html: `<p><strong>Produkt:</strong> ${product.name}<br>
-<strong>Bezahlt mit:</strong> ${product.price} ${COIN_LABELS[coin_id] || coin_id}<br>
+<strong>Bezahlt mit:</strong> ${amount} ${COIN_LABELS[coin_id] || coin_id}<br>
 <strong>Referenz:</strong> ${orderRef}<br>
 <strong>Neues Guthaben:</strong> ${debitData.new_balance} ${COIN_LABELS[coin_id] || coin_id}</p>
+${customerHtml(sanitizeCustomer(customer))}
 <p>Wir melden uns innerhalb eines Werktags mit den nächsten Schritten.</p>`,
       }),
     }).catch(() => {})
@@ -105,6 +120,8 @@ export async function POST(req: NextRequest) {
       order_amount_eur: product.price,
       coin_id_used: coin_id,
       doppel_wums: true,
+      // Der Vorteil steckt schon im abgebuchten Betrag und darf nicht noch einmal gutgeschrieben werden.
+      buyer_bonus_pct: useBonus ? 0 : EUROPAN_BONUS_PCT,
       order_reference: orderRef,
     }),
   }).catch(() => {})
@@ -114,7 +131,7 @@ export async function POST(req: NextRequest) {
     order_reference: orderRef,
     product: product.name,
     paid_with: coin_id,
-    amount: product.price,
+    amount,
     new_balance: debitData.new_balance,
     doppel_wums: true,
   })

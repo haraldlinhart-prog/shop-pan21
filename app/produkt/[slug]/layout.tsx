@@ -12,9 +12,9 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   const de = `${base}/produkt/${product.slug}`
   const en = `${base}/en/produkt/${product.slug}`
   return {
-    title: product.name,
+    title: product.card?.name ?? product.name,
     description: product.shortDesc,
-    openGraph: { url: de, title: product.name, description: product.shortDesc },
+    openGraph: { url: de, title: product.card?.name ?? product.name, description: product.shortDesc },
     alternates: {
       canonical: de,
       languages: { de, en, 'x-default': de },

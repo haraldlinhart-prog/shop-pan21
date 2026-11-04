@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { escapeHtml as esc } from '@/lib/orderCustomer'
 
 // Catches bot-generated random tokens that are short enough to slide past a simple
 // length check but look nothing like a real word: very few vowels AND unnaturally
@@ -92,15 +93,15 @@ export async function POST(req: NextRequest) {
 <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:32px;background:#F7F8FA;">
   <div style="border-left:3px solid #C9963A;padding-left:16px;margin-bottom:20px;">
     <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#C9963A;margin-bottom:4px;">PAN21 Shop — ${inquiry ? 'Produktanfrage' : 'Kontakt'}</div>
-    <div style="font-size:1rem;font-weight:700;color:#0B1F3A;">${interest || 'Allgemeine Anfrage'}</div>
+    <div style="font-size:1rem;font-weight:700;color:#0B1F3A;">${esc(interest || 'Allgemeine Anfrage')}</div>
   </div>
   <table style="width:100%;font-size:0.875rem;color:#5C6B7A;border-collapse:collapse;">
-    <tr><td style="padding:7px 0;font-weight:700;color:#0B1F3A;width:90px;">Name</td><td>${name}</td></tr>
-    <tr><td style="padding:7px 0;font-weight:700;color:#0B1F3A;">E-Mail</td><td><a href="mailto:${email}">${email}</a></td></tr>
-    ${phone ? `<tr><td style="padding:7px 0;font-weight:700;color:#0B1F3A;">Telefon</td><td>${phone}</td></tr>` : ''}
-    ${interest ? `<tr><td style="padding:7px 0;font-weight:700;color:#0B1F3A;">Interesse</td><td>${interest}</td></tr>` : ''}
+    <tr><td style="padding:7px 0;font-weight:700;color:#0B1F3A;width:90px;">Name</td><td>${esc(name)}</td></tr>
+    <tr><td style="padding:7px 0;font-weight:700;color:#0B1F3A;">E-Mail</td><td><a href="mailto:${esc(email)}">${esc(email)}</a></td></tr>
+    ${phone ? `<tr><td style="padding:7px 0;font-weight:700;color:#0B1F3A;">Telefon</td><td>${esc(phone)}</td></tr>` : ''}
+    ${interest ? `<tr><td style="padding:7px 0;font-weight:700;color:#0B1F3A;">Interesse</td><td>${esc(interest)}</td></tr>` : ''}
   </table>
-  ${message ? `<div style="background:#fff;border:1px solid #DDE2E8;padding:16px 20px;margin-top:16px;font-size:0.875rem;line-height:1.8;white-space:pre-wrap;">${message}</div>` : ''}
+  ${message ? `<div style="background:#fff;border:1px solid #DDE2E8;padding:16px 20px;margin-top:16px;font-size:0.875rem;line-height:1.8;white-space:pre-wrap;">${esc(message)}</div>` : ''}
   <p style="font-size:0.68rem;color:#9CA3AF;margin-top:20px;">shop.pan21.com · ${elapsed}ms</p>
 </div>`
 

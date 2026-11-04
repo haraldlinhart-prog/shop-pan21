@@ -7,6 +7,8 @@ import { BalanceWidget } from '@/components/BalanceWidget'
 import { notFound } from 'next/navigation'
 import '@/app/globals.css'
 import '../../../produkt/[slug]/produkt.css'
+import { OrderFlow } from '@/components/order/OrderFlow'
+import { hasOrderFlow } from '@/lib/orderFlow'
 
 // English mirror of app/produkt/[slug]/page.tsx — see that file for the
 // canonical German version. Kept as a parallel component (not a shared one)
@@ -121,7 +123,7 @@ function ProduktContentEn({ slug }: { slug: string }) {
             <div style={{ background: '#F0FDF4', border: '1px solid #86EFAC', borderLeft: '4px solid #16A34A', padding: '1rem 1.25rem', marginBottom: '1.5rem', borderRadius: '3px' }}>
               <div style={{ fontWeight: 700, color: '#15803D', marginBottom: '0.3rem' }}>Payment with Noble currency successful</div>
               <div style={{ fontSize: '0.82rem', color: '#166534' }}>
-                Reference: <strong>{noblePaid.order_reference}</strong> · Doppel-Wums bonus credited.
+                Reference: <strong>{noblePaid.order_reference}</strong> · EUROPAN advantage applied.
               </div>
             </div>
           )}
@@ -185,8 +187,8 @@ function ProduktContentEn({ slug }: { slug: string }) {
               <div className="europan-box">
                 <div className="europan-badge">EUROPAN</div>
                 <p>
-                  With a Noble account you can pay with EUROPAN, N-Coin, SwissyCash or CryptoCoin
-                  and get the <strong style={{ color: '#C9963A' }}>Doppel-Wums bonus: 5% EUROPAN</strong> back.
+                  With a EUROPAN account you pay less: <strong style={{ color: '#C9963A' }}>up to 5% advantage</strong>,
+                  made up of a 2% EUROPAN bonus and 3% Doppel-Wums when your balance covers the full amount.
                   See your balance on the right.
                 </p>
               </div>
@@ -349,7 +351,7 @@ import { Suspense } from 'react'
 export default function ProduktPageEn({ params }: { params: { slug: string } }) {
   return (
     <Suspense fallback={<div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center'}}>Loading…</div>}>
-      <ProduktContentEn slug={params.slug} />
+      {hasOrderFlow(params.slug) ? <OrderFlow slug={params.slug} lang="en" /> : <ProduktContentEn slug={params.slug} />}
     </Suspense>
   )
 }

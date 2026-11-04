@@ -18,10 +18,16 @@ export type ProductTranslation = {
   hint: string
   priceNote?: string
   tags: string[]
+  card?: { name: string; shortDesc: string; priceFrom?: boolean }
 }
 
 export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
   'deutsche-ug-gruendung': {
+    card: {
+      name: 'German UG/GmbH Formation',
+      shortDesc: 'Formation of a German UG or GmbH under the standard model protocol — including preparation of the incorporation data, notarial formation and commercial register entry. You choose the legal form when ordering.',
+      priceFrom: true,
+    },
     name: 'German UG Formation',
     shortDesc: 'Formation of a German Unternehmergesellschaft (haftungsbeschränkt) under the standard model protocol — including preparation of the incorporation data, notarial formation and commercial register entry.',
     included: [
@@ -40,10 +46,10 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
       'Ongoing bookkeeping',
       'Tax advice',
       'Individual articles of association outside the model protocol',
-      'Ongoing business address, unless booked separately',
+      'Ongoing business address',
     ],
     addons: [
-      'Supplementary business address / mail service',
+      'Advice on the business address',
       'Administration and management structures, subject to review',
     ],
     process: [
@@ -76,11 +82,10 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
       'Ongoing bookkeeping',
       'Tax advice',
       'Individual articles of association outside the model protocol',
-      'Ongoing business address, unless booked separately',
+      'Ongoing business address',
     ],
     addons: [
-      'Supplementary office or business addresses',
-      'Mail service',
+      'Advice on the business address',
       'Administration and structuring options, subject to review',
     ],
     process: [
@@ -421,7 +426,7 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
   'uk-limited-nominee-treuhandadministration': {
     name: 'UK Limited Nominee and Trustee Administration',
     shortDesc: 'Professional nominee and trustee administration for UK Limited structures — documented, compliance-oriented and fully transparent regarding beneficial owners.',
-    priceLabel: 'From an individual quote after review',
+    priceLabel: 'Director €175/month, shareholder €42/month',
     included: [
       'KYC/AML review and documentation of beneficial owners',
       'Nominee Shareholder / trustee administration after mandate review',
@@ -439,7 +444,7 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
     addons: [
       'Ongoing bookkeeping and accounting',
       'Registered Office renewal',
-      'Bank account and payment administration after separate review',
+      'Account opening: €550 flat fee, regardless of the bank',
     ],
     process: [
       'Enquiry and initial structure description',
@@ -448,13 +453,13 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
       'Set-up of the nominee/trustee structure',
       'Ongoing administration and documentation',
     ],
-    hint: 'This offer serves exclusively professional, documented company administration. A mandate is only accepted after a complete KYC and compliance review.',
+    hint: 'This offer serves exclusively professional, documented company administration. A mandate is only accepted after a complete KYC and compliance review. No set-up fee, minimum term 3 months, cancellation at the end of a month with 14 days\' notice, one month discount for annual payment. Billed without VAT by PAN21.com International LLC.',
     tags: ['UK Nominee', 'Trustee', 'UK Limited', 'Company administration'],
   },
   'internationale-nominee-treuhandadministration': {
     name: 'International Nominee and Trustee Administration',
-    shortDesc: 'Cross-jurisdiction nominee, trustee and mandate administration for international company structures — e.g. Hong Kong, Ireland, Belize, Nevis, Cayman, Australia or New Zealand.',
-    priceLabel: 'From €2,490 — individual quote after due diligence',
+    shortDesc: 'Cross-jurisdiction nominee, trustee and mandate administration for international company structures — e.g. USA, Hong Kong, Ireland, Belize, Nevis, Cayman, Australia or New Zealand.',
+    priceLabel: 'USA and Hong Kong: director €145/month, shareholder €42/month — all other countries on request',
     included: [
       'International structure and jurisdiction review',
       'KYC/AML/sanctions and risk review of the parties involved',
@@ -473,7 +478,7 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
       'Delaying insolvency or prejudicing creditors',
     ],
     addons: [
-      'Bank account and payment administration after separate review',
+      'Account opening: €550 flat fee, regardless of the bank',
       'Multi-jurisdiction holding structures by individual quote',
     ],
     process: [
@@ -484,13 +489,13 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
       'Set-up of the international structure',
       'Ongoing compliance administration',
     ],
-    hint: 'This offer is not an automatically orderable standard product. Final acceptance, structure approval and price confirmation are given exclusively after an individual due-diligence review. Nominee Director from €7,900/year, complex structures from €14,900/year.',
+    hint: 'This offer is not an automatically orderable standard product. Final acceptance, structure approval and price confirmation are given exclusively after an individual due-diligence review. No set-up fee, minimum term 3 months, cancellation at the end of a month with 14 days\' notice, one month discount for annual payment. Billed without VAT by PAN21.com International LLC.',
     tags: ['International nominee', 'Trustee', 'Asset protection', 'Holding', 'Multi-jurisdiction'],
   },
   'deutsche-treuhand-mandatsadministration': {
     name: 'German Trustee and Mandate Administration',
     shortDesc: 'Trustee service for German companies — a mandate is only accepted after a free pre-check of beneficial owners, purpose and background.',
-    priceLabel: 'Pre-check free of charge — trustee activity €280/month (base fee)',
+    priceLabel: 'Pre-check free of charge — managing director €285/month (base fee), shareholder €155/month',
     included: [
       'Free pre-check of the corporate structure',
       'KYC/AML review of the beneficial owners',
@@ -510,10 +515,9 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
       'Constructions where the actual purpose is not fully disclosed',
     ],
     addons: [
-      'Digital account providers: Finom / bunq pre-check',
-      'High-street banks: Deutsche Bank / Commerzbank / HVB',
-      'Complex bank review with trustee/officer function',
-      'Management, officer or special payment administration',
+      'Account opening with digital providers such as Qonto, bunq or Finom: €350 flat fee',
+      'Account opening with high-street banks such as Deutsche Bank or Commerzbank: €550 flat fee',
+      'Special requests are charged separately, e.g. an account with a foreign bank for a German company or a provider such as Currenxie',
     ],
     process: [
       'Enquiry and initial structure description',
@@ -523,7 +527,7 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
       'Set-up of the trustee/mandate structure',
       'Ongoing compliance and documentation administration',
     ],
-    hint: 'The €280/month is a monthly base fee for the corporate-officer trustee activity. Work beyond that scope is requested in advance and billed separately case by case. This offer expressly does not serve the covert "burial" of a company, extracting former officers from a problematic company, or concealing a situation on the brink of insolvency. If there are indications of impermissible use, no mandate will be taken on, or an ongoing one will be ended immediately. Not an automatically orderable standard product — the mandate is only accepted after a free pre-check.',
+    hint: 'The €285/month is a monthly base fee for the corporate-officer trustee activity as managing director. The shareholder position costs €155/month; booking both roles means paying both prices. Work beyond that scope is requested in advance and billed separately case by case. This offer expressly does not serve the covert "burial" of a company, extracting former officers from a problematic company, or concealing a situation on the brink of insolvency. If there are indications of impermissible use, no mandate will be taken on, or an ongoing one will be ended immediately. Not an automatically orderable standard product — the mandate is only accepted after a free pre-check. No set-up fee, minimum term 3 months, cancellation at the end of a month with 14 days\' notice, one month discount for annual payment. Billed without VAT by PAN21.com International LLC.',
     tags: ['Trustee', 'Mandate administration', 'Germany', 'Compliance'],
   },
   'uk-limited-jahresadministration': {
@@ -1010,6 +1014,7 @@ export function getProductsEn(): Product[] {
       hint: t.hint,
       priceNote: t.priceNote ?? p.priceNote,
       tags: t.tags,
+      card: t.card ?? p.card,
     }
   })
 }
