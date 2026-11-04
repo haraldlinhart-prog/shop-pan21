@@ -512,6 +512,7 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
     addons: [
       'Account opening with digital providers such as Qonto, bunq or Finom: €350 flat fee',
       'Account opening with high-street banks such as Deutsche Bank or Commerzbank: €550 flat fee',
+      'Special requests are charged separately, e.g. an account with a foreign bank or a provider such as Currenxie',
     ],
     process: [
       'Enquiry and initial structure description',

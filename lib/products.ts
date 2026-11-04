@@ -603,6 +603,7 @@ export const PRODUCTS: Product[] = [
     addons: [
       'Kontoeröffnung bei digitalen Anbietern wie Qonto, bunq oder Finom: 350 € pauschal',
       'Kontoeröffnung bei Filialbanken wie Deutsche Bank oder Commerzbank: 550 € pauschal',
+      'Sonderwünsche werden gesondert berechnet, z. B. ein Konto bei einer ausländischen Bank oder bei einem Anbieter wie Currenxie',
     ],
     process: [
       'Anfrage und erste Strukturbeschreibung',
