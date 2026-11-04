@@ -421,7 +421,7 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
   'uk-limited-nominee-treuhandadministration': {
     name: 'UK Limited Nominee and Trustee Administration',
     shortDesc: 'Professional nominee and trustee administration for UK Limited structures — documented, compliance-oriented and fully transparent regarding beneficial owners.',
-    priceLabel: '€175/month',
+    priceLabel: 'Director €175/month, shareholder €42/month',
     included: [
       'KYC/AML review and documentation of beneficial owners',
       'Nominee Shareholder / trustee administration after mandate review',
@@ -454,7 +454,7 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
   'internationale-nominee-treuhandadministration': {
     name: 'International Nominee and Trustee Administration',
     shortDesc: 'Cross-jurisdiction nominee, trustee and mandate administration for international company structures — e.g. USA, Hong Kong, Ireland, Belize, Nevis, Cayman, Australia or New Zealand.',
-    priceLabel: 'USA and Hong Kong €145/month — all other countries on request',
+    priceLabel: 'USA and Hong Kong: director €145/month, shareholder €42/month — all other countries on request',
     included: [
       'International structure and jurisdiction review',
       'KYC/AML/sanctions and risk review of the parties involved',
@@ -490,7 +490,7 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
   'deutsche-treuhand-mandatsadministration': {
     name: 'German Trustee and Mandate Administration',
     shortDesc: 'Trustee service for German companies — a mandate is only accepted after a free pre-check of beneficial owners, purpose and background.',
-    priceLabel: 'Pre-check free of charge — trustee activity €285/month (base fee)',
+    priceLabel: 'Pre-check free of charge — managing director €285/month (base fee), shareholder €155/month',
     included: [
       'Free pre-check of the corporate structure',
       'KYC/AML review of the beneficial owners',
@@ -522,7 +522,7 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
       'Set-up of the trustee/mandate structure',
       'Ongoing compliance and documentation administration',
     ],
-    hint: 'The €285/month is a monthly base fee for the corporate-officer trustee activity. Work beyond that scope is requested in advance and billed separately case by case. This offer expressly does not serve the covert "burial" of a company, extracting former officers from a problematic company, or concealing a situation on the brink of insolvency. If there are indications of impermissible use, no mandate will be taken on, or an ongoing one will be ended immediately. Not an automatically orderable standard product — the mandate is only accepted after a free pre-check.',
+    hint: 'The €285/month is a monthly base fee for the corporate-officer trustee activity as managing director. The shareholder position costs €155/month; booking both roles means paying both prices. Work beyond that scope is requested in advance and billed separately case by case. This offer expressly does not serve the covert "burial" of a company, extracting former officers from a problematic company, or concealing a situation on the brink of insolvency. If there are indications of impermissible use, no mandate will be taken on, or an ongoing one will be ended immediately. Not an automatically orderable standard product — the mandate is only accepted after a free pre-check.',
     tags: ['Trustee', 'Mandate administration', 'Germany', 'Compliance'],
   },
   'uk-limited-jahresadministration': {
