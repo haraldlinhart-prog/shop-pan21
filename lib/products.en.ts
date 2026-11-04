@@ -44,6 +44,8 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
         'Advice on the business address',
         'Administration and structuring options, subject to review',
         'Pro web hosting package from 1euro-hosting.de',
+        'Standard phone system from telefon-zentrale.com',
+        'Phone exchange with AI from telefon-zentrale.com',
       ],
       hint: 'UG: The share capital is at least €1.00. This package is based on a formation with share capital of €1,000.00. GmbH: The share capital is generally €25,000.00, of which at least the legally required payment must be made before registration.',
       priceNote: 'UG: Including notary and commercial register fees. GmbH: Plus any government and notary fees.',
@@ -72,6 +74,8 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
       'Advice on the business address',
       'Administration and management structures, subject to review',
       'Pro web hosting package from 1euro-hosting.de',
+      'Standard phone system from telefon-zentrale.com',
+      'Phone exchange with AI from telefon-zentrale.com',
     ],
     process: [
       'Order the formation package',
@@ -109,6 +113,8 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
       'Advice on the business address',
       'Administration and structuring options, subject to review',
       'Pro web hosting package from 1euro-hosting.de',
+      'Standard phone system from telefon-zentrale.com',
+      'Phone exchange with AI from telefon-zentrale.com',
     ],
     process: [
       'Order the formation package',

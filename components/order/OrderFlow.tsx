@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation'
 import { PRODUCTS, type Product } from '@/lib/products'
 import { PRODUCTS_EN } from '@/lib/products.en'
 import { BalanceWidget } from '@/components/BalanceWidget'
-import { HOSTING_DOMAIN_PRICES, HOSTING_DOMAIN_TLDS, cleanDomainName, isValidDomainName, FORMATION_SLUGS, LEGAL_LINKS, TRUST_ACCOUNT_FEE, TRUST_MONTHLY, TRUST_PAID_MONTHS_PER_YEAR, TRUST_SLUG, HOSTING_ADDON_START, type LegalForm } from '@/lib/orderFlow'
+import { HOSTING_DOMAIN_PRICES, HOSTING_DOMAIN_TLDS, cleanDomainName, isValidDomainName, FORMATION_SLUGS, LEGAL_LINKS, TRUST_ACCOUNT_FEE, TRUST_MONTHLY, TRUST_PAID_MONTHS_PER_YEAR, TRUST_SLUG, HOSTING_ADDON_START, PHONE_ADDON_START, type LegalForm } from '@/lib/orderFlow'
 import { STRINGS, type Lang } from './strings'
 import '@/app/globals.css'
 import './order.css'
@@ -292,7 +292,8 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
   const price = chosen.price as number
   const hasLegal = Boolean(LEGAL_LINKS.terms && LEGAL_LINKS.withdrawal)
   const set = (k: string) => (v: string) => patch({ d: { ...s.d, [k]: v } })
-  const toggleExtra = (i: number) => patch({ extras: s.extras.includes(i) ? s.extras.filter(x => x !== i) : [...s.extras, i] })
+  // Von den Telefon-Varianten ist nur eine waehlbar: Die neue ersetzt die bisherige.
+  const toggleExtra = (i: number) => patch({ extras: s.extras.includes(i) ? s.extras.filter(x => x !== i) : [...s.extras.filter(x => i < PHONE_ADDON_START || x < PHONE_ADDON_START), i] })
 
   async function loadToken(forSlug: string) {
     const res = await fetch(`/api/checkout-token?slug=${encodeURIComponent(forSlug)}`)
@@ -393,7 +394,7 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
   const ugPrice = PRODUCTS.find(p => p.slug === FORMATION_SLUGS.ug)!.price as number
   const gmbhPrice = PRODUCTS.find(p => p.slug === FORMATION_SLUGS.gmbh)!.price as number
   const rows: Rows = [{ label: f.packageRow, value: money(price, lang) }]
-  s.extras.forEach(i => { if (chosen.addons[i]) rows.push({ label: chosen.addons[i], value: i >= HOSTING_ADDON_START ? f.hostingPrice : f.extraPrice }) })
+  s.extras.forEach(i => { if (chosen.addons[i]) rows.push({ label: chosen.addons[i], value: i >= PHONE_ADDON_START ? f.phonePlans[i - PHONE_ADDON_START].row : i >= HOSTING_ADDON_START ? f.hostingPrice : f.extraPrice }) })
   if (domainFull) rows.push({ label: `${f.domainRow}: ${domainFull}`, value: `${money(domainPrice(domainTld), lang)}${f.domainYear}` })
   if (europanActive) rows.push({ label: f.advantage, value: `− ${money(price - total, lang)}`, minus: true })
   // Erste Seite der gemeinsamen Kachel: noch keine Rechtsform gewaehlt, also beide Preise zeigen
@@ -465,7 +466,7 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
           <h2 className="ofl-h2">{f.hostingTitle}</h2>
           <p className="ofl-lead">{f.hostingLead}</p>
           <div className="ofl-choices">
-            {chosen.addons.slice(HOSTING_ADDON_START).map((a, n) => {
+            {chosen.addons.slice(HOSTING_ADDON_START, PHONE_ADDON_START).map((a, n) => {
               const i = HOSTING_ADDON_START + n
               return <Card key={a} id={`extra-${i}`} type="checkbox" checked={s.extras.includes(i)} onChange={() => toggleExtra(i)} title={a} price={f.hostingPrice} sub={f.hostingSub} />
             })}
@@ -490,6 +491,18 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
             </div>
           )}
           <div className="ofl-hint"><strong>{f.hostingAltTitle}</strong> {f.hostingAlt} <a href={`${f.hostingAltUrl}${domainFull ? `&domain=${encodeURIComponent(domainFull)}` : ''}`} target="_blank" rel="noopener noreferrer">{f.hostingAltLink}</a></div>
+        </section>
+        <section className="ofl-sec">
+          <h2 className="ofl-h2">{f.phoneTitle}</h2>
+          <p className="ofl-lead">{f.phoneLead}</p>
+          <div className="ofl-choices">
+            {chosen.addons.slice(PHONE_ADDON_START).map((a, n) => {
+              const i = PHONE_ADDON_START + n
+              return <Card key={a} id={`extra-${i}`} type="checkbox" checked={s.extras.includes(i)} onChange={() => toggleExtra(i)} title={a} price={f.phonePlans[n].price} sub={f.phonePlans[n].sub} />
+            })}
+          </div>
+          <p className="ofl-note">{f.phoneNote}</p>
+          <div className="ofl-hint"><strong>{f.phoneAltTitle}</strong> {f.phoneAlt} <a href={f.phoneAltUrl} target="_blank" rel="noopener noreferrer">{f.phoneAltLink}</a></div>
         </section>
         <Actions t={t} onBack={() => goTo(1)} onNext={() => { if (validateExtras()) goTo(3) }} nextLabel={f.nextData} />
       </>}
