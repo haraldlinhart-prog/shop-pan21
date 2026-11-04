@@ -544,6 +544,7 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
             <Card key={a} id={`extra-${i}`} type="checkbox" checked={s.extras.includes(i)} onChange={() => toggleExtra(i)} title={a} price={f.extraPrice} sub={i === 0 ? f.addressSub : f.extraSub} />
           ))}
         </div>
+        <img className="ofl-photo" src="/hero/zusatz-buero.jpg" alt={f.extrasImageAlt} width={1672} height={941} />
         <section className="ofl-sec">
           <h2 className="ofl-h2">{f.hostingTitle}</h2>
           <p className="ofl-lead">{f.hostingLead}</p>
