@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation'
 import { PRODUCTS, type Product } from '@/lib/products'
 import { PRODUCTS_EN } from '@/lib/products.en'
 import { BalanceWidget } from '@/components/BalanceWidget'
-import { FORMATION_SLUGS, LEGAL_LINKS, TRUST_ACCOUNT_FEE, TRUST_MONTHLY, TRUST_PAID_MONTHS_PER_YEAR, TRUST_SLUG, type LegalForm } from '@/lib/orderFlow'
+import { FORMATION_SLUGS, LEGAL_LINKS, TRUST_ACCOUNT_FEE, TRUST_MONTHLY, TRUST_PAID_MONTHS_PER_YEAR, TRUST_SLUG, HOSTING_ADDON_START, type LegalForm } from '@/lib/orderFlow'
 import { STRINGS, type Lang } from './strings'
 import '@/app/globals.css'
 import './order.css'
@@ -288,6 +288,7 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
   const price = chosen.price as number
   const hasLegal = Boolean(LEGAL_LINKS.terms && LEGAL_LINKS.withdrawal)
   const set = (k: string) => (v: string) => patch({ d: { ...s.d, [k]: v } })
+  const toggleExtra = (i: number) => patch({ extras: s.extras.includes(i) ? s.extras.filter(x => x !== i) : [...s.extras, i] })
 
   async function loadToken(forSlug: string) {
     const res = await fetch(`/api/checkout-token?slug=${encodeURIComponent(forSlug)}`)
@@ -350,11 +351,21 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
 
   const europanActive = s.pay === 'europan' && preview?.fullyCovered
   const total = europanActive && preview ? preview.finalTotal : price
+  const ugPrice = PRODUCTS.find(p => p.slug === FORMATION_SLUGS.ug)!.price as number
+  const gmbhPrice = PRODUCTS.find(p => p.slug === FORMATION_SLUGS.gmbh)!.price as number
   const rows: Rows = [{ label: f.packageRow, value: money(price, lang) }]
-  s.extras.forEach(i => { if (chosen.addons[i]) rows.push({ label: chosen.addons[i], value: f.extraPrice }) })
+  s.extras.forEach(i => { if (chosen.addons[i]) rows.push({ label: chosen.addons[i], value: i >= HOSTING_ADDON_START ? f.hostingPrice : f.extraPrice }) })
   if (europanActive) rows.push({ label: f.advantage, value: `− ${money(price - total, lang)}`, minus: true })
-  const summary: Summary = {
-    title: s.step === 0 ? (shown.card?.name ?? chosen.name) : chosen.name,
+  // Erste Seite der gemeinsamen Kachel: noch keine Rechtsform gewaehlt, also beide Preise zeigen
+  const overview = s.step === 0 && shown.card ? shown.card : null
+  const summary: Summary = overview ? {
+    title: overview.name,
+    chip: f.formHint,
+    rows: [{ label: 'UG', value: money(ugPrice, lang) }, { label: 'GmbH', value: money(gmbhPrice, lang) }],
+    totalLabel: f.priceFromLabel, total: money(ugPrice, lang),
+    note: overview.priceNote ?? '',
+  } : {
+    title: chosen.name,
     chip: `${f.steps[1]}: ${s.form === 'ug' ? 'UG' : 'GmbH'}`,
     rows, totalLabel: f.totalLabel, total: money(total, lang),
     note: `${chosen.priceNote ?? (lang === 'de' ? 'Zzgl. etwaiger Behörden- und Notargebühren.' : 'Plus any government and notary fees.')}${europanActive ? ` ${f.paidEuropan}` : ''}`,
@@ -363,8 +374,6 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
   const pickButton = (form: LegalForm, label: string) => (
     <button type="button" id={`pick-${form}`} className="ofl-pick" aria-pressed={s.form === form} onClick={() => patch({ form })}>{s.form === form ? f.chosen : label}</button>
   )
-  const ugPrice = PRODUCTS.find(p => p.slug === FORMATION_SLUGS.ug)!.price as number
-  const gmbhPrice = PRODUCTS.find(p => p.slug === FORMATION_SLUGS.gmbh)!.price as number
 
   return (
     <Shell lang={lang} slug={slug} steps={f.steps} step={s.step} goTo={goTo} summary={summary} affiliateRef={affiliateRef}
@@ -374,14 +383,14 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
         <div className="ofl-head">
           <span className="ofl-eyebrow">{shown.flag} {shown.category}</span>
           <h1 className="ofl-h1" tabIndex={-1}>{shown.card?.name ?? shown.name}</h1>
-          <p className="ofl-lead">{shown.shortDesc}</p>
+          <p className="ofl-lead">{shown.card?.lead ?? shown.shortDesc}</p>
           <p style={{ fontWeight: 600, color: 'var(--navy)' }}>{f.formHint}</p>
         </div>
-        <section className="ofl-sec"><h2 className="ofl-h2">{t.included}</h2><Bullets items={shown.included} kind="yes" /></section>
+        <section className="ofl-sec"><h2 className="ofl-h2">{t.included}</h2><Bullets items={shown.card?.included ?? shown.included} kind="yes" /></section>
         <section className="ofl-sec"><h2 className="ofl-h2">{t.notIncluded}</h2><Bullets items={shown.notIncluded} kind="no" /></section>
-        {shown.addons.length > 0 && <section className="ofl-sec"><h2 className="ofl-h2">{t.addons}</h2><Bullets items={shown.addons} kind="plus" /></section>}
+        {shown.addons.length > 0 && <section className="ofl-sec"><h2 className="ofl-h2">{t.addons}</h2><Bullets items={shown.card?.addons ?? shown.addons} kind="plus" /></section>}
         <section className="ofl-sec"><h2 className="ofl-h2">{t.process}</h2><Steps items={shown.process} /></section>
-        <div className="ofl-hint"><strong>{t.hint}</strong> {shown.hint}</div>
+        <div className="ofl-hint"><strong>{t.hint}</strong> {shown.card?.hint ?? shown.hint}</div>
         <p className="ofl-note">{f.europanBox}</p>
         <Actions t={t} onNext={() => goTo(1)} nextLabel={f.nextForm} />
         <Related product={shown} lang={lang} />
@@ -408,10 +417,21 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
         <div className="ofl-head"><h1 className="ofl-h1" tabIndex={-1}>{f.extrasTitle}</h1><p className="ofl-lead">{f.extrasLead}</p></div>
         <div className="ofl-choices">
           <Card id="extra-none" type="checkbox" checked={s.extras.length === 0} onChange={() => patch({ extras: [] })} title={f.noThanks} price={money(0, lang)} sub={f.noThanksSub} />
-          {chosen.addons.map((a, i) => (
-            <Card key={a} id={`extra-${i}`} type="checkbox" checked={s.extras.includes(i)} onChange={() => patch({ extras: s.extras.includes(i) ? s.extras.filter(x => x !== i) : [...s.extras, i] })} title={a} price={f.extraPrice} sub={i === 0 ? f.addressSub : f.extraSub} />
+          {chosen.addons.slice(0, HOSTING_ADDON_START).map((a, i) => (
+            <Card key={a} id={`extra-${i}`} type="checkbox" checked={s.extras.includes(i)} onChange={() => toggleExtra(i)} title={a} price={f.extraPrice} sub={i === 0 ? f.addressSub : f.extraSub} />
           ))}
         </div>
+        <section className="ofl-sec">
+          <h2 className="ofl-h2">{f.hostingTitle}</h2>
+          <p className="ofl-lead">{f.hostingLead}</p>
+          <div className="ofl-choices">
+            {chosen.addons.slice(HOSTING_ADDON_START).map((a, n) => {
+              const i = HOSTING_ADDON_START + n
+              return <Card key={a} id={`extra-${i}`} type="checkbox" checked={s.extras.includes(i)} onChange={() => toggleExtra(i)} title={a} price={f.hostingPrice} sub={f.hostingSub} />
+            })}
+          </div>
+          <div className="ofl-hint"><strong>{f.hostingAltTitle}</strong> {f.hostingAlt} <a href={f.hostingAltUrl} target="_blank" rel="noopener noreferrer">{f.hostingAltLink}</a></div>
+        </section>
         <Actions t={t} onBack={() => goTo(1)} onNext={() => goTo(3)} nextLabel={f.nextData} />
       </>}
 

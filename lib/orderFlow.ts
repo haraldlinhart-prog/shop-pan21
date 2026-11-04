@@ -2,6 +2,8 @@
 // behalten vorerst die bisherige Produktseite.
 export const FORMATION_SLUGS = { ug: 'deutsche-ug-gruendung', gmbh: 'deutsche-gmbh-gruendung' } as const
 export const TRUST_SLUG = 'deutsche-treuhand-mandatsadministration'
+// Ab dieser Stelle gehoeren die Zusatzleistungen (addons) von UG und GmbH zur Gruppe Webhosting
+export const HOSTING_ADDON_START = 2
 
 export type LegalForm = keyof typeof FORMATION_SLUGS
 
