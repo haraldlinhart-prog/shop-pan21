@@ -421,7 +421,7 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
   'uk-limited-nominee-treuhandadministration': {
     name: 'UK Limited Nominee and Trustee Administration',
     shortDesc: 'Professional nominee and trustee administration for UK Limited structures — documented, compliance-oriented and fully transparent regarding beneficial owners.',
-    priceLabel: 'From an individual quote after review',
+    priceLabel: '€175/month',
     included: [
       'KYC/AML review and documentation of beneficial owners',
       'Nominee Shareholder / trustee administration after mandate review',
@@ -453,8 +453,8 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
   },
   'internationale-nominee-treuhandadministration': {
     name: 'International Nominee and Trustee Administration',
-    shortDesc: 'Cross-jurisdiction nominee, trustee and mandate administration for international company structures — e.g. Hong Kong, Ireland, Belize, Nevis, Cayman, Australia or New Zealand.',
-    priceLabel: 'From €2,490 — individual quote after due diligence',
+    shortDesc: 'Cross-jurisdiction nominee, trustee and mandate administration for international company structures — e.g. USA, Hong Kong, Ireland, Belize, Nevis, Cayman, Australia or New Zealand.',
+    priceLabel: 'USA and Hong Kong €145/month — all other countries on request',
     included: [
       'International structure and jurisdiction review',
       'KYC/AML/sanctions and risk review of the parties involved',
@@ -484,7 +484,7 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
       'Set-up of the international structure',
       'Ongoing compliance administration',
     ],
-    hint: 'This offer is not an automatically orderable standard product. Final acceptance, structure approval and price confirmation are given exclusively after an individual due-diligence review. Nominee Director from €7,900/year, complex structures from €14,900/year.',
+    hint: 'This offer is not an automatically orderable standard product. Final acceptance, structure approval and price confirmation are given exclusively after an individual due-diligence review.',
     tags: ['International nominee', 'Trustee', 'Asset protection', 'Holding', 'Multi-jurisdiction'],
   },
   'deutsche-treuhand-mandatsadministration': {
