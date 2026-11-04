@@ -17,8 +17,8 @@ export default function ShopPageEn() {
   const [activeCategory, setActiveCategory] = useState('alle')
 
   const filtered = activeCategory === 'alle'
-    ? PRODUCTS_EN.filter(p => !TILE_CATEGORIES.includes(p.category))
-    : PRODUCTS_EN.filter(p => p.category === activeCategory)
+    ? PRODUCTS_EN.filter(p => !TILE_CATEGORIES.includes(p.category) && !p.hideCard)
+    : PRODUCTS_EN.filter(p => p.category === activeCategory && !p.hideCard)
 
   const categoryTiles = activeCategory === 'alle'
     ? TILE_CATEGORIES.map(catId => {
@@ -200,12 +200,12 @@ export default function ShopPageEn() {
                   </div>
                   <div className="product-body">
                     <div className="product-cat">{CATEGORY_NAME_EN[product.category] || product.category}</div>
-                    <h3 className="product-name">{product.name}</h3>
-                    <p className="product-desc">{product.shortDesc}</p>
+                    <h3 className="product-name">{product.card?.name ?? product.name}</h3>
+                    <p className="product-desc">{product.card?.shortDesc ?? product.shortDesc}</p>
                     <div className="product-footer">
                       <div className="product-price">
                         {product.price
-                          ? <>€{product.price.toLocaleString('en-US')}<span className="price-note"> EUR</span></>
+                          ? <>{product.card?.priceFrom ? 'from ' : ''}€{product.price.toLocaleString('en-US')}<span className="price-note"> EUR</span></>
                           : <span className="price-inquiry">{product.priceLabel}</span>
                         }
                       </div>

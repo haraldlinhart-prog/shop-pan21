@@ -14,7 +14,7 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   return {
     title: { absolute: `${product.name} | PAN21 Shop` },
     description: product.shortDesc,
-    openGraph: { url: en, title: product.name, description: product.shortDesc },
+    openGraph: { url: en, title: product.card?.name ?? product.name, description: product.shortDesc },
     alternates: {
       canonical: en,
       languages: { de, en, 'x-default': de },

@@ -18,11 +18,18 @@ export type Product = {
   inquiry?: boolean  // true = Kontaktformular statt Warenkorb
   externalUrl?: string  // gesetzt = Karte verlinkt direkt auf die eigene Produktseite (andere PAN21-Domain), kein interner Checkout
   tags: string[]
+  card?: { name: string; shortDesc: string; priceFrom?: boolean }  // abweichender Text fuer die Kachel im Shop
+  hideCard?: boolean  // keine eigene Kachel im Shop; Seite, Checkout und Produkt-Feed bleiben
 }
 
 export const PRODUCTS: Product[] = [
   {
     slug: 'deutsche-ug-gruendung',
+    card: {
+      name: 'Deutsche UG-/GmbH-Gründung',
+      shortDesc: 'Gründung einer deutschen UG oder GmbH nach Musterprotokoll – inklusive Vorbereitung der Gründungsdaten, notarieller Gründung und Handelsregistereintragung. Die Rechtsform wählen Sie bei der Bestellung.',
+      priceFrom: true,
+    },
     sku: 'EUROPAN-DE-UG-001',
     name: 'Deutsche UG-Gründung',
     shortDesc: 'Gründung einer deutschen Unternehmergesellschaft (haftungsbeschränkt) nach Musterprotokoll – inklusive Vorbereitung der Gründungsdaten, notarieller Gründung und Handelsregistereintragung.',
@@ -47,10 +54,10 @@ export const PRODUCTS: Product[] = [
       'Laufende Buchhaltung',
       'Steuerliche Beratung',
       'Individuelle Satzung außerhalb des Musterprotokolls',
-      'Laufende Geschäftsadresse, sofern nicht gesondert gebucht',
+      'Laufende Geschäftsadresse',
     ],
     addons: [
-      'Ergänzende Geschäftsadresse / Postservice',
+      'Beratung zur Geschäftsadresse',
       'Verwaltungs- und Geschäftsführungsstrukturen nach Prüfung',
     ],
     process: [
@@ -67,6 +74,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     slug: 'deutsche-gmbh-gruendung',
+    hideCard: true,
     sku: 'EUROPAN-DE-GMBH-001',
     name: 'Deutsche GmbH-Gründung',
     shortDesc: 'Gründung einer deutschen GmbH nach Musterprotokoll – inklusive Vorbereitung der Gründungsdaten, notarieller Gründung und Handelsregistereintragung.',
@@ -90,11 +98,10 @@ export const PRODUCTS: Product[] = [
       'Laufende Buchhaltung',
       'Steuerliche Beratung',
       'Individuelle Satzung außerhalb des Musterprotokolls',
-      'Laufende Geschäftsadresse, sofern nicht gesondert gebucht',
+      'Laufende Geschäftsadresse',
     ],
     addons: [
-      'Ergänzende Office- oder Geschäftsadressen',
-      'Postservice-Leistungen',
+      'Beratung zur Geschäftsadresse',
       'Verwaltungs- und Strukturierungsoptionen nach Prüfung',
     ],
     process: [

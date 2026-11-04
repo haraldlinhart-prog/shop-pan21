@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { notifyStripeEvent, NOTIFY_TITLES } from '@/lib/stripe-notify'
 import { verifiedStripeEvent } from '@/lib/stripe-verify'
+import { customerFromMetadata, customerHtml } from '@/lib/orderCustomer'
 
 export async function POST(req: NextRequest) {
   const body = await req.text()
@@ -52,7 +53,7 @@ export async function POST(req: NextRequest) {
       await fetch('https://api.resend.com/emails', {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ from: 'PAN21 Shop <noreply@pan21.com>', to: orderTo, subject: `Neue Bestellung: ${product_name} — €${amountStr}`, html: `<p><strong>Produkt:</strong> ${product_name}<br><strong>SKU:</strong> ${sku}<br><strong>Betrag:</strong> €${amountStr}<br><strong>Kunde:</strong> ${customer_email}<br><strong>Affiliate:</strong> ${affiliate_ref || '—'}<br><strong>Session:</strong> ${orderRef}</p>` }),
+        body: JSON.stringify({ from: 'PAN21 Shop <noreply@pan21.com>', to: orderTo, subject: `Neue Bestellung: ${product_name} — €${amountStr}`, html: `<p><strong>Produkt:</strong> ${product_name}<br><strong>SKU:</strong> ${sku}<br><strong>Betrag:</strong> €${amountStr}<br><strong>Kunde:</strong> ${customer_email}<br><strong>Affiliate:</strong> ${affiliate_ref || '—'}<br><strong>Session:</strong> ${orderRef}</p>${customerHtml(customerFromMetadata(session.metadata))}` }),
       })
     }
 
