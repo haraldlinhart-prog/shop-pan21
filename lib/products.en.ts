@@ -490,7 +490,7 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
   'deutsche-treuhand-mandatsadministration': {
     name: 'German Trustee and Mandate Administration',
     shortDesc: 'Trustee service for German companies — a mandate is only accepted after a free pre-check of beneficial owners, purpose and background.',
-    priceLabel: 'Pre-check free of charge — trustee activity €280/month (base fee)',
+    priceLabel: 'Pre-check free of charge — trustee activity €285/month (base fee)',
     included: [
       'Free pre-check of the corporate structure',
       'KYC/AML review of the beneficial owners',
@@ -523,7 +523,7 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
       'Set-up of the trustee/mandate structure',
       'Ongoing compliance and documentation administration',
     ],
-    hint: 'The €280/month is a monthly base fee for the corporate-officer trustee activity. Work beyond that scope is requested in advance and billed separately case by case. This offer expressly does not serve the covert "burial" of a company, extracting former officers from a problematic company, or concealing a situation on the brink of insolvency. If there are indications of impermissible use, no mandate will be taken on, or an ongoing one will be ended immediately. Not an automatically orderable standard product — the mandate is only accepted after a free pre-check.',
+    hint: 'The €285/month is a monthly base fee for the corporate-officer trustee activity. Work beyond that scope is requested in advance and billed separately case by case. This offer expressly does not serve the covert "burial" of a company, extracting former officers from a problematic company, or concealing a situation on the brink of insolvency. If there are indications of impermissible use, no mandate will be taken on, or an ongoing one will be ended immediately. Not an automatically orderable standard product — the mandate is only accepted after a free pre-check.',
     tags: ['Trustee', 'Mandate administration', 'Germany', 'Compliance'],
   },
   'uk-limited-jahresadministration': {

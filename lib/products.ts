@@ -577,7 +577,7 @@ export const PRODUCTS: Product[] = [
     name: 'Deutsche Treuhand- und Mandatsadministration',
     shortDesc: 'Treuhand-Service für deutsche Gesellschaften — Mandatsannahme ausschließlich nach kostenloser Vorprüfung von wirtschaftlich Berechtigten, Zweck und Hintergrund.',
     price: null,
-    priceLabel: 'Vorprüfung kostenlos — Treuhandtätigkeit 280 €/Monat (Basisgebühr)',
+    priceLabel: 'Vorprüfung kostenlos — Treuhandtätigkeit 285 €/Monat (Basisgebühr)',
     inquiry: true,
     category: 'Deutschland',
     flag: '🇩🇪',
@@ -614,7 +614,7 @@ export const PRODUCTS: Product[] = [
       'Einrichtung der Treuhand-/Mandatsstruktur',
       'Laufende Compliance- und Dokumentationsverwaltung',
     ],
-    hint: 'Die 280 €/Monat sind eine monatliche Basisgebühr für die organschaftliche Treuhandtätigkeit. Tätigkeiten, die darüber hinausgehen, werden vorab angefragt und im Einzelfall separat abgerechnet. Dieses Angebot dient ausdrücklich nicht der verdeckten "Firmenbeerdigung", dem Herauslösen von Altverantwortlichen aus einer problematischen Gesellschaft oder der Verschleierung einer insolvenzreifen Situation. Bei Hinweisen auf unzulässige Nutzung wird kein Mandat übernommen bzw. ein laufendes sofort beendet. Kein automatisch bestellbares Standardprodukt — Mandatsannahme erst nach kostenloser Vorprüfung.',
+    hint: 'Die 285 €/Monat sind eine monatliche Basisgebühr für die organschaftliche Treuhandtätigkeit. Tätigkeiten, die darüber hinausgehen, werden vorab angefragt und im Einzelfall separat abgerechnet. Dieses Angebot dient ausdrücklich nicht der verdeckten "Firmenbeerdigung", dem Herauslösen von Altverantwortlichen aus einer problematischen Gesellschaft oder der Verschleierung einer insolvenzreifen Situation. Bei Hinweisen auf unzulässige Nutzung wird kein Mandat übernommen bzw. ein laufendes sofort beendet. Kein automatisch bestellbares Standardprodukt — Mandatsannahme erst nach kostenloser Vorprüfung.',
     tags: ['Treuhand', 'Mandatsverwaltung', 'Deutschland', 'Compliance'],
   },
   {
