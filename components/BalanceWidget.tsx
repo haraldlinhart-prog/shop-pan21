@@ -237,7 +237,7 @@ export function BalanceWidget({ slug, price, affiliateRef, lang = 'de', embedded
       const res = await fetch('/api/noble-pay', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, pin, slug, coin_id: selectedCoin, affiliate_ref: affiliateRef, customer: customerRef.current }),
+        body: JSON.stringify({ email, pin, slug, coin_id: selectedCoin, affiliate_ref: affiliateRef, customer: customerRef.current, use_bonus: bonusChoice === 'now' }),
       })
       const data = await res.json()
       if (!res.ok) { setError(data.error || t.payFailed); setPaying(false); return }

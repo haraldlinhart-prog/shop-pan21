@@ -121,7 +121,7 @@ function ProduktContent({ slug }: { slug: string }) {
             <div style={{ background: '#F0FDF4', border: '1px solid #86EFAC', borderLeft: '4px solid #16A34A', padding: '1rem 1.25rem', marginBottom: '1.5rem', borderRadius: '3px' }}>
               <div style={{ fontWeight: 700, color: '#15803D', marginBottom: '0.3rem' }}>Zahlung mit Noble-Währung erfolgreich</div>
               <div style={{ fontSize: '0.82rem', color: '#166534' }}>
-                Referenz: <strong>{noblePaid.order_reference}</strong> · Doppel-Wums Bonus gutgeschrieben.
+                Referenz: <strong>{noblePaid.order_reference}</strong> · EUROPAN-Vorteil verrechnet.
               </div>
             </div>
           )}
@@ -185,8 +185,8 @@ function ProduktContent({ slug }: { slug: string }) {
               <div className="europan-box">
                 <div className="europan-badge">EUROPAN</div>
                 <p>
-                  Mit einem Noble-Konto können Sie mit EUROPAN, N-Coin, SwissyCash oder CryptoCoin bezahlen
-                  und erhalten den <strong style={{ color: '#C9963A' }}>Doppel-Wums-Bonus: 5% EUROPAN</strong> zurück.
+                  Mit einem EUROPAN-Konto zahlen Sie weniger: <strong style={{ color: '#C9963A' }}>bis zu 5 % Vorteil</strong>,
+                  davon 2 % EUROPAN-Bonus und 3 % Doppel-Wums, wenn das Guthaben den ganzen Betrag deckt.
                   Guthaben rechts einsehen.
                 </p>
               </div>
