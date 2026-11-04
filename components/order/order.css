@@ -49,6 +49,7 @@ body:has(.ofl) #pan21-nl-wrap { display: none; }
 .ofl-steps li.ok b { color: var(--ofl-green); }
 .ofl-hint { background: var(--snow); border-left: 3px solid var(--gold); padding: 0.85rem 1rem; font-size: 0.92rem; color: var(--gray); }
 .ofl-hint strong { color: var(--navy); }
+.ofl-hint a { display: block; margin-top: 0.4rem; color: var(--navy); font-weight: 600; text-decoration: underline; }
 .ofl-note { font-size: 0.86rem; color: var(--gray); }
 .ofl-note a, .ofl-sum a { color: var(--ofl-gold); text-decoration: underline; }
 .ofl-related { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.5rem; }
