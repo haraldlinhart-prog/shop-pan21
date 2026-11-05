@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { redirect } from 'next/navigation'
 import { PRODUCTS_EN } from '@/lib/products.en'
 
 // Metadata-only segment layout: page.tsx is a client component and cannot
@@ -22,6 +23,9 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   }
 }
 
-export default function ProduktLayout({ children }: { children: React.ReactNode }) {
+export default function ProduktLayout({ children, params }: { children: React.ReactNode; params: { slug: string } }) {
+  // These products have no checkout here (price null); the page would offer "Order — €undefined".
+  const externalUrl = PRODUCTS_EN.find(p => p.slug === params.slug)?.externalUrl
+  if (externalUrl) redirect(externalUrl)
   return children
 }
