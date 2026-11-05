@@ -598,6 +598,7 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
           <div className="ofl-hint"><strong>{f.phoneAltTitle}</strong> {f.phoneAlt} <a href={f.phoneAltUrl} target="_blank" rel="noopener noreferrer">{f.phoneAltLink}</a></div>
         </section>
         <Actions t={t} onBack={() => goTo(2)} onNext={() => { if (validateExtras()) goTo(4) }} nextLabel={f.nextData} />
+        <a href={f.seriesBannerHref} target="_blank" rel="noopener" style={{ display: 'block' }}><img className="ofl-photo" src={f.seriesBannerSrc} alt={f.seriesBannerAlt} width={1944} height={809} loading="lazy" /></a>
       </>}
 
       {s.step === 4 && <>
