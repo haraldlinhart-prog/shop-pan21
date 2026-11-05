@@ -86,7 +86,7 @@ const STRINGS: Record<Lang, any> = {
     fullPaymentExplainerSuffix: 'auf insgesamt',
     currentBalanceIs: 'Ihr aktuelles EUROPAN-Guthaben beträgt',
     useBonusNow: 'EUROPAN-Bonus jetzt für diese Bestellung einsetzen',
-    saveOnAccount: 'Auf meinem Noble-Konto sparen',
+    saveOnAccount: 'Auf meinem EUROPAN-Konto sparen',
     saveWarning: 'Hinweis: Ohne den 2%-Bonus für diese Bestellung reicht Ihr aktuelles Guthaben nicht mehr für die vollständige Deckung — der Doppel-Wums-Vorteil entfällt dann für diesen Kauf.',
     total: 'Gesamt',
     processing: 'Verarbeitung…',
@@ -140,7 +140,7 @@ const STRINGS: Record<Lang, any> = {
     fullPaymentExplainerSuffix: 'to a total of',
     currentBalanceIs: 'Your current EUROPAN balance is',
     useBonusNow: 'Use the EUROPAN bonus now for this order',
-    saveOnAccount: 'Save it to my Noble account',
+    saveOnAccount: 'Save it to my EUROPAN account',
     saveWarning: 'Note: without the 2% bonus for this order, your current balance no longer fully covers it — the Doppel-Wums advantage will then not apply to this purchase.',
     total: 'Total',
     processing: 'Processing…',
@@ -411,7 +411,7 @@ export function BalanceWidget({ slug, price, affiliateRef, lang = 'de', embedded
             )}
 
             <p style={{ textAlign: 'center', marginTop: '0.75rem', fontSize: '0.7rem' }}>
-              <a href="https://noble-limited.com/dashboard" target="_blank" rel="noopener" style={{ color: gold }}>{t.openDashboard}</a>
+              <a href={`https://accounts.europan.group/dashboard?lang=${lang}`} target="_blank" rel="noopener" style={{ color: gold }}>{t.openDashboard}</a>
             </p>
           </>
         )}
