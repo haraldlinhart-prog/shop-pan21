@@ -174,8 +174,8 @@ export function NoblePayment({ slug, price, productName, affiliateRef }: NoblePa
 
           <p style={{ fontSize: '0.68rem', color: '#8A9BAE', marginTop: '0.75rem', textAlign: 'center' }}>
             Kein EUROPAN-Konto?{' '}
-            <a href="https://noble-limited.com/join" target="_blank" rel="noopener" style={{ color: '#C9963A' }}>
-              Jetzt beitreten
+            <a href="https://www.europan.group/buy?lang=de" target="_blank" rel="noopener" style={{ color: '#C9963A' }}>
+              EUROPAN kaufen
             </a>
           </p>
         </div>

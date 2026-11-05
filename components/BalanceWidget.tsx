@@ -69,7 +69,7 @@ const STRINGS: Record<Lang, any> = {
     alreadyCustomer: 'Bereits EUROPAN-Kunde?',
     loginWithEuropan: 'Mit EUROPAN anmelden →',
     noAccountYet: 'Noch kein Konto?',
-    openFreeAccount: 'Kostenloses Konto eröffnen',
+    openFreeAccount: 'EUROPAN kaufen',
     nobleEmailPlaceholder: 'Noble E-Mail',
     pinPlaceholder: 'PIN',
     checking: 'Wird geprüft…',
@@ -95,10 +95,10 @@ const STRINGS: Record<Lang, any> = {
     notFullyCoveredEmbedded: 'Guthaben deckt die Bestellung noch nicht komplett — bitte Kreditkarte wählen oder EUROPAN aufladen.',
     notFullyCovered: 'Guthaben deckt die Bestellung noch nicht komplett — bitte per Kreditkarte links bezahlen oder EUROPAN aufladen.',
     openDashboard: 'Dashboard öffnen →',
-    createAccountCta: <>EUROPAN-Konto erstellen und<br />passenden Betrag vorbereiten</>,
-    createAccountHint: 'Oben klicken: kostenloses EUROPAN-Konto eröffnen und passenden Aufladebetrag vorbereiten.',
+    createAccountCta: <>EUROPAN kaufen und<br />passenden Betrag vorbereiten</>,
+    createAccountHint: 'Oben klicken: EUROPAN kaufen und passenden Betrag vorbereiten. Ihr Konto entsteht dabei automatisch.',
     freeAccountBox: (
-      <><strong>Kostenloses EUROPAN-Konto:</strong> Vorteile sichern, EUROPAN durch Anmeldung, Empfehlungen und Aktionen verdienen. Ihr Guthaben ist auf EUROPAN-Partnerseiten sichtbar und nutzbar.</>
+      <><strong>Kostenloses EUROPAN-Konto:</strong> Es entsteht automatisch mit Ihrem ersten Kauf. EUROPAN verdienen Sie durch Käufe, Empfehlungen und Aktionen. Ihr Guthaben ist auf EUROPAN-Partnerseiten sichtbar und nutzbar.</>
     ),
     doppelWumsShort1: 'Doppel-Wums: zusätzlicher Vorteil bei vollständiger Zahlung in EUROPAN.',
     doppelWumsShort2: 'Der Doppel-Wums entsteht als zusätzlicher Vorteil, wenn der komplette Bestellwert in EUROPAN gezahlt wird.',
@@ -123,7 +123,7 @@ const STRINGS: Record<Lang, any> = {
     alreadyCustomer: 'Already a EUROPAN customer?',
     loginWithEuropan: 'Sign in with EUROPAN →',
     noAccountYet: 'No account yet?',
-    openFreeAccount: 'Open a free account',
+    openFreeAccount: 'Buy EUROPAN',
     nobleEmailPlaceholder: 'Noble email',
     pinPlaceholder: 'PIN',
     checking: 'Checking…',
@@ -149,10 +149,10 @@ const STRINGS: Record<Lang, any> = {
     notFullyCoveredEmbedded: 'Your balance does not yet fully cover the order — please choose credit card, or top up your EUROPAN balance.',
     notFullyCovered: 'Your balance does not yet fully cover the order — please pay by card on the left, or top up your EUROPAN balance.',
     openDashboard: 'Open dashboard →',
-    createAccountCta: <>Create a EUROPAN account and<br />prepare the matching amount</>,
-    createAccountHint: 'Click above: open a free EUROPAN account and prepare a matching top-up amount.',
+    createAccountCta: <>Buy EUROPAN and<br />prepare the matching amount</>,
+    createAccountHint: 'Click above: buy EUROPAN and prepare a matching amount. Your account is created automatically.',
     freeAccountBox: (
-      <><strong>Free EUROPAN account:</strong> secure the advantage, earn EUROPAN through sign-up, referrals and promotions. Your balance is visible and usable across EUROPAN partner sites.</>
+      <><strong>Free EUROPAN account:</strong> it is created automatically with your first purchase. Earn EUROPAN through purchases, referrals and promotions. Your balance is visible and usable across EUROPAN partner sites.</>
     ),
     doppelWumsShort1: 'Doppel-Wums: an additional advantage when paying in full with EUROPAN.',
     doppelWumsShort2: 'The Doppel-Wums is an additional advantage that applies when the entire order value is paid in EUROPAN.',
@@ -310,7 +310,7 @@ export function BalanceWidget({ slug, price, affiliateRef, lang = 'de', embedded
         )}
         {!verified && (
           <p style={{ fontSize: '0.68rem', color: gray, textAlign: 'center', marginTop: '-0.4rem', marginBottom: '0.75rem' }}>
-            {t.noAccountYet} <a href="https://noble-limited.com/join" target="_blank" rel="noopener" style={{ color: gold, fontWeight: 700 }}>{t.openFreeAccount}</a>
+            {t.noAccountYet} <a href={`https://www.europan.group/buy?lang=${lang}`} target="_blank" rel="noopener" style={{ color: gold, fontWeight: 700 }}>{t.openFreeAccount}</a>
           </p>
         )}
 
@@ -419,7 +419,7 @@ export function BalanceWidget({ slug, price, affiliateRef, lang = 'de', embedded
         {/* CTA + Erklärungen für Nicht-verifizierte Besucher, analog europan.group-Referenz */}
         {!verified && (
           <>
-            <a href="https://noble-limited.com/join" target="_blank" rel="noopener"
+            <a href={`https://www.europan.group/buy?lang=${lang}`} target="_blank" rel="noopener"
               style={{ display: 'block', textAlign: 'center', width: '100%', background: navy, color: gold, border: 'none', padding: '0.8rem', borderRadius: '6px', fontSize: '0.82rem', fontWeight: 700, cursor: 'pointer', marginBottom: '0.3rem', textDecoration: 'none' }}>
               {t.createAccountCta}
             </a>
