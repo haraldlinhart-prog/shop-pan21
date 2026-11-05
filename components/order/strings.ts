@@ -161,7 +161,7 @@ export const STRINGS = {
       extrasImageAlt: 'Desk with a laptop, a phone, letters and a model of an office building.',
       dataImageAlt: 'A person fills in an order form on a laptop.',
       bannerSrc: '', bannerAlt: '',
-      europanBannerSrc: '', europanBannerAlt: '',
+      europanBannerSrc: '/hero/europan-savings-tip.jpg', europanBannerAlt: 'EUROPAN, optional savings tip: Save up to 5% on your order when you pay in full using your EUROPAN balance. Discover EUROPAN. Optional: you can continue your order without EUROPAN.',
       trustImageAlt: 'Two people shake hands at a desk over signed documents.',
       trustChoice: 'Who takes on the roles?',
       trustNone: 'No trustee', trustNoneSub: 'You become managing director and shareholder yourself.',
