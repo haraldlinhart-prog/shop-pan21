@@ -1045,6 +1045,8 @@ export function getProductsEn(): Product[] {
       priceNote: t.priceNote ?? p.priceNote,
       tags: t.tags,
       card: t.card ?? p.card,
+      // europan.group opens in German unless told otherwise.
+      externalUrl: p.externalUrl?.startsWith('https://www.europan.group/') ? `${p.externalUrl}?lang=en` : p.externalUrl,
     }
   })
 }
