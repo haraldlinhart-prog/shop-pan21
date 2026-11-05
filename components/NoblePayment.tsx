@@ -42,7 +42,7 @@ export function NoblePayment({ slug, price, productName, affiliateRef }: NoblePa
       setBalance(data.balance)
       setEmailChecked(true)
       if (!data.sufficient) setError(`Guthaben nicht ausreichend. Verfügbar: ${data.balance.toFixed(2)} ${data.coin_label}, benötigt: €${price.toFixed(2)}`)
-    } catch { setError('Noble API nicht erreichbar.') }
+    } catch { setError('EUROPAN-Konto nicht erreichbar.') }
     setChecking(false)
   }
 
@@ -100,7 +100,7 @@ export function NoblePayment({ slug, price, productName, affiliateRef }: NoblePa
       {open && (
         <div style={{ padding: '1.25rem', background: '#F7F8FA', borderTop: '1px solid #DDE2E8' }}>
           <div style={{ fontSize: '0.78rem', color: '#1a5276', marginBottom: '1rem', background: '#EFF6FF', border: '1px solid #BFDBFE', padding: '0.75rem', borderRadius: '3px' }}>
-            <strong>Doppel-Wums:</strong> Bei Zahlung mit Noble-Währung erhalten Sie <strong>5% EUROPAN-Bonus</strong> zusätzlich gutgeschrieben.
+            <strong>Doppel-Wums:</strong> Bei Zahlung mit EUROPAN erhalten Sie <strong>5% EUROPAN-Bonus</strong> zusätzlich gutgeschrieben.
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: '0.5rem', marginBottom: '1rem' }}>
