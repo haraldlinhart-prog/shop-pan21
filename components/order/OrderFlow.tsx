@@ -535,6 +535,7 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
           <p className="ofl-note"><Link href={f.trustMoreUrl} target="_blank">{f.trustMoreLink}</Link></p>
         </section>}
         <Actions t={t} onBack={() => goTo(1)} onNext={() => { if (validateTrust()) goTo(3) }} nextLabel={f.nextExtras} />
+        <a href={f.trustBannerHref} target="_blank" rel="noopener" style={{ display: 'block' }}><img className="ofl-photo" src={f.trustBannerSrc} alt={f.trustBannerAlt} width={1947} height={808} loading="lazy" /></a>
       </>}
 
       {s.step === 3 && <>
