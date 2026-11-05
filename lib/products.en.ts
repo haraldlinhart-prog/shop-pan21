@@ -601,11 +601,11 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
   },
   'europan-guthaben-aufladen': {
     name: 'Top Up EUROPAN Balance',
-    shortDesc: 'Top up your EUROPAN balance directly — by credit card or bank transfer, in an amount of your choice. Redeemable network-wide, including here in the shop for the Doppel-Wums bonus.',
-    priceLabel: 'Choose your amount — directly at europan.group',
+    shortDesc: 'Top up your EUROPAN balance directly — by credit card, up to €100 per purchase. Redeemable network-wide, including here in the shop for the Doppel-Wums bonus.',
+    priceLabel: 'Up to €100 per purchase — directly at europan.group',
     included: [
       'Instant credit on card payment',
-      'Amount of your choice',
+      'Up to €100 per purchase',
       'Redeemable network-wide (including the shop)',
       'Prerequisite for the Doppel-Wums bonus',
     ],
