@@ -160,7 +160,7 @@ export const STRINGS = {
       trustLead: 'You can take on both roles yourself or have a trustee take on one or both of them. Your selection is sent along as a request and is not part of this payment. The trusteeship only comes about after a free pre-check and is billed separately.',
       extrasImageAlt: 'Desk with a laptop, a phone, letters and a model of an office building.',
       dataImageAlt: 'A person fills in an order form on a laptop.',
-      bannerSrc: '', bannerAlt: '',
+      bannerSrc: '/hero/ug-gmbh-formation-en.jpg', bannerAlt: 'German UG and GmbH formation: your start as an entrepreneur, from €698. Two binders labelled UG and GmbH in front of the German flag.',
       europanBannerHref: 'https://www.europan.group/?lang=en', europanBannerSrc: '/hero/europan-savings-tip.jpg', europanBannerAlt: 'EUROPAN, optional savings tip: Save up to 5% on your order when you pay in full using your EUROPAN balance. Discover EUROPAN. Optional: you can continue your order without EUROPAN.',
       trustImageAlt: 'Two people shake hands at a desk over signed documents.',
       trustChoice: 'Who takes on the roles?',
