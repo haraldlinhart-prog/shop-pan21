@@ -654,6 +654,7 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
         {s.pay === 'card'
           ? <>
               <Actions t={t} onBack={() => goTo(4)} onNext={payCard} disabled={busy} gold nextLabel={busy ? f.loading : `${f.orderBtn} — ${money(price, lang)}`} />
+              {preview && <p className="ofl-note">{f.cardRegular}{preview.fullyCovered && ` ${f.cardEuropanHint(preview.finalTotal.toLocaleString(t.numberLocale, { minimumFractionDigits: 2, maximumFractionDigits: 2 }))}`}</p>}
               <p className="ofl-note">{f.cardFine}</p>
             </>
           : <>
