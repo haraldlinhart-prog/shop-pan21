@@ -41,10 +41,6 @@ const green = '#1B7A3D'
 const greenBg = '#E8F5EE'
 const greenBorder = '#B7E4CC'
 
-function fmt(n: number) {
-  return ')( ' + n.toFixed(2)
-}
-
 // Alle sichtbaren Texte des Widgets, DE (unverändertes Original-Wording) und
 // EN. `lang` ist optional und defaultet auf 'de' — bestehende Aufrufer ohne
 // lang-Prop (die deutsche Produktseite) verhalten sich exakt wie zuvor.
@@ -63,8 +59,13 @@ const STRINGS: Record<Lang, any> = {
     yourAdvantage: 'Ihr Vorteil',
     fullyCoveredBadge: '✓ Vollständig gedeckt',
     orderValueNoBonus: 'Bestellwert ohne EUROPAN-Vorteil',
-    asMember: 'Als angemeldeter EUROPAN-Nutzer',
+    byCard: 'Mit Kreditkarte',
+    paidFullEuropan: 'Vollständig mit EUROPAN bezahlt',
+    pointsUnit: 'Punkte',
     advantage: 'Vorteil:',
+    advantageFull: '5 %',
+    advantageSave: '3 %, dazu 2 % Gutschrift',
+    missingLabel: 'Es fehlen',
     accountLabel: 'Konto',
     alreadyCustomer: 'Bereits EUROPAN-Kunde?',
     loginWithEuropan: 'Mit EUROPAN anmelden →',
@@ -81,9 +82,6 @@ const STRINGS: Record<Lang, any> = {
       <>Der Doppel-Wums ist ein Extra-Bonus von 3%, den Sie nur erhalten, wenn Sie den <strong>gesamten Bestellwert</strong> mit EUROPAN-Guthaben bezahlen — bei Teilzahlung entfällt er.</>
     ),
     fullyCoveredLabel: 'vollständig gedeckt',
-    remainingPaymentNeeded: 'Restzahlung nötig',
-    fullPaymentExplainerPrefix: 'Bei kompletter Zahlung in EUROPAN erhalten Sie zusätzlich den Doppel-Wums-Bonus, und der Gesamt-Warenwert reduziert sich um weitere',
-    fullPaymentExplainerSuffix: 'auf insgesamt',
     currentBalanceIs: 'Ihr aktuelles EUROPAN-Guthaben beträgt',
     useBonusNow: 'EUROPAN-Bonus jetzt für diese Bestellung einsetzen',
     saveOnAccount: 'Auf meinem EUROPAN-Konto sparen',
@@ -117,8 +115,13 @@ const STRINGS: Record<Lang, any> = {
     yourAdvantage: 'Your advantage',
     fullyCoveredBadge: '✓ Fully covered',
     orderValueNoBonus: 'Order value without EUROPAN advantage',
-    asMember: 'As a verified EUROPAN user',
+    byCard: 'By credit card',
+    paidFullEuropan: 'Paid in full with EUROPAN',
+    pointsUnit: 'points',
     advantage: 'Advantage:',
+    advantageFull: '5%',
+    advantageSave: '3%, plus 2% credited',
+    missingLabel: 'Still missing',
     accountLabel: 'Account',
     alreadyCustomer: 'Already a EUROPAN customer?',
     loginWithEuropan: 'Sign in with EUROPAN →',
@@ -135,9 +138,6 @@ const STRINGS: Record<Lang, any> = {
       <>The Doppel-Wums is an extra 3% bonus you only receive when you pay the <strong>entire order value</strong> with EUROPAN balance — it does not apply to partial payments.</>
     ),
     fullyCoveredLabel: 'fully covered',
-    remainingPaymentNeeded: 'Remaining payment required',
-    fullPaymentExplainerPrefix: 'Paying the full amount in EUROPAN also earns you the Doppel-Wums bonus, reducing the total order value by a further',
-    fullPaymentExplainerSuffix: 'to a total of',
     currentBalanceIs: 'Your current EUROPAN balance is',
     useBonusNow: 'Use the EUROPAN bonus now for this order',
     saveOnAccount: 'Save it to my EUROPAN account',
@@ -164,6 +164,9 @@ export function BalanceWidget({ slug, price, affiliateRef, lang = 'de', embedded
   const customerRef = useRef(customer)
   customerRef.current = customer
   const numberLocale = lang === 'en' ? 'en-US' : 'de-DE'
+  const num = (n: number) => n.toLocaleString(numberLocale, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  const pts = (n: number) => ')( ' + num(n)
+  const eur = (n: number) => n.toLocaleString(numberLocale, { style: 'currency', currency: 'EUR' })
   const [showLogin, setShowLogin] = useState(false)
   const [email, setEmail] = useState('')
   const [pin, setPin] = useState('')
@@ -198,24 +201,25 @@ export function BalanceWidget({ slug, price, affiliateRef, lang = 'de', embedded
 
   const balance = balances ? (balances[selectedCoin] || 0) : 0
 
-  // Schritt 1: EUROPAN-Bonus (2%) — Vorschau gilt bereits vor Login als Kaufanreiz
+  // Schritt 1: EUROPAN-Bonus (2%)
   const europanBonusTotal = Math.round(price * EUROPAN_BONUS_PCT * 100) / 100
   const europanBonusApplied = bonusChoice === 'now' ? europanBonusTotal : 0
   const afterEuropanBonus = Math.max(0, price - europanBonusApplied)
-  const priceAsMember = Math.max(0, price - europanBonusTotal)
 
   // Schritt 2: Doppel-Wums — nur wenn Guthaben den (reduzierten) Betrag komplett deckt
   const doppelWumsTotal = Math.round(price * DOPPELWUMS_PCT * 100) / 100
-  const fullyCovered = verified && balance >= afterEuropanBonus
+  const cents = (n: number) => Math.round(n * 100) / 100
+  // Was bei vollstaendiger Zahlung abgebucht wird, gleiche Rechnung wie in /api/noble-pay
+  const fullPaymentAmount = cents(Math.max(0, afterEuropanBonus - doppelWumsTotal))
+  const fullyCovered = verified && balance >= fullPaymentAmount
+  const coveredWithBonus = verified && balance >= cents(Math.max(0, price - europanBonusTotal - doppelWumsTotal))
   const afterDoppelWums = Math.max(0, afterEuropanBonus - (fullyCovered ? doppelWumsTotal : 0))
 
   // Schritt 3: mit Guthaben bezahlter Betrag (alles oder nichts)
   const europanPaid = fullyCovered ? afterDoppelWums : 0
-  const finalTotal = Math.max(0, afterDoppelWums - europanPaid)
   const totalSaved = Math.max(0, price - afterDoppelWums)
 
-  // Restzahlungs-Vorschau (auch vor Login relevant, analog europan.group-Referenz):
-  const missingForFullCoverage = verified ? Math.max(0, afterEuropanBonus - balance) : afterEuropanBonus
+  const missingForFullCoverage = cents(Math.max(0, fullPaymentAmount - balance))
 
   // Meldet der Elternseite den aktuellen EUROPAN-Vorteilspreis, damit dieser
   // prominent im mittleren Bestell-Kasten als "vorher/nachher" angezeigt werden kann.
@@ -259,9 +263,9 @@ export function BalanceWidget({ slug, price, affiliateRef, lang = 'de', embedded
         <h4 style={{ fontFamily: 'Georgia, serif', color: navy, fontSize: '1.05rem', marginBottom: '0.75rem' }}>{t.paymentSuccessTitle}</h4>
         <div style={{ background: greenBg, border: `1px solid ${greenBorder}`, borderRadius: '6px', padding: '0.9rem', fontSize: '0.82rem', color: green, lineHeight: 1.7 }}>
           <div><strong>{t.reference}</strong> {success.order_reference}</div>
-          <div><strong>{t.paid}</strong> {fmt(success.amount || 0)}</div>
-          <div><strong>{t.newBalance}</strong> {fmt(success.new_balance || 0)}</div>
-          {totalSaved > 0.004 && <div style={{ marginTop: '6px', fontWeight: 700 }}>{t.savedToday} €{totalSaved.toFixed(2)}</div>}
+          <div><strong>{t.paid}</strong> {pts(success.amount || 0)}</div>
+          <div><strong>{t.newBalance}</strong> {pts(success.new_balance || 0)}</div>
+          {totalSaved > 0.004 && <div style={{ marginTop: '6px', fontWeight: 700 }}>{t.savedToday} {eur(totalSaved)}</div>}
         </div>
       </div>
     </div>
@@ -281,17 +285,17 @@ export function BalanceWidget({ slug, price, affiliateRef, lang = 'de', embedded
 
         {note && <p style={{ fontSize: '0.72rem', color: gray, lineHeight: 1.5, margin: '0 0 0.7rem' }}>{note}</p>}
 
-        {/* Bestellwert ohne EUROPAN-Vorteil */}
+        {/* Preis ohne EUROPAN-Vorteil */}
         <div style={statBox}>
-          <div style={statLabel}>{t.orderValueNoBonus}</div>
-          <div style={statValue}>€{price.toFixed(2)}</div>
+          <div style={statLabel}>{note ? t.orderValueNoBonus : t.byCard}</div>
+          <div style={statValue}>{eur(price)}</div>
         </div>
 
-        {/* Als angemeldeter EUROPAN-Nutzer */}
-        <div style={{ ...statBox, background: verified ? greenBg : cream, border: `1px solid ${verified ? greenBorder : '#E2DDD8'}`, transition: 'background 0.3s ease, border-color 0.3s ease' }}>
-          <div style={{ ...statLabel, color: verified ? green : gray }}>{t.asMember}{verified ? ' ✓' : ''}</div>
-          <div style={{ ...statValue, color: verified ? green : gold }}>€{priceAsMember.toFixed(2)}</div>
-          <div style={{ fontSize: '0.68rem', color: verified ? green : gold, marginTop: '2px' }}>{t.advantage} {fmt(europanBonusTotal)}</div>
+        {/* Preis bei vollstaendiger Zahlung mit EUROPAN */}
+        <div style={{ ...statBox, background: fullyCovered ? greenBg : cream, border: `1px solid ${fullyCovered ? greenBorder : '#E2DDD8'}`, transition: 'background 0.3s ease, border-color 0.3s ease' }}>
+          <div style={{ ...statLabel, color: fullyCovered ? green : gray }}>{t.paidFullEuropan}{fullyCovered ? ' ✓' : ''}</div>
+          <div style={{ ...statValue, color: fullyCovered ? green : gold }}>{num(fullPaymentAmount)} {t.pointsUnit}</div>
+          <div style={{ fontSize: '0.68rem', color: fullyCovered ? green : gold, marginTop: '2px' }}>{t.advantage} {bonusChoice === 'now' ? t.advantageFull : t.advantageSave}</div>
         </div>
 
         {/* Konto */}
@@ -336,7 +340,7 @@ export function BalanceWidget({ slug, price, affiliateRef, lang = 'de', embedded
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', padding: '0.6rem 0.7rem', borderRadius: '6px', border: `1px solid ${fullyCovered ? greenBorder : '#E2DDD8'}`, background: fullyCovered ? greenBg : 'transparent', marginBottom: '0.3rem', fontSize: '0.75rem', transition: 'background 0.3s ease, border-color 0.3s ease' }}>
           <div style={{ color: fullyCovered ? green : navy, fontWeight: 600 }}>{t.doppelWums}{fullyCovered ? ' ✓' : ''}</div>
           <div style={{ textAlign: 'right', maxWidth: '62%' }}>
-            <div style={{ color: fullyCovered ? green : gold, fontWeight: 700 }}>{fmt(doppelWumsTotal)}</div>
+            <div style={{ color: fullyCovered ? green : gold, fontWeight: 700 }}>{pts(doppelWumsTotal)}</div>
             <div style={{ color: fullyCovered ? green : gray, fontSize: '0.68rem', marginTop: '2px' }}>
               {fullyCovered ? t.activatedThisOrder : t.extraOnFullPayment}
             </div>
@@ -346,33 +350,28 @@ export function BalanceWidget({ slug, price, affiliateRef, lang = 'de', embedded
           {t.doppelWumsExplainer}
         </p>
 
-        {/* Restzahlung nötig */}
+        {/* Deckung durch das Guthaben, sobald angemeldet */}
         {verified && fullyCovered ? (
           <div style={{ background: greenBg, border: `1px solid ${greenBorder}`, borderRadius: '6px', padding: '0.6rem 0.75rem', marginBottom: '0.9rem', fontSize: '0.78rem', color: green, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span>{lang === 'en' ? '€0' : 'Für €0'} {fmt(europanPaid)}</span>
+            <span>{pts(europanPaid)}</span>
             <span style={{ fontWeight: 700 }}>{t.fullyCoveredLabel}</span>
           </div>
-        ) : (
-          <>
-            <div style={{ background: cream, border: '1px solid #E2DDD8', borderRadius: '6px', padding: '0.6rem 0.75rem', marginBottom: '0.5rem', fontSize: '0.78rem', color: navy, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span>{lang === 'en' ? `€${afterEuropanBonus.toFixed(2)}` : `Für €${afterEuropanBonus.toFixed(2)}`} {fmt(missingForFullCoverage)}</span>
-              <span style={{ fontWeight: 700 }}>{t.remainingPaymentNeeded}</span>
-            </div>
-            <p style={{ fontSize: '0.68rem', color: gray, lineHeight: 1.55, marginBottom: '0.9rem' }}>
-              {t.fullPaymentExplainerPrefix} <strong style={{ color: gold }}>€{doppelWumsTotal.toFixed(2)}</strong> {t.fullPaymentExplainerSuffix} <strong style={{ color: gold }}>€{Math.max(0, afterEuropanBonus - doppelWumsTotal).toFixed(2)}</strong>.
-            </p>
-          </>
-        )}
+        ) : verified ? (
+          <div style={{ background: cream, border: '1px solid #E2DDD8', borderRadius: '6px', padding: '0.6rem 0.75rem', marginBottom: '0.9rem', fontSize: '0.78rem', color: navy, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ fontWeight: 700 }}>{t.missingLabel}</span>
+            <span>{pts(missingForFullCoverage)}</span>
+          </div>
+        ) : null}
 
         {/* Bonuswahl + Zahlungsdetails, sobald verifiziert */}
         {verified && (
           <>
             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.55rem 0.75rem', borderRadius: '6px', border: `1px solid ${fullyCovered ? greenBorder : '#E2DDD8'}`, background: fullyCovered ? greenBg : 'transparent', marginBottom: '0.75rem', transition: 'background 0.3s ease, border-color 0.3s ease' }}>
               <span style={{ fontSize: '0.78rem', fontWeight: 600, color: fullyCovered ? green : navy }}>{t.currentBalanceIs}</span>
-              <span style={{ fontFamily: 'Georgia, serif', fontSize: '0.95rem', fontWeight: 700, color: fullyCovered ? green : gray, whiteSpace: 'nowrap' }}>{fmt(balance)}{fullyCovered && ' ✓'}</span>
+              <span style={{ fontFamily: 'Georgia, serif', fontSize: '0.95rem', fontWeight: 700, color: fullyCovered ? green : gray, whiteSpace: 'nowrap' }}>{pts(balance)}{fullyCovered && ' ✓'}</span>
             </div>
 
-            {europanBonusTotal > 0 && (
+            {europanBonusTotal > 0 && coveredWithBonus && (
               <div style={{ marginBottom: '0.75rem' }}>
                 <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.72rem', color: gray, cursor: 'pointer', marginBottom: '2px' }}>
                   <input type="radio" name={`bonus-choice-${slug}`} checked={bonusChoice === 'now'} onChange={() => setBonusChoice('now')} style={{ accentColor: gold }} />
@@ -390,10 +389,13 @@ export function BalanceWidget({ slug, price, affiliateRef, lang = 'de', embedded
               </div>
             )}
 
-            <div style={{ ...row, fontSize: '1rem', marginTop: '0.2rem', borderTop: '1px solid #E2DDD8', paddingTop: '0.5rem' }}>
-              <span><strong style={{ color: navy }}>{t.total}</strong></span>
-              <strong style={{ color: gold, fontFamily: 'Georgia, serif', fontSize: '1.2rem' }}>€{finalTotal.toFixed(2)}</strong>
-            </div>
+            {/* In der Bestellstrecke steht der Gesamtpreis links und folgt der gewaehlten Zahlungsart */}
+            {!embedded && (
+              <div style={{ ...row, fontSize: '1rem', marginTop: '0.2rem', borderTop: '1px solid #E2DDD8', paddingTop: '0.5rem' }}>
+                <span><strong style={{ color: navy }}>{t.total}</strong></span>
+                <strong style={{ color: gold, fontFamily: 'Georgia, serif', fontSize: '1.2rem' }}>{fullyCovered ? pts(europanPaid) : eur(price)}</strong>
+              </div>
+            )}
 
             {embedded ? (
               !note && <div style={{ background: fullyCovered ? greenBg : cream, border: '1px solid #E2DDD8', borderRadius: '6px', padding: '0.7rem', textAlign: 'center', fontSize: '0.78rem', color: fullyCovered ? green : gray, marginTop: '0.75rem' }}>

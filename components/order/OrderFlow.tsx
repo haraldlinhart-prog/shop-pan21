@@ -658,7 +658,7 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
           : <>
               {!preview && <span className="ofl-err">{f.europanLogin}</span>}
               {preview && !preview.fullyCovered && <span className="ofl-err">{f.europanLow}</span>}
-              <Actions t={t} onBack={() => goTo(4)} onNext={preview?.fullyCovered ? payEuropan : undefined} disabled={busy} gold nextLabel={busy ? f.loading : `${f.orderBtn} — )(\u00a0${preview ? preview.finalTotal.toLocaleString(t.numberLocale, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''}`} />
+              <Actions t={t} onBack={() => goTo(4)} onNext={preview?.fullyCovered ? payEuropan : undefined} disabled={busy} gold nextLabel={busy ? f.loading : preview?.fullyCovered ? `${f.orderBtn} — )(\u00a0${preview.finalTotal.toLocaleString(t.numberLocale, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : f.orderBtn} />
               {preview?.fullyCovered && <p className="ofl-note">{f.europanFine}</p>}
             </>}
       </>}
