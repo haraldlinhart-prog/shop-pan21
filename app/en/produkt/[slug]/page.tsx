@@ -121,7 +121,7 @@ function ProduktContentEn({ slug }: { slug: string }) {
 
           {noblePaid && (
             <div style={{ background: '#F0FDF4', border: '1px solid #86EFAC', borderLeft: '4px solid #16A34A', padding: '1rem 1.25rem', marginBottom: '1.5rem', borderRadius: '3px' }}>
-              <div style={{ fontWeight: 700, color: '#15803D', marginBottom: '0.3rem' }}>Payment with Noble currency successful</div>
+              <div style={{ fontWeight: 700, color: '#15803D', marginBottom: '0.3rem' }}>Payment with EUROPAN successful</div>
               <div style={{ fontSize: '0.82rem', color: '#166534' }}>
                 Reference: <strong>{noblePaid.order_reference}</strong> · EUROPAN advantage applied.
               </div>
@@ -257,14 +257,14 @@ function ProduktContentEn({ slug }: { slug: string }) {
                         Secure checkout via Stripe
                       </p>
                       <div style={{ marginTop: '1rem', padding: '0.75rem', background: 'var(--snow)', border: '1px solid var(--lgray)', borderRadius: '3px', fontSize: '0.75rem', color: 'var(--gray)' }}>
-                        Have a EUROPAN account? Use your balance in the column on the right and pay with virtual currency.
+                        Have a EUROPAN account? Use your balance in the column on the right and pay with points.
                       </div>
                     </form>
                     )
                   ) : (
                     <div style={{ marginTop: '1.5rem', textAlign: 'center', padding: '1.5rem 0' }}>
                       <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>✓</div>
-                      <div style={{ fontFamily: 'var(--ff-d)', fontSize: '1.1rem', color: 'var(--navy)' }}>Paid with Noble currency</div>
+                      <div style={{ fontFamily: 'var(--ff-d)', fontSize: '1.1rem', color: 'var(--navy)' }}>Paid with EUROPAN</div>
                     </div>
                   )
                 ) : (
@@ -291,7 +291,7 @@ function ProduktContentEn({ slug }: { slug: string }) {
 
                 <div className="order-trust">
                   <div className="trust-item">🔒 Secure connection via Stripe</div>
-                  <div className="trust-item">💎 Noble currency in the column on the right</div>
+                  <div className="trust-item">💎 EUROPAN points in the column on the right</div>
                   <div className="trust-item">✉️ Reply within 1 business day</div>
                 </div>
               </div>
@@ -338,7 +338,6 @@ function ProduktContentEn({ slug }: { slug: string }) {
             <Link href="/en/legal-notice">Legal notice</Link>
             <Link href="/en/privacy">Privacy policy</Link>
             <a href="https://pan21.com" target="_blank" rel="noopener">PAN21.com</a>
-            <a href="https://noble-limited.com" target="_blank" rel="noopener">Noble Limited</a>
           </div>
           <p className="footer-legal">© {new Date().getFullYear()} PAN21.com International LLC · All prices in EUR, plus any government fees and external costs.</p>
         </div>

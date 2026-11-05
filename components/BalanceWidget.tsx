@@ -50,7 +50,7 @@ function fmt(n: number) {
 // lang-Prop (die deutsche Produktseite) verhalten sich exakt wie zuvor.
 const STRINGS: Record<Lang, any> = {
   de: {
-    invalidEmail: 'Bitte gültige Noble-E-Mail eingeben.',
+    invalidEmail: 'Bitte gültige E-Mail-Adresse eingeben.',
     invalidPin: 'Bitte 4-stellige PIN eingeben.',
     checkError: 'Fehler bei der Prüfung.',
     networkError: 'Netzwerkfehler.',
@@ -70,7 +70,7 @@ const STRINGS: Record<Lang, any> = {
     loginWithEuropan: 'Mit EUROPAN anmelden →',
     noAccountYet: 'Noch kein Konto?',
     openFreeAccount: 'So sammeln Sie EUROPAN',
-    nobleEmailPlaceholder: 'Noble E-Mail',
+    nobleEmailPlaceholder: 'E-Mail-Adresse',
     pinPlaceholder: 'PIN',
     checking: 'Wird geprüft…',
     checkBalanceBtn: 'Guthaben prüfen',
@@ -104,7 +104,7 @@ const STRINGS: Record<Lang, any> = {
     doppelWumsShort2: 'Der Doppel-Wums entsteht als zusätzlicher Vorteil, wenn der komplette Bestellwert in EUROPAN gezahlt wird.',
   },
   en: {
-    invalidEmail: 'Please enter a valid Noble email address.',
+    invalidEmail: 'Please enter a valid email address.',
     invalidPin: 'Please enter your 4-digit PIN.',
     checkError: 'Error checking balance.',
     networkError: 'Network error.',
@@ -124,7 +124,7 @@ const STRINGS: Record<Lang, any> = {
     loginWithEuropan: 'Sign in with EUROPAN →',
     noAccountYet: 'No account yet?',
     openFreeAccount: 'How to collect EUROPAN',
-    nobleEmailPlaceholder: 'Noble email',
+    nobleEmailPlaceholder: 'Email address',
     pinPlaceholder: 'PIN',
     checking: 'Checking…',
     checkBalanceBtn: 'Check balance',

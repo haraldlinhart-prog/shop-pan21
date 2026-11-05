@@ -169,7 +169,6 @@ function Shell({ lang, slug, steps, step, goTo, summary, affiliateRef, side, chi
             <Link href={t.impressum}>{t.impressumLabel}</Link>
             <Link href={t.privacy}>{t.privacyLabel}</Link>
             <a href="https://pan21.com" target="_blank" rel="noopener">PAN21.com</a>
-            <a href="https://noble-limited.com" target="_blank" rel="noopener">Noble Limited</a>
           </div>
           <p className="footer-legal">© {new Date().getFullYear()} PAN21.com International LLC · {t.footer}</p>
         </div>
