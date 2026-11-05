@@ -10,7 +10,7 @@ const COINS = [
 
 // Standard-Logik für EUROPAN-Bestellungen im gesamten PAN21-Netzwerk:
 // 1) EUROPAN-Bonus (2%) — steht jedem verifizierten Konto zu, Kunde wählt "jetzt einsetzen"
-//    oder "auf dem Noble-Konto sparen".
+//    oder "auf dem EUROPAN-Konto sparen".
 // 2) Doppel-Wums (zusätzlich 3%) — nur wenn der komplette (bereits um den Bonus reduzierte)
 //    Betrag durch vorhandenes Guthaben gedeckt ist. Alles-oder-nichts, kein Teileinsatz.
 // Layout-Vorbild: shop.europan.group ("Ihr Vorteil"-Leiste rechts, siehe Referenz-Screenshot vom 2026-08-16).

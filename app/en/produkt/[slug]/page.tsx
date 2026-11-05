@@ -257,7 +257,7 @@ function ProduktContentEn({ slug }: { slug: string }) {
                         Secure checkout via Stripe
                       </p>
                       <div style={{ marginTop: '1rem', padding: '0.75rem', background: 'var(--snow)', border: '1px solid var(--lgray)', borderRadius: '3px', fontSize: '0.75rem', color: 'var(--gray)' }}>
-                        Have a Noble account? Use your balance in the column on the right and pay with virtual currency.
+                        Have a EUROPAN account? Use your balance in the column on the right and pay with virtual currency.
                       </div>
                     </form>
                     )
