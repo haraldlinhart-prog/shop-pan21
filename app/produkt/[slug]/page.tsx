@@ -255,7 +255,7 @@ function ProduktContent({ slug }: { slug: string }) {
                         Gesicherter Checkout via Stripe
                       </p>
                       <div style={{ marginTop: '1rem', padding: '0.75rem', background: 'var(--snow)', border: '1px solid var(--lgray)', borderRadius: '3px', fontSize: '0.75rem', color: 'var(--gray)' }}>
-                        Noble-Konto? Guthaben in der rechten Spalte einsetzen und mit virtueller Währung zahlen.
+                        EUROPAN-Konto? Guthaben in der rechten Spalte einsetzen und mit virtueller Währung zahlen.
                       </div>
                     </form>
                     )

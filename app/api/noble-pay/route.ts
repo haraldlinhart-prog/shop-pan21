@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
 
   // Registrierte EUROPAN-Kunden zahlen den reduzierten Preis direkt, statt erst
   // den vollen Preis zu zahlen und den Vorteil danach gutgeschrieben zu bekommen.
-  // Gleiche Rechnung wie im BalanceWidget. Mit "auf dem Noble-Konto sparen" wird
+  // Gleiche Rechnung wie im BalanceWidget. Mit "auf dem EUROPAN-Konto sparen" wird
   // der 2%-Bonus nicht abgezogen, sondern unten gutgeschrieben.
   const useBonus = use_bonus !== false
   const bonus = Math.round(product.price * EUROPAN_BONUS_PCT * 100) / 100
@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
     headers: { 'Authorization': `Bearer ${NOBLE_API_KEY}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({ email: email.toLowerCase(), pin, coin_id }),
   })
-  if (verifyRes.status === 404) return NextResponse.json({ error: 'Kein Noble-Konto für diese E-Mail gefunden.' }, { status: 404 })
+  if (verifyRes.status === 404) return NextResponse.json({ error: 'Kein EUROPAN-Konto für diese E-Mail gefunden.' }, { status: 404 })
   if (verifyRes.status === 401) return NextResponse.json({ error: 'Falsche PIN.' }, { status: 401 })
   if (verifyRes.status === 429) return NextResponse.json({ error: 'Zu viele falsche Versuche — bitte später erneut versuchen.' }, { status: 429 })
   if (!verifyRes.ok) return NextResponse.json({ error: 'Noble API error' }, { status: verifyRes.status })

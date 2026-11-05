@@ -124,7 +124,7 @@ export function NoblePayment({ slug, price, productName, affiliateRef }: NoblePa
 
           <div style={{ marginBottom: '0.75rem' }}>
             <label style={{ fontSize: '0.62rem', fontWeight: 700, color: '#8A9BAE', letterSpacing: '0.14em', textTransform: 'uppercase', display: 'block', marginBottom: '0.3rem' }}>
-              Noble Konto E-Mail
+              EUROPAN-Konto E-Mail
             </label>
             <div style={{ display: 'flex', gap: '0.5rem' }}>
               <input
@@ -173,7 +173,7 @@ export function NoblePayment({ slug, price, productName, affiliateRef }: NoblePa
           )}
 
           <p style={{ fontSize: '0.68rem', color: '#8A9BAE', marginTop: '0.75rem', textAlign: 'center' }}>
-            Kein Noble-Konto?{' '}
+            Kein EUROPAN-Konto?{' '}
             <a href="https://noble-limited.com/join" target="_blank" rel="noopener" style={{ color: '#C9963A' }}>
               Jetzt beitreten
             </a>

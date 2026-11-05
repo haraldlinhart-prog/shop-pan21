@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
       body: JSON.stringify({ email: email.toLowerCase(), pin, coin_id }),
     })
 
-    if (res.status === 404) return NextResponse.json({ error: 'Kein Noble-Konto für diese E-Mail gefunden.' }, { status: 404 })
+    if (res.status === 404) return NextResponse.json({ error: 'Kein EUROPAN-Konto für diese E-Mail gefunden.' }, { status: 404 })
     if (res.status === 401) return NextResponse.json({ error: 'Falsche PIN.' }, { status: 401 })
     if (res.status === 429) return NextResponse.json({ error: 'Zu viele falsche Versuche — bitte später erneut versuchen.' }, { status: 429 })
     if (!res.ok) {
