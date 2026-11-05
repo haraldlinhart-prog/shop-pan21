@@ -468,6 +468,7 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
         <section className="ofl-sec"><h2 className="ofl-h2">{t.process}</h2><Steps items={shown.process} /></section>
         <div className="ofl-hint"><strong>{t.hint}</strong> {shown.card?.hint ?? shown.hint}</div>
         <p className="ofl-note">{f.europanBox}</p>
+        {f.europanBannerSrc && <a href="https://www.europan.group/" target="_blank" rel="noopener" style={{ display: 'block' }}><img className="ofl-photo" src={f.europanBannerSrc} alt={f.europanBannerAlt} width={1942} height={809} loading="lazy" /></a>}
         <Actions t={t} onNext={() => goTo(1)} nextLabel={f.nextForm} />
         <Related product={shown} lang={lang} />
       </>}
