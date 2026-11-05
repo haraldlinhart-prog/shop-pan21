@@ -487,6 +487,7 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
           </tbody>
         </table>
         <Actions t={t} onBack={() => goTo(0)} onNext={() => goTo(2)} nextLabel={f.nextTrust} />
+        {f.bannerSrc && <img className="ofl-photo" src={f.bannerSrc} alt={f.bannerAlt} width={1945} height={809} loading="lazy" />}
       </>}
 
       {s.step === 2 && <>
