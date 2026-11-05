@@ -62,7 +62,7 @@ export async function POST(req: NextRequest) {
   if (!verifyRes.ok) return NextResponse.json({ error: 'Noble API error' }, { status: verifyRes.status })
 
   const verifyData = await verifyRes.json()
-  if ((verifyData.balance || 0) < required) {
+  if ((verifyData.balance || 0) < amount) {
     return NextResponse.json({ error: 'Guthaben nicht ausreichend.', balance: verifyData.balance }, { status: 402 })
   }
 
