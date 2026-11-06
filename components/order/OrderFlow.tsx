@@ -268,7 +268,7 @@ function Hero({ product }: { product: Product }) {
 /* ---------- Gruendung: UG und GmbH ---------- */
 type DomainResults = Record<string, { available: boolean | null; price: number | null }>
 type TrustChoice = 'none' | 'md' | 'sh' | 'both'
-type FormationState = { step: number; form: LegalForm; extras: number[]; pay: 'card' | 'europan'; terms: boolean; d: Record<string, string>; trust: TrustChoice; shType: '' | 'natural' | 'legal' | 'foreign'; bankAck: boolean; account: '' | 'digital' | 'branch'; billing: 'monthly' | 'yearly' }
+type FormationState = { step: number; form: LegalForm; extras: number[]; pay: 'card' | 'europan'; terms: boolean; d: Record<string, string>; trust: TrustChoice; shType: '' | 'natural' | 'legal' | 'foreign'; bankAck: boolean; account: '' | 'digital' | 'branch'; billing: 'monthly' | 'yearly'; seriesLlc?: boolean }
 
 function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
   const t = STRINGS[lang], f = t.formation, ft = t.trust, ftDe = STRINGS.de.trust
@@ -317,7 +317,7 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
     return tokenRef.current!.token
   }
 
-  const extrasDe = s.extras.map(i => chosenDe.addons[i]).filter(Boolean).join('; ')
+  const extrasDe = [...(s.seriesLlc && s.trust !== 'sh' && s.trust !== 'both' ? ['Amerikanische Series LLC als Gesellschafter (49 € einmalig)'] : []), ...s.extras.map(i => chosenDe.addons[i]).filter(Boolean)].join('; ')
   const hostingChosen = s.extras.includes(HOSTING_ADDON_START)
   const domainName = cleanDomainName(s.d.domainName || '')
   const domainTld = s.d.domainTld || ''
@@ -326,7 +326,7 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
   const domainPrice = (tld: string) => HOSTING_DOMAIN_PRICES[tld]
   const domainFull = hostingChosen && domainTld && isValidDomainName(domainName) ? `${domainName}.${domainTld}` : ''
   // Auswahl fuer Checkout und EUROPAN; die Preise rechnet der Server mit lib/orderExtras.ts nach
-  const order = { extras: s.extras, domainTld: domainFull ? domainTld : '' }
+  const order = { extras: s.extras, domainTld: domainFull ? domainTld : '', seriesLlc: !!s.seriesLlc && s.trust !== 'sh' && s.trust !== 'both' }
   const extraItems = orderExtras(chosenSlug, order)
   const payable = Math.round(((chosen.price as number) + extrasTotal(extraItems)) * 100) / 100
 
@@ -365,7 +365,7 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
   function chooseTrust(v: TrustChoice) {
     const md = v === 'md' || v === 'both', sh = v === 'sh' || v === 'both'
     setErrors({})
-    patch({ trust: v, shType: sh ? s.shType : '', bankAck: md ? s.bankAck : false, account: md ? s.account : '', billing: v === 'none' ? 'monthly' : s.billing })
+    patch({ trust: v, seriesLlc: sh ? false : s.seriesLlc, shType: sh ? s.shType : '', bankAck: md ? s.bankAck : false, account: md ? s.account : '', billing: v === 'none' ? 'monthly' : s.billing })
   }
   function validateTrust(): boolean {
     const e: Errors = {}
@@ -530,6 +530,13 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
           </div>
         </section>}
         {!withMd && <div className="ofl-hint"><strong>{f.trustBankHint}</strong> {f.trustBankOnly}</div>}
+        {!withSh && <section className="ofl-sec"><h2 className="ofl-h2">{f.seriesTitle}</h2><p className="ofl-lead">{f.seriesLead}</p>
+          <div className="ofl-choices">
+            <Card id="series-none" name="seriesLlc" checked={!s.seriesLlc} onChange={() => patch({ seriesLlc: false })} title={f.seriesNone} price={money(0, lang)} sub={f.seriesNoneSub} />
+            <Card id="series-yes" name="seriesLlc" checked={!!s.seriesLlc} onChange={() => patch({ seriesLlc: true })} title={f.seriesYes} price={f.seriesPrice} sub={f.seriesYesSub} />
+          </div>
+          <p className="ofl-note">{f.seriesNote}</p>
+        </section>}
         {s.trust !== 'none' && <section className="ofl-sec"><h2 className="ofl-h2">{ft.payTitle}</h2>
           <div className="ofl-choices">
             <Card id="billing-monthly" name="billing" checked={s.billing === 'monthly'} onChange={() => patch({ billing: 'monthly' })} title={ft.payMonthly} />
@@ -634,6 +641,7 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
           <dl className="ofl-rev">
             <ReviewRow t={t} label={f.package} value={chosen.name} onChange={() => goTo(1)} />
             <ReviewRow t={t} label={f.trustRow} value={trustLines.join('\n')} onChange={() => goTo(2)} />
+            {order.seriesLlc && <ReviewRow t={t} label={f.seriesRow} value={`${f.seriesYes} (${f.seriesPrice})`} onChange={() => goTo(2)} />}
             <ReviewRow t={t} label={f.extra} value={s.extras.length ? s.extras.map(i => chosen.addons[i]).join('\n') : f.none} onChange={() => goTo(3)} />
             {domainFull && <ReviewRow t={t} label={f.domainRow} value={`${domainFull} (${money(domainPrice(domainTld), lang)}${f.domainYear})`} onChange={() => goTo(3)} />}
             <ReviewRow t={t} label={f.contact} value={[`${s.d.firstName} ${s.d.lastName}`, s.d.email, s.d.phone].filter(Boolean).join('\n')} onChange={() => goTo(4)} />
