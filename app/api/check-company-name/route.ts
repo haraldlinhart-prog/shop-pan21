@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { coreName, isValidCoreName, sameAsKey, similarKey, UK_SUFFIXES, type UkForm } from '@/lib/ukCompanyName'
+import { coreName, isValidCoreName, sameAsKey, searchVariant, similarKey, UK_SUFFIXES, type UkForm } from '@/lib/ukCompanyName'
 
 export const dynamic = 'force-dynamic'
 
@@ -35,15 +35,16 @@ export async function GET(req: NextRequest) {
   const name = coreName(req.nextUrl.searchParams.get('name') || '')
   if (!isValidCoreName(name)) return NextResponse.json({ error: 'invalid' }, { status: 400 })
 
-  const q = encodeURIComponent(name)
-  const [search, alpha] = await Promise.all([
-    chGet(`/search/companies?q=${q}&items_per_page=50`, key),
-    chGet(`/alphabetical-search/companies?q=${q}&size=20`, key),
-  ])
-  if (!search && !alpha) return NextResponse.json({ error: 'unavailable' }, { status: 502 })
+  // Wie eingegeben und als vereinfachte Variante (ohne Satzzeichen und Domain-Endung) suchen
+  const variants = Array.from(new Set([name, searchVariant(name)].filter(Boolean)))
+  const results = await Promise.all(variants.flatMap(v => {
+    const q = encodeURIComponent(v)
+    return [chGet(`/search/companies?q=${q}&items_per_page=50`, key), chGet(`/alphabetical-search/companies?q=${q}&size=20`, key)]
+  }))
+  if (results.every(r => !r)) return NextResponse.json({ error: 'unavailable' }, { status: 502 })
 
   const hits = new Map<string, Hit>()
-  for (const item of [...(search?.items || []), ...(alpha?.items || [])]) {
+  for (const item of results.flatMap(r => r?.items || [])) {
     const title = item.title || item.company_name
     const number = item.company_number
     if (!title || !number || hits.has(number)) continue

@@ -51,6 +51,12 @@ function stripEndings(s: string, endings: string[]): string {
   return s
 }
 
+// Zweite Suchvariante fuer die Companies-House-Suche: ohne Satzzeichen und
+// Domain-Endungen, weil die Suche z. B. "PAN21.COM" sonst nicht findet
+export function searchVariant(name: string): string {
+  return stripEndings(basic(name), LEGAL_ENDINGS)
+}
+
 // Vergleichsschluessel: ohne Rechtsform-Zusatz, ohne Leerzeichen
 export function sameAsKey(name: string): string {
   return stripEndings(basic(name), LEGAL_ENDINGS).replace(/ /g, '')
