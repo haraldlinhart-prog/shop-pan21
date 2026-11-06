@@ -52,10 +52,10 @@ export async function GET(req: NextRequest) {
 
   const exactKey = sameAsKey(name)
   const looseKey = similarKey(name)
-  const active = [...hits.values()].filter(h => !INACTIVE.has(h.status))
+  const active = Array.from(hits.values()).filter(h => !INACTIVE.has(h.status))
   const taken = active.filter(h => sameAsKey(h.title) === exactKey)
   const similar = taken.length ? [] : active.filter(h => similarKey(h.title) === looseKey)
-  const dissolved = [...hits.values()].filter(h => INACTIVE.has(h.status) && sameAsKey(h.title) === exactKey)
+  const dissolved = Array.from(hits.values()).filter(h => INACTIVE.has(h.status) && sameAsKey(h.title) === exactKey)
 
   const status = taken.length ? 'taken' : similar.length ? 'similar' : 'available'
   return NextResponse.json({
