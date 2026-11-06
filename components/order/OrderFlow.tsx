@@ -536,6 +536,7 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
             <Card id="series-yes" name="seriesLlc" checked={!!s.seriesLlc} onChange={() => patch({ seriesLlc: true })} title={f.seriesYes} price={f.seriesPrice} sub={f.seriesYesSub} />
           </div>
           <p className="ofl-note">{f.seriesNote}</p>
+          <p className="ofl-note"><a href={f.seriesMoreUrl} target="_blank" rel="noopener">{f.seriesMoreLink}</a></p>
         </section>}
         {s.trust !== 'none' && <section className="ofl-sec"><h2 className="ofl-h2">{ft.payTitle}</h2>
           <div className="ofl-choices">
