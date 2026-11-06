@@ -81,7 +81,59 @@ async function checkIreland(req: NextRequest) {
   })
 }
 
+// Neuseeland: NZBN-API des Business.govt.nz-Portals (Abo-Schluessel NZ_API_KEY).
+// Ohne Schluessel meldet die Pruefung "not_configured" und die Bestellstrecke laesst weitermachen.
+const NZ_API = 'https://api.business.govt.nz/gateway/nzbn/v5/entities'
+const NZ_INACTIVE = /removed|closed|struck|dissolved|liquidat|inactive/i
+
+async function nzSearch(q: string, key: string): Promise<any[] | null> {
+  try {
+    const res = await fetch(`${NZ_API}?search-term=${encodeURIComponent(q)}&page-size=50`, {
+      headers: { 'Ocp-Apim-Subscription-Key': key, Accept: 'application/json' },
+      cache: 'no-store',
+      signal: AbortSignal.timeout(8000),
+    })
+    if (!res.ok) { console.error('NZBN', res.status); return null }
+    const data = await res.json()
+    return Array.isArray(data?.items) ? data.items : Array.isArray(data) ? data : []
+  } catch (e) {
+    console.error('NZBN request failed', e)
+    return null
+  }
+}
+
+async function checkNewZealand(req: NextRequest) {
+  const key = process.env.NZ_API_KEY
+  if (!key) return NextResponse.json({ error: 'not_configured' }, { status: 503 })
+  const name = coreName(req.nextUrl.searchParams.get('name') || '')
+  if (!isValidCoreName(name)) return NextResponse.json({ error: 'invalid' }, { status: 400 })
+  const variants = Array.from(new Set([name, searchVariant(name)].filter(Boolean)))
+  const results = await Promise.all(variants.map(v => nzSearch(v, key)))
+  if (results.every(r => !r)) return NextResponse.json({ error: 'unavailable' }, { status: 502 })
+  const hits = new Map<string, Hit>()
+  for (const item of results.flatMap(r => r || [])) {
+    const title = item.entityName || item.entity_name
+    const number = String(item.nzbn ?? item.sourceRegisterUniqueIdentifier ?? '')
+    if (!title || !number || hits.has(number)) continue
+    hits.set(number, { title, number, status: String(item.entityStatusDescription || item.entityStatusCode || '') })
+  }
+  const exactKey = sameAsKey(name), looseKey = similarKey(name)
+  const all = Array.from(hits.values())
+  const active = all.filter(h => !NZ_INACTIVE.test(h.status))
+  const taken = active.filter(h => sameAsKey(h.title) === exactKey)
+  const similar = taken.length ? [] : active.filter(h => similarKey(h.title) === looseKey)
+  const dissolved = all.filter(h => NZ_INACTIVE.test(h.status) && sameAsKey(h.title) === exactKey)
+  return NextResponse.json({
+    name, form: 'nz',
+    status: taken.length ? 'taken' : similar.length ? 'similar' : 'available',
+    matches: (taken.length ? taken : similar).slice(0, 5),
+    dissolved: dissolved.slice(0, 3),
+    suffixes: UK_SUFFIXES.nz,
+  })
+}
+
 export async function GET(req: NextRequest) {
+  if (req.nextUrl.searchParams.get('country') === 'nz') return checkNewZealand(req)
   if (req.nextUrl.searchParams.get('country') === 'ie') return checkIreland(req)
   const key = process.env.COMPANIES_HOUSE_API_KEY
   if (!key) return NextResponse.json({ error: 'not_configured' }, { status: 500 })

@@ -79,8 +79,14 @@ export function ieFormOf(slug: string): IeFormKey {
 export const IE_NOMINEE_MONTHLY = { director: 245, shareholder: 95 }
 export const IE_ACCOUNT_FEE = 550
 
+// Neuseeland: ein Paket inkl. Behoerdengebuehren, Registered Office und Address for Service 12 Monate
+export const NZ_SLUG = 'neuseelaendische-limited-gruenden'
+// Resident Director in Neuseeland (Pflicht) und Nominee Shareholder. Stand Harald 06.11.2026.
+export const NZ_NOMINEE_MONTHLY = { director: 245, shareholder: 95 }
+export const NZ_ACCOUNT_FEE = 550
+
 export function hasOrderFlow(slug: string): boolean {
-  return slug === FORMATION_SLUGS.ug || slug === FORMATION_SLUGS.gmbh || slug === TRUST_SLUG || isUkSlug(slug) || isUsSlug(slug) || slug === HK_SLUG || isIeSlug(slug)
+  return slug === FORMATION_SLUGS.ug || slug === FORMATION_SLUGS.gmbh || slug === TRUST_SLUG || isUkSlug(slug) || isUsSlug(slug) || slug === HK_SLUG || isIeSlug(slug) || slug === NZ_SLUG
 }
 
 // Treuhand Deutschland, Stand Harald 04.11.2026. Keine Paketpreise: Wer beide

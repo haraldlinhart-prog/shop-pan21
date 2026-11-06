@@ -28,7 +28,7 @@ type BalanceWidgetProps = {
   embedded?: boolean  // in der Bestellstrecke: Bezahlt wird im Hauptbereich, nicht im Widget
   note?: string
   customer?: Record<string, string | undefined>
-  order?: { extras?: number[]; ukExtras?: string[]; usExtras?: string[]; hkExtras?: string[]; ieExtras?: string[]; domainTld?: string; seriesLlc?: boolean }  // Zusatzleistungen der Bestellstrecke; der Server rechnet den Preis selbst nach
+  order?: { extras?: number[]; ukExtras?: string[]; usExtras?: string[]; hkExtras?: string[]; ieExtras?: string[]; nzExtras?: string[]; domainTld?: string; seriesLlc?: boolean }  // Zusatzleistungen der Bestellstrecke; der Server rechnet den Preis selbst nach
   lang?: Lang
   onNoblePayment?: (result: any) => void
   onPriceUpdate?: (info: { finalTotal: number; fullyCovered: boolean; doppelWumsIncluded: boolean; pay: () => void } | null) => void

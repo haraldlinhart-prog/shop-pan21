@@ -6,7 +6,7 @@
 // Laufende Leistungen (Webhosting, Telefon, Domain) werden mit dem ersten
 // Zeitraum bezahlt: erster Monat bzw. erstes Jahr. Die Folgezeitraeume werden
 // gesondert abgerechnet. Stand Harald 06.11.2026.
-import { FORMATION_SLUGS, HOSTING_ADDON_START, HOSTING_DOMAIN_PRICES, PHONE_ADDON_START, UK_SLUGS, isUkSlug, isUsSlug, HK_SLUG, isIeSlug } from '@/lib/orderFlow'
+import { FORMATION_SLUGS, HOSTING_ADDON_START, HOSTING_DOMAIN_PRICES, PHONE_ADDON_START, UK_SLUGS, isUkSlug, isUsSlug, HK_SLUG, isIeSlug, NZ_SLUG } from '@/lib/orderFlow'
 
 export const ADDRESS_ADVICE_FEE = 14.9
 // Amerikanische Series LLC als (alleiniger) Gesellschafter, Gruendung einmalig. Stand Harald 06.11.2026.
@@ -17,7 +17,12 @@ export const PHONE_PLANS = [
   { monthly: 24.8, setup: 9.9 },
 ]
 
-export type OrderSelection = { extras?: unknown; domainTld?: unknown; seriesLlc?: unknown; ukExtras?: unknown; usExtras?: unknown; hkExtras?: unknown; ieExtras?: unknown }
+export type OrderSelection = { extras?: unknown; domainTld?: unknown; seriesLlc?: unknown; ukExtras?: unknown; usExtras?: unknown; hkExtras?: unknown; ieExtras?: unknown; nzExtras?: unknown }
+
+// Neuseeland-Zusatzleistungen. Stand Harald 06.11.2026.
+export const NZ_EXTRA_PRICES = { ird: 149 }
+export const NZ_EXTRA_KEYS = ['ird', 'hosting', 'phone0', 'phone1'] as const
+export type NzExtraKey = typeof NZ_EXTRA_KEYS[number]
 
 // Irland-Zusatzleistungen. Stand Harald 06.11.2026.
 export const IE_EXTRA_PRICES = { tax: 149 }
@@ -93,6 +98,13 @@ function usOrderExtras(selection: OrderSelection): ExtraItem[] {
 export function orderExtras(slug: string, selection: OrderSelection | null | undefined): ExtraItem[] {
   if (selection && isUkSlug(slug)) return ukOrderExtras(slug, selection)
   if (selection && isUsSlug(slug)) return usOrderExtras(selection)
+  if (selection && slug === NZ_SLUG) {
+    const raw = Array.isArray(selection.nzExtras) ? selection.nzExtras : []
+    const keys = new Set<string>(raw.filter((k): k is NzExtraKey => (NZ_EXTRA_KEYS as readonly string[]).includes(k as string)))
+    const items: ExtraItem[] = []
+    if (keys.has('ird')) items.push({ key: 'ird', de: 'Steuerregistrierung beim Inland Revenue (IRD)', en: 'Tax registration with Inland Revenue (IRD)', amount: NZ_EXTRA_PRICES.ird })
+    return [...items, ...webPhoneItems(keys, selection)]
+  }
   if (selection && isIeSlug(slug)) {
     const raw = Array.isArray(selection.ieExtras) ? selection.ieExtras : []
     const keys = new Set<string>(raw.filter((k): k is IeExtraKey => (IE_EXTRA_KEYS as readonly string[]).includes(k as string)))
