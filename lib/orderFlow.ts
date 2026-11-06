@@ -19,8 +19,27 @@ export function isValidDomainName(name: string): boolean {
 
 export type LegalForm = keyof typeof FORMATION_SLUGS
 
+// UK-Gruendung: eine Strecke, vier Rechtsformen mit je eigenem Produkt (Preis, Checkout)
+export const UK_SLUGS = {
+  shares: 'englische-limited-gruenden',
+  guarantee: 'uk-limited-by-guarantee-gruenden',
+  llp: 'uk-llp-gruenden',
+  plc: 'uk-plc-gruenden',
+} as const
+export type UkFormKey = keyof typeof UK_SLUGS
+export function isUkSlug(slug: string): boolean {
+  return (Object.values(UK_SLUGS) as string[]).includes(slug)
+}
+export function ukFormOf(slug: string): UkFormKey {
+  return (Object.keys(UK_SLUGS) as UkFormKey[]).find(k => UK_SLUGS[k] === slug) || 'shares'
+}
+// Nominee UK, Stand Harald 06.11.2026: Director mit Wohnsitz in Grossbritannien,
+// eroeffnet Bankkonten und haftet mit seinem Namen. Abrechnung gesondert nach Vorpruefung.
+export const UK_NOMINEE_MONTHLY = { director: 245, shareholder: 95 }
+export const UK_ACCOUNT_FEE = 550
+
 export function hasOrderFlow(slug: string): boolean {
-  return slug === FORMATION_SLUGS.ug || slug === FORMATION_SLUGS.gmbh || slug === TRUST_SLUG
+  return slug === FORMATION_SLUGS.ug || slug === FORMATION_SLUGS.gmbh || slug === TRUST_SLUG || isUkSlug(slug)
 }
 
 // Treuhand Deutschland, Stand Harald 04.11.2026. Keine Paketpreise: Wer beide
