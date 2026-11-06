@@ -26,7 +26,63 @@ async function chGet(path: string, key: string): Promise<any | null> {
   }
 }
 
+// Irland: Companies Registration Office (CRO Open Services). Zugang per E-Mail und
+// API-Schluessel (CRO_API_EMAIL, CRO_API_KEY). Ohne Zugang meldet die Pruefung
+// "not_configured" und die Bestellstrecke laesst weitermachen.
+const CRO_API = 'https://services.cro.ie/cws/companies'
+// Status-Texte des CRO, die einen Namen nicht mehr blockieren
+const IE_INACTIVE = /dissolved|struck|liquidated|deregistered|closed/i
+
+async function croSearch(q: string, email: string, key: string): Promise<any[] | null> {
+  try {
+    const res = await fetch(`${CRO_API}?company_name=${encodeURIComponent(q)}&format=json`, {
+      headers: { Authorization: `Basic ${Buffer.from(`${email}:${key}`).toString('base64')}`, 'Content-Type': 'application/json;charset=UTF-8' },
+      cache: 'no-store',
+      signal: AbortSignal.timeout(8000),
+    })
+    if (!res.ok) { console.error('CRO', res.status); return null }
+    const data = await res.json()
+    return Array.isArray(data) ? data : Array.isArray(data?.companies) ? data.companies : []
+  } catch (e) {
+    console.error('CRO request failed', e)
+    return null
+  }
+}
+
+async function checkIreland(req: NextRequest) {
+  const email = process.env.CRO_API_EMAIL, key = process.env.CRO_API_KEY
+  if (!email || !key) return NextResponse.json({ error: 'not_configured' }, { status: 503 })
+  const formParam = req.nextUrl.searchParams.get('form') || 'ieltd'
+  const form: UkForm = formParam === 'dac' || formParam === 'clg' ? formParam : 'ieltd'
+  const name = coreName(req.nextUrl.searchParams.get('name') || '')
+  if (!isValidCoreName(name)) return NextResponse.json({ error: 'invalid' }, { status: 400 })
+  const variants = Array.from(new Set([name, searchVariant(name)].filter(Boolean)))
+  const results = await Promise.all(variants.map(v => croSearch(v, email, key)))
+  if (results.every(r => !r)) return NextResponse.json({ error: 'unavailable' }, { status: 502 })
+  const hits = new Map<string, Hit>()
+  for (const item of results.flatMap(r => r || [])) {
+    const title = item.company_name || item.companyName
+    const number = String(item.company_num ?? item.companyNum ?? '')
+    if (!title || !number || hits.has(number)) continue
+    hits.set(number, { title, number, status: String(item.company_status_desc || item.comp_status_desc || item.company_status || '') })
+  }
+  const exactKey = sameAsKey(name), looseKey = similarKey(name)
+  const all = Array.from(hits.values())
+  const active = all.filter(h => !IE_INACTIVE.test(h.status))
+  const taken = active.filter(h => sameAsKey(h.title) === exactKey)
+  const similar = taken.length ? [] : active.filter(h => similarKey(h.title) === looseKey)
+  const dissolved = all.filter(h => IE_INACTIVE.test(h.status) && sameAsKey(h.title) === exactKey)
+  return NextResponse.json({
+    name, form,
+    status: taken.length ? 'taken' : similar.length ? 'similar' : 'available',
+    matches: (taken.length ? taken : similar).slice(0, 5),
+    dissolved: dissolved.slice(0, 3),
+    suffixes: UK_SUFFIXES[form],
+  })
+}
+
 export async function GET(req: NextRequest) {
+  if (req.nextUrl.searchParams.get('country') === 'ie') return checkIreland(req)
   const key = process.env.COMPANIES_HOUSE_API_KEY
   if (!key) return NextResponse.json({ error: 'not_configured' }, { status: 500 })
 

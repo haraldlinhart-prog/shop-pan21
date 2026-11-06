@@ -4,7 +4,7 @@
 // Schedule 3) und gleichen mit der Firmensuche der Companies-House-API ab.
 // Eine endgueltige Freigabe gibt erst Companies House bei der Eintragung.
 
-export type UkForm = 'ltd' | 'llp' | 'plc'
+export type UkForm = 'ltd' | 'llp' | 'plc' | 'ieltd' | 'dac' | 'clg'
 
 // Waehlbare Zusaetze je Rechtsform. Fuer die Pruefung zaehlen alle gleich,
 // eingetragen wird die gewaehlte Schreibweise.
@@ -12,6 +12,10 @@ export const UK_SUFFIXES: Record<UkForm, string[]> = {
   ltd: ['Ltd', 'Ltd.', 'LTD', 'LTD.', 'Limited', 'LIMITED'],
   llp: ['LLP', 'Limited Liability Partnership'],
   plc: ['PLC', 'plc', 'Public Limited Company'],
+  // Irland
+  ieltd: ['Limited', 'Ltd', 'Ltd.', 'Teoranta', 'Teo.'],
+  dac: ['DAC', 'Designated Activity Company', 'CGA', 'Cuideachta Ghníomhaíochta Ainmnithe'],
+  clg: ['CLG', 'Company Limited by Guarantee', 'CTR', 'Cuideachta faoi Theorainn Ráthaíochta'],
 }
 
 // Rechtsform-Zusaetze, die bei der Pruefung immer wegfallen
@@ -19,6 +23,9 @@ const LEGAL_ENDINGS = [
   'PUBLIC LIMITED COMPANY', 'LIMITED LIABILITY PARTNERSHIP', 'LIMITED PARTNERSHIP', 'COMMUNITY INTEREST COMPANY',
   'CWMNI CYFYNGEDIG CYHOEDDUS', 'PARTNERIAETH ATEBOLRWYDD CYFYNGEDIG', 'CYFYNGEDIG',
   'LIMITED', 'LTD', 'PLC', 'LLP', 'LP', 'CIC', 'CCC', 'CYF', 'CCYF', 'PAC',
+  // Irland
+  'DESIGNATED ACTIVITY COMPANY', 'COMPANY LIMITED BY GUARANTEE', 'CUIDEACHTA GHNIOMHAIOCHTA AINMNITHE', 'CUIDEACHTA FAOI THEORAINN RATHAIOCHTA',
+  'TEORANTA', 'TEO', 'DAC', 'CLG', 'CGA', 'CTR', 'UC', 'ULC',
 ]
 
 // Woerter am Ende, die ebenfalls nicht unterscheiden. Ein Treffer nur ueber
@@ -70,7 +77,7 @@ export function similarKey(name: string): string {
 // Den Kernnamen ohne eingegebenen Rechtsform-Zusatz, so wie der Kunde ihn schreibt
 export function coreName(input: string): string {
   let s = input.replace(/\s+/g, ' ').trim()
-  const re = /[\s,]+(public limited company|limited liability partnership|limited|ltd\.?|plc|llp)\s*$/i
+  const re = /[\s,]+(public limited company|limited liability partnership|designated activity company|company limited by guarantee|limited|ltd\.?|plc|llp|teoranta|teo\.?|dac|clg)\s*$/i
   while (re.test(s)) s = s.replace(re, '').trim()
   return s
 }

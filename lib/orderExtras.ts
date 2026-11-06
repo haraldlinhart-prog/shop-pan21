@@ -6,7 +6,7 @@
 // Laufende Leistungen (Webhosting, Telefon, Domain) werden mit dem ersten
 // Zeitraum bezahlt: erster Monat bzw. erstes Jahr. Die Folgezeitraeume werden
 // gesondert abgerechnet. Stand Harald 06.11.2026.
-import { FORMATION_SLUGS, HOSTING_ADDON_START, HOSTING_DOMAIN_PRICES, PHONE_ADDON_START, UK_SLUGS, isUkSlug, isUsSlug, HK_SLUG } from '@/lib/orderFlow'
+import { FORMATION_SLUGS, HOSTING_ADDON_START, HOSTING_DOMAIN_PRICES, PHONE_ADDON_START, UK_SLUGS, isUkSlug, isUsSlug, HK_SLUG, isIeSlug } from '@/lib/orderFlow'
 
 export const ADDRESS_ADVICE_FEE = 14.9
 // Amerikanische Series LLC als (alleiniger) Gesellschafter, Gruendung einmalig. Stand Harald 06.11.2026.
@@ -17,7 +17,12 @@ export const PHONE_PLANS = [
   { monthly: 24.8, setup: 9.9 },
 ]
 
-export type OrderSelection = { extras?: unknown; domainTld?: unknown; seriesLlc?: unknown; ukExtras?: unknown; usExtras?: unknown; hkExtras?: unknown }
+export type OrderSelection = { extras?: unknown; domainTld?: unknown; seriesLlc?: unknown; ukExtras?: unknown; usExtras?: unknown; hkExtras?: unknown; ieExtras?: unknown }
+
+// Irland-Zusatzleistungen. Stand Harald 06.11.2026.
+export const IE_EXTRA_PRICES = { tax: 149 }
+export const IE_EXTRA_KEYS = ['tax', 'hosting', 'phone0', 'phone1'] as const
+export type IeExtraKey = typeof IE_EXTRA_KEYS[number]
 
 // Hong-Kong-Zusatzleistungen. Stand Harald 06.11.2026.
 export const HK_EXTRA_PRICES = { chop: 69 }
@@ -88,6 +93,13 @@ function usOrderExtras(selection: OrderSelection): ExtraItem[] {
 export function orderExtras(slug: string, selection: OrderSelection | null | undefined): ExtraItem[] {
   if (selection && isUkSlug(slug)) return ukOrderExtras(slug, selection)
   if (selection && isUsSlug(slug)) return usOrderExtras(selection)
+  if (selection && isIeSlug(slug)) {
+    const raw = Array.isArray(selection.ieExtras) ? selection.ieExtras : []
+    const keys = new Set<string>(raw.filter((k): k is IeExtraKey => (IE_EXTRA_KEYS as readonly string[]).includes(k as string)))
+    const items: ExtraItem[] = []
+    if (keys.has('tax')) items.push({ key: 'tax', de: 'Steuerregistrierung bei Revenue (TR2)', en: 'Tax registration with Revenue (TR2)', amount: IE_EXTRA_PRICES.tax })
+    return [...items, ...webPhoneItems(keys, selection)]
+  }
   if (selection && slug === HK_SLUG) {
     const raw = Array.isArray(selection.hkExtras) ? selection.hkExtras : []
     const keys = new Set<string>(raw.filter((k): k is HkExtraKey => (HK_EXTRA_KEYS as readonly string[]).includes(k as string)))

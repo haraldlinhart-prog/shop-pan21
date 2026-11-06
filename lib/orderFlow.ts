@@ -62,8 +62,25 @@ export const HK_SLUG = 'hong-kong-limited-gruenden'
 export const HK_NOMINEE_MONTHLY = { director: 145, shareholder: 42 }
 export const HK_ACCOUNT_FEE = 550
 
+// Irland: eine Strecke, drei Rechtsformen mit je eigenem Produkt
+export const IE_SLUGS = {
+  ltd: 'irische-limited-gruenden',
+  dac: 'irland-dac-gruenden',
+  clg: 'irland-clg-gruenden',
+} as const
+export type IeFormKey = keyof typeof IE_SLUGS
+export function isIeSlug(slug: string): boolean {
+  return (Object.values(IE_SLUGS) as string[]).includes(slug)
+}
+export function ieFormOf(slug: string): IeFormKey {
+  return (Object.keys(IE_SLUGS) as IeFormKey[]).find(k => IE_SLUGS[k] === slug) || 'ltd'
+}
+// Nominee Irland: Director mit Wohnsitz im EWR (ersetzt den Section-137-Bond). Stand Harald 06.11.2026.
+export const IE_NOMINEE_MONTHLY = { director: 245, shareholder: 95 }
+export const IE_ACCOUNT_FEE = 550
+
 export function hasOrderFlow(slug: string): boolean {
-  return slug === FORMATION_SLUGS.ug || slug === FORMATION_SLUGS.gmbh || slug === TRUST_SLUG || isUkSlug(slug) || isUsSlug(slug) || slug === HK_SLUG
+  return slug === FORMATION_SLUGS.ug || slug === FORMATION_SLUGS.gmbh || slug === TRUST_SLUG || isUkSlug(slug) || isUsSlug(slug) || slug === HK_SLUG || isIeSlug(slug)
 }
 
 // Treuhand Deutschland, Stand Harald 04.11.2026. Keine Paketpreise: Wer beide
