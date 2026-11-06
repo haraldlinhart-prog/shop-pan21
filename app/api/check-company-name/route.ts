@@ -66,5 +66,7 @@ export async function GET(req: NextRequest) {
     matches: (taken.length ? taken : similar).slice(0, 5),
     dissolved: dissolved.slice(0, 3),
     suffixes: UK_SUFFIXES[form],
+    // Nur zur Fehlersuche: welche Namen die Suche geliefert hat (oeffentliche Registerdaten)
+    ...(req.nextUrl.searchParams.get('debug') === '1' ? { variants, candidates: Array.from(hits.values()).slice(0, 30).map(h => `${h.title} (${h.status})`) } : {}),
   })
 }
