@@ -97,8 +97,11 @@ export const NEVIS_SLUG = 'nevis-llc-gruenden'
 export const NEVIS_NOMINEE_MONTHLY = { manager: 245, member: 95 }
 export const NEVIS_ACCOUNT_FEE = 550
 
+// Belize LLC: gleiche Strecke wie Nevis (Due Diligence), eigenes Produkt
+export const BELIZE_SLUG = 'belize-llc-gruenden'
+
 export function hasOrderFlow(slug: string): boolean {
-  return slug === FORMATION_SLUGS.ug || slug === FORMATION_SLUGS.gmbh || slug === TRUST_SLUG || isUkSlug(slug) || isUsSlug(slug) || slug === HK_SLUG || isIeSlug(slug) || slug === NZ_SLUG || slug === AU_SLUG || slug === NEVIS_SLUG
+  return slug === FORMATION_SLUGS.ug || slug === FORMATION_SLUGS.gmbh || slug === TRUST_SLUG || isUkSlug(slug) || isUsSlug(slug) || slug === HK_SLUG || isIeSlug(slug) || slug === NZ_SLUG || slug === AU_SLUG || slug === NEVIS_SLUG || slug === BELIZE_SLUG
 }
 
 // Treuhand Deutschland, Stand Harald 04.11.2026. Keine Paketpreise: Wer beide

@@ -6,7 +6,7 @@
 // Laufende Leistungen (Webhosting, Telefon, Domain) werden mit dem ersten
 // Zeitraum bezahlt: erster Monat bzw. erstes Jahr. Die Folgezeitraeume werden
 // gesondert abgerechnet. Stand Harald 06.11.2026.
-import { FORMATION_SLUGS, HOSTING_ADDON_START, HOSTING_DOMAIN_PRICES, PHONE_ADDON_START, UK_SLUGS, isUkSlug, isUsSlug, HK_SLUG, isIeSlug, NZ_SLUG, AU_SLUG, NEVIS_SLUG } from '@/lib/orderFlow'
+import { FORMATION_SLUGS, HOSTING_ADDON_START, HOSTING_DOMAIN_PRICES, PHONE_ADDON_START, UK_SLUGS, isUkSlug, isUsSlug, HK_SLUG, isIeSlug, NZ_SLUG, AU_SLUG, NEVIS_SLUG, BELIZE_SLUG } from '@/lib/orderFlow'
 
 export const ADDRESS_ADVICE_FEE = 14.9
 // Amerikanische Series LLC als (alleiniger) Gesellschafter, Gruendung einmalig. Stand Harald 06.11.2026.
@@ -108,7 +108,8 @@ function usOrderExtras(selection: OrderSelection): ExtraItem[] {
 export function orderExtras(slug: string, selection: OrderSelection | null | undefined): ExtraItem[] {
   if (selection && isUkSlug(slug)) return ukOrderExtras(slug, selection)
   if (selection && isUsSlug(slug)) return usOrderExtras(selection)
-  if (selection && slug === NEVIS_SLUG) {
+  // Belize nutzt dieselben Zusatzleistungen und Preise wie Nevis
+  if (selection && (slug === NEVIS_SLUG || slug === BELIZE_SLUG)) {
     const raw = Array.isArray(selection.nevisExtras) ? selection.nevisExtras : []
     const keys = new Set<string>(raw.filter((k): k is NevisExtraKey => (NEVIS_EXTRA_KEYS as readonly string[]).includes(k as string)))
     const items: ExtraItem[] = []
