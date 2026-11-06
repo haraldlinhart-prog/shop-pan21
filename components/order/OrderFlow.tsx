@@ -10,7 +10,8 @@ import { HOSTING_DOMAIN_PRICES, HOSTING_DOMAIN_TLDS, cleanDomainName, isValidDom
 import { STRINGS, type Lang } from './strings'
 import { UkFlow } from './UkFlow'
 import { UsFlow } from './UsFlow'
-import { isUkSlug, isUsSlug } from '@/lib/orderFlow'
+import { HkFlow } from './HkFlow'
+import { isUkSlug, isUsSlug, HK_SLUG } from '@/lib/orderFlow'
 import { Actions, Bullets, Card, Errors, Field, Hero, Related, ReviewRow, Rows, Shell, Steps, Summary, flatFee, focusFirstError, mailOk, money, perMonth, productsFor, useAffiliateRef, useFlowState } from './parts'
 import '@/app/globals.css'
 import './order.css'
@@ -698,5 +699,6 @@ function TrustFlow({ slug, lang }: { slug: string; lang: Lang }) {
 export function OrderFlow({ slug, lang }: { slug: string; lang: Lang }) {
   if (isUkSlug(slug)) return <UkFlow slug={slug} lang={lang} />
   if (isUsSlug(slug)) return <UsFlow slug={slug} lang={lang} />
+  if (slug === HK_SLUG) return <HkFlow slug={slug} lang={lang} />
   return slug === TRUST_SLUG ? <TrustFlow slug={slug} lang={lang} /> : <FormationFlow slug={slug} lang={lang} />
 }

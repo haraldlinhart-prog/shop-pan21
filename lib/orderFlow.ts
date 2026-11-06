@@ -56,8 +56,14 @@ export function usStateOf(slug: string): UsStateKey {
 export const US_NOMINEE_MONTHLY = { manager: 145, member: 42 }
 export const US_ACCOUNT_FEE = 550
 
+// Hong Kong Limited: ein Paket inkl. Behoerdengebuehren, Secretary und Registered Office 12 Monate
+export const HK_SLUG = 'hong-kong-limited-gruenden'
+// Nominee Hong Kong wie im Produkt "Internationale Nominee- und Treuhandadministration"
+export const HK_NOMINEE_MONTHLY = { director: 145, shareholder: 42 }
+export const HK_ACCOUNT_FEE = 550
+
 export function hasOrderFlow(slug: string): boolean {
-  return slug === FORMATION_SLUGS.ug || slug === FORMATION_SLUGS.gmbh || slug === TRUST_SLUG || isUkSlug(slug) || isUsSlug(slug)
+  return slug === FORMATION_SLUGS.ug || slug === FORMATION_SLUGS.gmbh || slug === TRUST_SLUG || isUkSlug(slug) || isUsSlug(slug) || slug === HK_SLUG
 }
 
 // Treuhand Deutschland, Stand Harald 04.11.2026. Keine Paketpreise: Wer beide

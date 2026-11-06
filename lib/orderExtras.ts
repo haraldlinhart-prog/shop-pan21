@@ -6,7 +6,7 @@
 // Laufende Leistungen (Webhosting, Telefon, Domain) werden mit dem ersten
 // Zeitraum bezahlt: erster Monat bzw. erstes Jahr. Die Folgezeitraeume werden
 // gesondert abgerechnet. Stand Harald 06.11.2026.
-import { FORMATION_SLUGS, HOSTING_ADDON_START, HOSTING_DOMAIN_PRICES, PHONE_ADDON_START, UK_SLUGS, isUkSlug, isUsSlug } from '@/lib/orderFlow'
+import { FORMATION_SLUGS, HOSTING_ADDON_START, HOSTING_DOMAIN_PRICES, PHONE_ADDON_START, UK_SLUGS, isUkSlug, isUsSlug, HK_SLUG } from '@/lib/orderFlow'
 
 export const ADDRESS_ADVICE_FEE = 14.9
 // Amerikanische Series LLC als (alleiniger) Gesellschafter, Gruendung einmalig. Stand Harald 06.11.2026.
@@ -17,7 +17,12 @@ export const PHONE_PLANS = [
   { monthly: 24.8, setup: 9.9 },
 ]
 
-export type OrderSelection = { extras?: unknown; domainTld?: unknown; seriesLlc?: unknown; ukExtras?: unknown; usExtras?: unknown }
+export type OrderSelection = { extras?: unknown; domainTld?: unknown; seriesLlc?: unknown; ukExtras?: unknown; usExtras?: unknown; hkExtras?: unknown }
+
+// Hong-Kong-Zusatzleistungen. Stand Harald 06.11.2026.
+export const HK_EXTRA_PRICES = { chop: 69 }
+export const HK_EXTRA_KEYS = ['chop', 'hosting', 'phone0', 'phone1'] as const
+export type HkExtraKey = typeof HK_EXTRA_KEYS[number]
 
 // US-Zusatzleistungen. Stand Harald 06.11.2026.
 export const US_EXTRA_PRICES = { ein: 149, address: 199 }
@@ -83,6 +88,13 @@ function usOrderExtras(selection: OrderSelection): ExtraItem[] {
 export function orderExtras(slug: string, selection: OrderSelection | null | undefined): ExtraItem[] {
   if (selection && isUkSlug(slug)) return ukOrderExtras(slug, selection)
   if (selection && isUsSlug(slug)) return usOrderExtras(selection)
+  if (selection && slug === HK_SLUG) {
+    const raw = Array.isArray(selection.hkExtras) ? selection.hkExtras : []
+    const keys = new Set<string>(raw.filter((k): k is HkExtraKey => (HK_EXTRA_KEYS as readonly string[]).includes(k as string)))
+    const items: ExtraItem[] = []
+    if (keys.has('chop')) items.push({ key: 'chop', de: 'Firmenstempel (Company Chop) und Siegel', en: 'Company chop and seal', amount: HK_EXTRA_PRICES.chop })
+    return [...items, ...webPhoneItems(keys, selection)]
+  }
   if (!isFormationSlug(slug) || !selection) return []
   const raw = Array.isArray(selection.extras) ? selection.extras : []
   const ids = Array.from(new Set(raw.filter((i): i is number => Number.isInteger(i) && i >= 0 && i < PHONE_ADDON_START + PHONE_PLANS.length)))
