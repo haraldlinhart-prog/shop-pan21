@@ -42,8 +42,7 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
       ],
       addons: [
         'Advice on the business address',
-        'Administration and structuring options, subject to review',
-        'Pro web hosting package from 1euro-hosting.de',
+          'Pro web hosting package from 1euro-hosting.de',
         'Standard phone system from telefon-zentrale.com',
         'Phone exchange with AI from telefon-zentrale.com',
         'Trustee for managing director and shareholder after a free pre-check',
@@ -74,7 +73,6 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
     ],
     addons: [
       'Advice on the business address',
-      'Administration and management structures, subject to review',
       'Pro web hosting package from 1euro-hosting.de',
       'Standard phone system from telefon-zentrale.com',
       'Phone exchange with AI from telefon-zentrale.com',
@@ -113,7 +111,6 @@ export const PRODUCT_TRANSLATIONS: Record<string, ProductTranslation> = {
     ],
     addons: [
       'Advice on the business address',
-      'Administration and structuring options, subject to review',
       'Pro web hosting package from 1euro-hosting.de',
       'Standard phone system from telefon-zentrale.com',
       'Phone exchange with AI from telefon-zentrale.com',

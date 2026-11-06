@@ -425,7 +425,7 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
   const ugPrice = PRODUCTS.find(p => p.slug === FORMATION_SLUGS.ug)!.price as number
   const gmbhPrice = PRODUCTS.find(p => p.slug === FORMATION_SLUGS.gmbh)!.price as number
   const rows: Rows = [{ label: f.packageRow, value: money(price, lang) }]
-  s.extras.forEach(i => { if (chosen.addons[i]) rows.push({ label: chosen.addons[i], value: i >= PHONE_ADDON_START ? f.phonePlans[i - PHONE_ADDON_START].row : i >= HOSTING_ADDON_START ? f.hostingPrice : f.extraPrice }) })
+  s.extras.forEach(i => { if (chosen.addons[i]) rows.push({ label: chosen.addons[i], value: i >= PHONE_ADDON_START ? f.phonePlans[i - PHONE_ADDON_START].row : i >= HOSTING_ADDON_START ? f.hostingPrice : i === 0 ? f.addressPrice : f.extraPrice }) })
   if (withMd) rows.push({ label: `${f.trustRow}: ${ft.mdRow}`, value: perMonth(TRUST_MONTHLY.managingDirector, lang) })
   if (withSh) rows.push({ label: `${f.trustRow}: ${ft.shRow}`, value: shPrice })
   if (withMd && s.account) rows.push({ label: ft.accounts[s.account], value: flatFee(TRUST_ACCOUNT_FEE[s.account], lang) })
@@ -543,7 +543,7 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
         <div className="ofl-choices">
           <Card id="extra-none" type="checkbox" checked={s.extras.length === 0} onChange={() => patch({ extras: [] })} title={f.noThanks} price={money(0, lang)} sub={f.noThanksSub} />
           {chosen.addons.slice(0, HOSTING_ADDON_START).map((a, i) => (
-            <Card key={a} id={`extra-${i}`} type="checkbox" checked={s.extras.includes(i)} onChange={() => toggleExtra(i)} title={a} price={f.extraPrice} sub={i === 0 ? f.addressSub : f.extraSub} />
+            <Card key={a} id={`extra-${i}`} type="checkbox" checked={s.extras.includes(i)} onChange={() => toggleExtra(i)} title={a} price={i === 0 ? f.addressPrice : f.extraPrice} sub={i === 0 ? f.addressSub : f.extraSub} />
           ))}
         </div>
         <img className="ofl-photo" src="/hero/zusatz-buero.jpg" alt={f.extrasImageAlt} width={1672} height={941} />

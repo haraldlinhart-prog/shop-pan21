@@ -44,7 +44,6 @@ export const PRODUCTS: Product[] = [
       ],
       addons: [
         'Beratung zur Geschäftsadresse',
-        'Verwaltungs- und Strukturierungsoptionen nach Prüfung',
         'Webhosting Paket Pro von 1euro-hosting.de',
         'Telefonanlage Standard von telefon-zentrale.com',
         'Telefonzentrale mit KI von telefon-zentrale.com',
@@ -82,7 +81,6 @@ export const PRODUCTS: Product[] = [
     ],
     addons: [
       'Beratung zur Geschäftsadresse',
-      'Verwaltungs- und Geschäftsführungsstrukturen nach Prüfung',
       'Webhosting Paket Pro von 1euro-hosting.de',
       'Telefonanlage Standard von telefon-zentrale.com',
       'Telefonzentrale mit KI von telefon-zentrale.com',
@@ -129,7 +127,6 @@ export const PRODUCTS: Product[] = [
     ],
     addons: [
       'Beratung zur Geschäftsadresse',
-      'Verwaltungs- und Strukturierungsoptionen nach Prüfung',
       'Webhosting Paket Pro von 1euro-hosting.de',
       'Telefonanlage Standard von telefon-zentrale.com',
       'Telefonzentrale mit KI von telefon-zentrale.com',

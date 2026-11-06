@@ -3,9 +3,9 @@
 export const FORMATION_SLUGS = { ug: 'deutsche-ug-gruendung', gmbh: 'deutsche-gmbh-gruendung' } as const
 export const TRUST_SLUG = 'deutsche-treuhand-mandatsadministration'
 // Ab dieser Stelle gehoeren die Zusatzleistungen (addons) von UG und GmbH zur Gruppe Webhosting
-export const HOSTING_ADDON_START = 2
+export const HOSTING_ADDON_START = 1
 // Ab dieser Stelle die Telefon-Varianten von telefon-zentrale.com; es ist nur eine davon waehlbar
-export const PHONE_ADDON_START = 3
+export const PHONE_ADDON_START = 2
 // Domain-Preise pro Jahr wie auf 1euro-hosting.de (lib/tldPricing.ts dort); die Pruefung liefert den aktuellen Preis
 export const HOSTING_URL = 'https://1euro-hosting.de'
 export const HOSTING_DOMAIN_PRICES: Record<string, number> = { de: 5.9, eu: 11.9, com: 14.9, org: 15.9, net: 19.9 }
