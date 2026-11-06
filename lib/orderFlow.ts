@@ -38,8 +38,26 @@ export function ukFormOf(slug: string): UkFormKey {
 export const UK_NOMINEE_MONTHLY = { director: 245, shareholder: 95 }
 export const UK_ACCOUNT_FEE = 550
 
+// US-LLC: eine Strecke, je Bundesstaat ein Produkt (Preis inkl. State Fee und Registered Agent 12 Monate)
+export const US_SLUGS = {
+  wy: 'amerikanische-llc-gruenden',
+  de: 'us-llc-delaware-gruenden',
+  nm: 'us-llc-new-mexico-gruenden',
+  fl: 'us-llc-florida-gruenden',
+} as const
+export type UsStateKey = keyof typeof US_SLUGS
+export function isUsSlug(slug: string): boolean {
+  return (Object.values(US_SLUGS) as string[]).includes(slug)
+}
+export function usStateOf(slug: string): UsStateKey {
+  return (Object.keys(US_SLUGS) as UsStateKey[]).find(k => US_SLUGS[k] === slug) || 'wy'
+}
+// Nominee USA wie im Produkt "Internationale Nominee- und Treuhandadministration"
+export const US_NOMINEE_MONTHLY = { manager: 145, member: 42 }
+export const US_ACCOUNT_FEE = 550
+
 export function hasOrderFlow(slug: string): boolean {
-  return slug === FORMATION_SLUGS.ug || slug === FORMATION_SLUGS.gmbh || slug === TRUST_SLUG || isUkSlug(slug)
+  return slug === FORMATION_SLUGS.ug || slug === FORMATION_SLUGS.gmbh || slug === TRUST_SLUG || isUkSlug(slug) || isUsSlug(slug)
 }
 
 // Treuhand Deutschland, Stand Harald 04.11.2026. Keine Paketpreise: Wer beide

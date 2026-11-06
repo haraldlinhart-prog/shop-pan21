@@ -9,7 +9,8 @@ import { orderExtras, extrasTotal, hasRecurring } from '@/lib/orderExtras'
 import { HOSTING_DOMAIN_PRICES, HOSTING_DOMAIN_TLDS, cleanDomainName, isValidDomainName, FORMATION_SLUGS, LEGAL_LINKS, TRUST_ACCOUNT_FEE, TRUST_MONTHLY, TRUST_PAID_MONTHS_PER_YEAR, TRUST_SLUG, HOSTING_ADDON_START, PHONE_ADDON_START, type LegalForm } from '@/lib/orderFlow'
 import { STRINGS, type Lang } from './strings'
 import { UkFlow } from './UkFlow'
-import { isUkSlug } from '@/lib/orderFlow'
+import { UsFlow } from './UsFlow'
+import { isUkSlug, isUsSlug } from '@/lib/orderFlow'
 import { Actions, Bullets, Card, Errors, Field, Hero, Related, ReviewRow, Rows, Shell, Steps, Summary, flatFee, focusFirstError, mailOk, money, perMonth, productsFor, useAffiliateRef, useFlowState } from './parts'
 import '@/app/globals.css'
 import './order.css'
@@ -696,5 +697,6 @@ function TrustFlow({ slug, lang }: { slug: string; lang: Lang }) {
 
 export function OrderFlow({ slug, lang }: { slug: string; lang: Lang }) {
   if (isUkSlug(slug)) return <UkFlow slug={slug} lang={lang} />
+  if (isUsSlug(slug)) return <UsFlow slug={slug} lang={lang} />
   return slug === TRUST_SLUG ? <TrustFlow slug={slug} lang={lang} /> : <FormationFlow slug={slug} lang={lang} />
 }
