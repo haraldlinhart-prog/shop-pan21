@@ -15,6 +15,7 @@ const FIELDS: [string, string][] = [
   ['extras', 'Gewünschte Zusatzleistungen'],
   ['domain', 'Wunsch-Domain'],
   ['trust', 'Treuhand-Wunsch'],
+  ['dueDiligence', 'Due Diligence (Zweck, Mittelherkunft)'],
 ]
 
 export type OrderCustomer = Record<string, string>

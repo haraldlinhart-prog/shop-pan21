@@ -91,8 +91,14 @@ export const AU_SLUG = 'australische-pty-ltd-gruenden'
 export const AU_NOMINEE_MONTHLY = { director: 245, shareholder: 95 }
 export const AU_ACCOUNT_FEE = 550
 
+// Nevis LLC: ein Paket inkl. Regierungsgebuehr und Registered Agent 12 Monate, nur nach Due Diligence
+export const NEVIS_SLUG = 'nevis-llc-gruenden'
+// Nominee Manager/Member Nevis. Stand Harald 06.11.2026.
+export const NEVIS_NOMINEE_MONTHLY = { manager: 245, member: 95 }
+export const NEVIS_ACCOUNT_FEE = 550
+
 export function hasOrderFlow(slug: string): boolean {
-  return slug === FORMATION_SLUGS.ug || slug === FORMATION_SLUGS.gmbh || slug === TRUST_SLUG || isUkSlug(slug) || isUsSlug(slug) || slug === HK_SLUG || isIeSlug(slug) || slug === NZ_SLUG || slug === AU_SLUG
+  return slug === FORMATION_SLUGS.ug || slug === FORMATION_SLUGS.gmbh || slug === TRUST_SLUG || isUkSlug(slug) || isUsSlug(slug) || slug === HK_SLUG || isIeSlug(slug) || slug === NZ_SLUG || slug === AU_SLUG || slug === NEVIS_SLUG
 }
 
 // Treuhand Deutschland, Stand Harald 04.11.2026. Keine Paketpreise: Wer beide
