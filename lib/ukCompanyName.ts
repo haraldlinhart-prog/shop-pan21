@@ -4,7 +4,7 @@
 // Schedule 3) und gleichen mit der Firmensuche der Companies-House-API ab.
 // Eine endgueltige Freigabe gibt erst Companies House bei der Eintragung.
 
-export type UkForm = 'ltd' | 'llp' | 'plc' | 'ieltd' | 'dac' | 'clg' | 'nz'
+export type UkForm = 'ltd' | 'llp' | 'plc' | 'ieltd' | 'dac' | 'clg' | 'nz' | 'au'
 
 // Waehlbare Zusaetze je Rechtsform. Fuer die Pruefung zaehlen alle gleich,
 // eingetragen wird die gewaehlte Schreibweise.
@@ -18,6 +18,8 @@ export const UK_SUFFIXES: Record<UkForm, string[]> = {
   clg: ['CLG', 'Company Limited by Guarantee', 'CTR', 'Cuideachta faoi Theorainn Ráthaíochta'],
   // Neuseeland: Pflichtzusatz Limited oder Tapui (Limited)
   nz: ['Limited', 'Tapui (Limited)'],
+  // Australien
+  au: ['Pty Ltd', 'Pty. Ltd.', 'Proprietary Limited'],
 }
 
 // Rechtsform-Zusaetze, die bei der Pruefung immer wegfallen
@@ -30,6 +32,8 @@ const LEGAL_ENDINGS = [
   'TEORANTA', 'TEO', 'DAC', 'CLG', 'CGA', 'CTR', 'UC', 'ULC',
   // Neuseeland
   'TAPUI LIMITED', 'TAPUI',
+  // Australien
+  'PROPRIETARY LIMITED', 'PROPRIETARY', 'PTY LTD', 'PTY',
 ]
 
 // Woerter am Ende, die ebenfalls nicht unterscheiden. Ein Treffer nur ueber
@@ -81,7 +85,7 @@ export function similarKey(name: string): string {
 // Den Kernnamen ohne eingegebenen Rechtsform-Zusatz, so wie der Kunde ihn schreibt
 export function coreName(input: string): string {
   let s = input.replace(/\s+/g, ' ').trim()
-  const re = /[\s,]+(public limited company|limited liability partnership|designated activity company|company limited by guarantee|tapui \(limited\)|tapui|limited|ltd\.?|plc|llp|teoranta|teo\.?|dac|clg)\s*$/i
+  const re = /[\s,]+(public limited company|limited liability partnership|designated activity company|company limited by guarantee|tapui \(limited\)|tapui|proprietary limited|pty\.? ?ltd\.?|limited|ltd\.?|plc|llp|teoranta|teo\.?|dac|clg)\s*$/i
   while (re.test(s)) s = s.replace(re, '').trim()
   return s
 }

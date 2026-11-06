@@ -132,7 +132,58 @@ async function checkNewZealand(req: NextRequest) {
   })
 }
 
+// Australien: ABN Lookup Web Services (kostenlos, GUID in AU_ABR_GUID).
+// Liefert Firmen- und Geschaeftsnamen; ohne GUID meldet die Pruefung "not_configured".
+const AU_API = 'https://abr.business.gov.au/json/MatchingNames.aspx'
+
+async function auSearch(q: string, guid: string): Promise<any[] | null> {
+  try {
+    const res = await fetch(`${AU_API}?name=${encodeURIComponent(q)}&maxResults=100&guid=${encodeURIComponent(guid)}`, { cache: 'no-store', signal: AbortSignal.timeout(8000) })
+    if (!res.ok) { console.error('ABN Lookup', res.status); return null }
+    // Antwort ist JSONP: callback({...})
+    const text = await res.text()
+    const json = JSON.parse(text.slice(text.indexOf('(') + 1, text.lastIndexOf(')')))
+    if (json.Message) { console.error('ABN Lookup', json.Message); return null }
+    return Array.isArray(json.Names) ? json.Names : []
+  } catch (e) {
+    console.error('ABN Lookup request failed', e)
+    return null
+  }
+}
+
+async function checkAustralia(req: NextRequest) {
+  const guid = process.env.AU_ABR_GUID
+  if (!guid) return NextResponse.json({ error: 'not_configured' }, { status: 503 })
+  const name = coreName(req.nextUrl.searchParams.get('name') || '')
+  if (!isValidCoreName(name)) return NextResponse.json({ error: 'invalid' }, { status: 400 })
+  const variants = Array.from(new Set([name, searchVariant(name)].filter(Boolean)))
+  const results = await Promise.all(variants.map(v => auSearch(v, guid)))
+  if (results.every(r => !r)) return NextResponse.json({ error: 'unavailable' }, { status: 502 })
+  const hits = new Map<string, Hit>()
+  for (const item of results.flatMap(r => r || [])) {
+    const title = item.Name
+    const number = `${item.Abn || ''}-${item.Name || ''}`
+    if (!title || hits.has(number)) continue
+    const current = item.IsCurrent !== false && !/cancel/i.test(String(item.AbnStatus || ''))
+    hits.set(number, { title, number: String(item.Abn || ''), status: current ? 'active' : 'inactive' })
+  }
+  const exactKey = sameAsKey(name), looseKey = similarKey(name)
+  const all = Array.from(hits.values())
+  const active = all.filter(h => h.status === 'active')
+  const taken = active.filter(h => sameAsKey(h.title) === exactKey)
+  const similar = taken.length ? [] : active.filter(h => similarKey(h.title) === looseKey)
+  const dissolved = all.filter(h => h.status !== 'active' && sameAsKey(h.title) === exactKey)
+  return NextResponse.json({
+    name, form: 'au',
+    status: taken.length ? 'taken' : similar.length ? 'similar' : 'available',
+    matches: (taken.length ? taken : similar).slice(0, 5),
+    dissolved: dissolved.slice(0, 3),
+    suffixes: UK_SUFFIXES.au,
+  })
+}
+
 export async function GET(req: NextRequest) {
+  if (req.nextUrl.searchParams.get('country') === 'au') return checkAustralia(req)
   if (req.nextUrl.searchParams.get('country') === 'nz') return checkNewZealand(req)
   if (req.nextUrl.searchParams.get('country') === 'ie') return checkIreland(req)
   const key = process.env.COMPANIES_HOUSE_API_KEY

@@ -6,7 +6,7 @@
 // Laufende Leistungen (Webhosting, Telefon, Domain) werden mit dem ersten
 // Zeitraum bezahlt: erster Monat bzw. erstes Jahr. Die Folgezeitraeume werden
 // gesondert abgerechnet. Stand Harald 06.11.2026.
-import { FORMATION_SLUGS, HOSTING_ADDON_START, HOSTING_DOMAIN_PRICES, PHONE_ADDON_START, UK_SLUGS, isUkSlug, isUsSlug, HK_SLUG, isIeSlug, NZ_SLUG } from '@/lib/orderFlow'
+import { FORMATION_SLUGS, HOSTING_ADDON_START, HOSTING_DOMAIN_PRICES, PHONE_ADDON_START, UK_SLUGS, isUkSlug, isUsSlug, HK_SLUG, isIeSlug, NZ_SLUG, AU_SLUG } from '@/lib/orderFlow'
 
 export const ADDRESS_ADVICE_FEE = 14.9
 // Amerikanische Series LLC als (alleiniger) Gesellschafter, Gruendung einmalig. Stand Harald 06.11.2026.
@@ -17,7 +17,12 @@ export const PHONE_PLANS = [
   { monthly: 24.8, setup: 9.9 },
 ]
 
-export type OrderSelection = { extras?: unknown; domainTld?: unknown; seriesLlc?: unknown; ukExtras?: unknown; usExtras?: unknown; hkExtras?: unknown; ieExtras?: unknown; nzExtras?: unknown }
+export type OrderSelection = { extras?: unknown; domainTld?: unknown; seriesLlc?: unknown; ukExtras?: unknown; usExtras?: unknown; hkExtras?: unknown; ieExtras?: unknown; nzExtras?: unknown; auExtras?: unknown }
+
+// Australien-Zusatzleistungen. Stand Harald 06.11.2026.
+export const AU_EXTRA_PRICES = { tax: 149 }
+export const AU_EXTRA_KEYS = ['tax', 'hosting', 'phone0', 'phone1'] as const
+export type AuExtraKey = typeof AU_EXTRA_KEYS[number]
 
 // Neuseeland-Zusatzleistungen. Stand Harald 06.11.2026.
 export const NZ_EXTRA_PRICES = { ird: 149 }
@@ -98,6 +103,13 @@ function usOrderExtras(selection: OrderSelection): ExtraItem[] {
 export function orderExtras(slug: string, selection: OrderSelection | null | undefined): ExtraItem[] {
   if (selection && isUkSlug(slug)) return ukOrderExtras(slug, selection)
   if (selection && isUsSlug(slug)) return usOrderExtras(selection)
+  if (selection && slug === AU_SLUG) {
+    const raw = Array.isArray(selection.auExtras) ? selection.auExtras : []
+    const keys = new Set<string>(raw.filter((k): k is AuExtraKey => (AU_EXTRA_KEYS as readonly string[]).includes(k as string)))
+    const items: ExtraItem[] = []
+    if (keys.has('tax')) items.push({ key: 'tax', de: 'Steuerregistrierung: ABN, TFN und auf Wunsch GST', en: 'Tax registration: ABN, TFN and optionally GST', amount: AU_EXTRA_PRICES.tax })
+    return [...items, ...webPhoneItems(keys, selection)]
+  }
   if (selection && slug === NZ_SLUG) {
     const raw = Array.isArray(selection.nzExtras) ? selection.nzExtras : []
     const keys = new Set<string>(raw.filter((k): k is NzExtraKey => (NZ_EXTRA_KEYS as readonly string[]).includes(k as string)))
