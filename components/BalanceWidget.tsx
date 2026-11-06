@@ -28,6 +28,7 @@ type BalanceWidgetProps = {
   embedded?: boolean  // in der Bestellstrecke: Bezahlt wird im Hauptbereich, nicht im Widget
   note?: string
   customer?: Record<string, string | undefined>
+  order?: { extras: number[]; domainTld: string }  // Zusatzleistungen der Bestellstrecke; der Server rechnet den Preis selbst nach
   lang?: Lang
   onNoblePayment?: (result: any) => void
   onPriceUpdate?: (info: { finalTotal: number; fullyCovered: boolean; doppelWumsIncluded: boolean; pay: () => void } | null) => void
@@ -159,10 +160,12 @@ const STRINGS: Record<Lang, any> = {
   },
 }
 
-export function BalanceWidget({ slug, price, affiliateRef, lang = 'de', embedded = false, note, customer, onNoblePayment, onPriceUpdate }: BalanceWidgetProps) {
+export function BalanceWidget({ slug, price, affiliateRef, lang = 'de', embedded = false, note, customer, order, onNoblePayment, onPriceUpdate }: BalanceWidgetProps) {
   const t = STRINGS[lang]
   const customerRef = useRef(customer)
   customerRef.current = customer
+  const orderRef = useRef(order)
+  orderRef.current = order
   const numberLocale = lang === 'en' ? 'en-US' : 'de-DE'
   const num = (n: number) => n.toLocaleString(numberLocale, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
   const pts = (n: number) => ')( ' + num(n)
@@ -241,7 +244,7 @@ export function BalanceWidget({ slug, price, affiliateRef, lang = 'de', embedded
       const res = await fetch('/api/noble-pay', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, pin, slug, coin_id: selectedCoin, affiliate_ref: affiliateRef, customer: customerRef.current, use_bonus: bonusChoice === 'now' }),
+        body: JSON.stringify({ email, pin, slug, coin_id: selectedCoin, affiliate_ref: affiliateRef, customer: customerRef.current, order: orderRef.current, use_bonus: bonusChoice === 'now' }),
       })
       const data = await res.json()
       if (!res.ok) { setError(data.error || t.payFailed); setPaying(false); return }

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { PRODUCTS } from '@/lib/products'
-import { customerHtml, sanitizeCustomer } from '@/lib/orderCustomer'
+import { customerHtml, sanitizeCustomer, escapeHtml } from '@/lib/orderCustomer'
+import { orderExtras, extrasTotal } from '@/lib/orderExtras'
 
 const NOBLE_API_URL = (process.env.NOBLE_API_URL || 'https://www.noble-limited.com').replace(/^https:\/\/noble-limited\.com/, 'https://www.noble-limited.com')
 const NOBLE_API_KEY = process.env.NOBLE_API_KEY || ''
@@ -23,7 +24,7 @@ const COIN_LABELS: Record<string, string> = {
 // verifying the customer actually owns the account before any money moves. Never
 // call debit without first confirming the PIN via balance-by-email.
 export async function POST(req: NextRequest) {
-  const { email, pin, slug, coin_id, affiliate_ref, customer, use_bonus } = await req.json().catch(() => ({}))
+  const { email, pin, slug, coin_id, affiliate_ref, customer, use_bonus, order } = await req.json().catch(() => ({}))
 
   if (!email || !pin || !slug || !coin_id) {
     return NextResponse.json({ error: 'Missing fields' }, { status: 400 })
@@ -45,9 +46,12 @@ export async function POST(req: NextRequest) {
   // Gleiche Rechnung wie im BalanceWidget. Mit "auf dem EUROPAN-Konto sparen" wird
   // der 2%-Bonus nicht abgezogen, sondern unten gutgeschrieben.
   const useBonus = use_bonus !== false
-  const bonus = Math.round(product.price * EUROPAN_BONUS_PCT * 100) / 100
-  const doppelWums = Math.round(product.price * DOPPELWUMS_PCT * 100) / 100
-  const required = Math.round((product.price - (useBonus ? bonus : 0)) * 100) / 100
+  // Zusatzleistungen der Bestellstrecke zaehlen zum Bestellwert (lib/orderExtras.ts)
+  const extras = orderExtras(slug, order)
+  const orderValue = Math.round((product.price + extrasTotal(extras)) * 100) / 100
+  const bonus = Math.round(orderValue * EUROPAN_BONUS_PCT * 100) / 100
+  const doppelWums = Math.round(orderValue * DOPPELWUMS_PCT * 100) / 100
+  const required = Math.round((orderValue - (useBonus ? bonus : 0)) * 100) / 100
   const amount = Math.round((required - doppelWums) * 100) / 100
 
   // 0. Verify PIN + fetch authoritative balance before touching anything
@@ -101,6 +105,8 @@ export async function POST(req: NextRequest) {
         reply_to: orderTo,
         subject: `Bestellbestätigung: ${product.name} (${COIN_LABELS[coin_id] || coin_id})`,
         html: `<p><strong>Produkt:</strong> ${product.name}<br>
+${extras.map(i => `<strong>Zusatzleistung:</strong> ${escapeHtml(i.de)}, ${i.amount.toLocaleString('de-DE', { minimumFractionDigits: 2 })} €<br>`).join('')}
+<strong>Bestellwert:</strong> ${orderValue.toLocaleString('de-DE', { minimumFractionDigits: 2 })} €<br>
 <strong>Bezahlt mit:</strong> ${amount} ${COIN_LABELS[coin_id] || coin_id}<br>
 <strong>Referenz:</strong> ${orderRef}<br>
 <strong>Neues Guthaben:</strong> ${debitData.new_balance} ${COIN_LABELS[coin_id] || coin_id}</p>
@@ -117,7 +123,7 @@ ${customerHtml(sanitizeCustomer(customer))}
     body: JSON.stringify({
       buyer_email: email,
       affiliate_ref: affiliate_ref || null,
-      order_amount_eur: product.price,
+      order_amount_eur: orderValue,
       coin_id_used: coin_id,
       doppel_wums: true,
       // Der Vorteil steckt schon im abgebuchten Betrag und darf nicht noch einmal gutgeschrieben werden.

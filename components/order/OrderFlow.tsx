@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation'
 import { PRODUCTS, type Product } from '@/lib/products'
 import { PRODUCTS_EN } from '@/lib/products.en'
 import { BalanceWidget } from '@/components/BalanceWidget'
+import { orderExtras, extrasTotal, hasRecurring } from '@/lib/orderExtras'
 import { HOSTING_DOMAIN_PRICES, HOSTING_DOMAIN_TLDS, cleanDomainName, isValidDomainName, FORMATION_SLUGS, LEGAL_LINKS, TRUST_ACCOUNT_FEE, TRUST_MONTHLY, TRUST_PAID_MONTHS_PER_YEAR, TRUST_SLUG, HOSTING_ADDON_START, PHONE_ADDON_START, type LegalForm } from '@/lib/orderFlow'
 import { STRINGS, type Lang } from './strings'
 import '@/app/globals.css'
@@ -321,8 +322,13 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
   const domainName = cleanDomainName(s.d.domainName || '')
   const domainTld = s.d.domainTld || ''
   const checkedResults = domainCheck && domainCheck.name === domainName ? domainCheck.results : null
-  const domainPrice = (tld: string) => checkedResults?.[tld]?.price ?? HOSTING_DOMAIN_PRICES[tld]
+  // Immer der feste Preis aus lib/orderFlow.ts, damit Anzeige und Abbuchung uebereinstimmen
+  const domainPrice = (tld: string) => HOSTING_DOMAIN_PRICES[tld]
   const domainFull = hostingChosen && domainTld && isValidDomainName(domainName) ? `${domainName}.${domainTld}` : ''
+  // Auswahl fuer Checkout und EUROPAN; die Preise rechnet der Server mit lib/orderExtras.ts nach
+  const order = { extras: s.extras, domainTld: domainFull ? domainTld : '' }
+  const extraItems = orderExtras(chosenSlug, order)
+  const payable = Math.round(((chosen.price as number) + extrasTotal(extraItems)) * 100) / 100
 
   async function checkDomain() {
     setDomainMsg('')
@@ -411,7 +417,7 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
       const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ slug: chosenSlug, email: s.d.email, affiliate_ref: affiliateRef, token, lang, customer }),
+        body: JSON.stringify({ slug: chosenSlug, email: s.d.email, affiliate_ref: affiliateRef, token, lang, customer, order }),
       })
       const data = await res.json()
       if (data.url) { window.location.href = data.url; return }
@@ -421,16 +427,15 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
   }
 
   const europanActive = s.pay === 'europan' && preview?.fullyCovered
-  const total = europanActive && preview ? preview.finalTotal : price
+  const total = europanActive && preview ? preview.finalTotal : payable
   const ugPrice = PRODUCTS.find(p => p.slug === FORMATION_SLUGS.ug)!.price as number
   const gmbhPrice = PRODUCTS.find(p => p.slug === FORMATION_SLUGS.gmbh)!.price as number
   const rows: Rows = [{ label: f.packageRow, value: money(price, lang) }]
-  s.extras.forEach(i => { if (chosen.addons[i]) rows.push({ label: chosen.addons[i], value: i >= PHONE_ADDON_START ? f.phonePlans[i - PHONE_ADDON_START].row : i >= HOSTING_ADDON_START ? f.hostingPrice : i === 0 ? f.addressPrice : f.extraPrice }) })
+  extraItems.forEach(item => rows.push({ label: lang === 'en' ? item.en : item.de, value: money(item.amount, lang) }))
   if (withMd) rows.push({ label: `${f.trustRow}: ${ft.mdRow}`, value: perMonth(TRUST_MONTHLY.managingDirector, lang) })
   if (withSh) rows.push({ label: `${f.trustRow}: ${ft.shRow}`, value: shPrice })
   if (withMd && s.account) rows.push({ label: ft.accounts[s.account], value: flatFee(TRUST_ACCOUNT_FEE[s.account], lang) })
-  if (domainFull) rows.push({ label: `${f.domainRow}: ${domainFull}`, value: `${money(domainPrice(domainTld), lang)}${f.domainYear}` })
-  if (europanActive) rows.push({ label: f.advantage, value: `− ${money(price - total, lang)}`, minus: true })
+  if (europanActive) rows.push({ label: f.advantage, value: `− ${money(payable - total, lang)}`, minus: true })
   // Erste Seite der gemeinsamen Kachel: noch keine Rechtsform gewaehlt, also beide Preise zeigen
   const overview = s.step === 0 && shown.card ? shown.card : null
   const summary: Summary = overview ? {
@@ -443,7 +448,7 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
     title: chosen.name,
     chip: `${f.steps[1]}: ${s.form === 'ug' ? 'UG' : 'GmbH'}`,
     rows, totalLabel: f.totalLabel, total: money(total, lang),
-    note: `${chosen.priceNote ?? (lang === 'de' ? 'Zzgl. etwaiger Behörden- und Notargebühren.' : 'Plus any government and notary fees.')}${europanActive ? ` ${f.paidEuropan}` : ''}${s.trust !== 'none' || s.extras.length ? ` ${f.notInTotal}` : ''}`,
+    note: `${chosen.priceNote ?? (lang === 'de' ? 'Zzgl. etwaiger Behörden- und Notargebühren.' : 'Plus any government and notary fees.')}${europanActive ? ` ${f.paidEuropan}` : ''}${s.trust !== 'none' ? ` ${f.notInTotal}` : ''}${hasRecurring(extraItems) ? ` ${f.recurringLater}` : ''}`,
   }
 
   const pickButton = (form: LegalForm, label: string) => (
@@ -452,7 +457,7 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
 
   return (
     <Shell lang={lang} slug={slug} steps={f.steps} step={s.step} goTo={goTo} summary={summary} affiliateRef={affiliateRef}
-      side={<BalanceWidget embedded slug={chosenSlug} price={price} productName={chosenDe.name} affiliateRef={affiliateRef} lang={lang} customer={customer} onPriceUpdate={setPreview} onNoblePayment={r => { setPaid(r); clear(); goTo(6) }} />}>
+      side={<BalanceWidget embedded slug={chosenSlug} price={payable} productName={chosenDe.name} affiliateRef={affiliateRef} lang={lang} customer={customer} order={order} onPriceUpdate={setPreview} onNoblePayment={r => { setPaid(r); clear(); goTo(6) }} />}>
       {s.step === 0 && <>
         {f.bannerSrc ? <img className="ofl-photo" src={f.bannerSrc} alt={f.bannerAlt} width={1945} height={809} /> : <Hero product={shown} />}
         <div className="ofl-head">
@@ -653,7 +658,7 @@ function FormationFlow({ slug, lang }: { slug: string; lang: Lang }) {
         {payError && <span className="ofl-err">{payError}</span>}
         {s.pay === 'card'
           ? <>
-              <Actions t={t} onBack={() => goTo(4)} onNext={payCard} disabled={busy} gold nextLabel={busy ? f.loading : `${f.orderBtn} — ${money(price, lang)}`} />
+              <Actions t={t} onBack={() => goTo(4)} onNext={payCard} disabled={busy} gold nextLabel={busy ? f.loading : `${f.orderBtn} — ${money(payable, lang)}`} />
               {preview && <p className="ofl-note">{f.cardRegular}{preview.fullyCovered && ` ${f.cardEuropanHint(preview.finalTotal.toLocaleString(t.numberLocale, { minimumFractionDigits: 2, maximumFractionDigits: 2 }))}`}</p>}
               <p className="ofl-note">{f.cardFine}</p>
             </>
