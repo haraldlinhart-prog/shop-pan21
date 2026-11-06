@@ -72,7 +72,7 @@ export function NevisFlow({ slug, lang }: { slug: string; lang: Lang }) {
   /* ---------- Zweck und Herkunft ---------- */
   function validatePurpose(): boolean {
     const e: Errors = {}
-    if (!s.purpose) e.purpose = u.errPurposeOther
+    if (!s.purpose) e.purpose = u.errPurpose
     if (s.purpose === 'other' && !(s.d.purposeOther || '').trim()) e.purposeOther = u.errPurposeOther
     if ((s.d.source || '').trim().length < 10) e.source = u.errSource
     if (!s.confirm) e.confirm = u.errConfirm
